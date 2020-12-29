@@ -1,1 +1,2 @@
-export {HomeScreen} from './home';
+export {PlayScreen} from './play';
+export {SettingScreen} from './setting';

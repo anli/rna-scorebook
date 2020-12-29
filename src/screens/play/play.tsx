@@ -5,7 +5,7 @@ import {Text, View} from 'react-native';
 const Component = () => {
   return (
     <View>
-      <Text>Home</Text>
+      <Text>Play</Text>
     </View>
   );
 };
@@ -14,7 +14,7 @@ const options = {
   headerShown: false,
 };
 
-export default class HomeScreen {
+export default class PlayScreen {
   static Component: () => JSX.Element = Component;
   static options: StackNavigationOptions = options;
 }
