@@ -1,3 +1,4 @@
+import mockRNDeviceInfo from 'react-native-device-info/jest/react-native-device-info-mock';
 import 'react-native-gesture-handler/jestSetup';
 
 jest.mock('react-native-reanimated', () => {
@@ -12,3 +13,6 @@ jest.mock('react-native-reanimated', () => {
 
 // Silence the warning: Animated: `useNativeDriver` is not supported because the native animated module is missing
 jest.mock('react-native/Libraries/Animated/src/NativeAnimatedHelper');
+
+// https://github.com/react-native-device-info/react-native-device-info#troubleshooting
+jest.mock('react-native-device-info', () => mockRNDeviceInfo);
