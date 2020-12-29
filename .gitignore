@@ -64,3 +64,5 @@ buck-out/
 
 coverage
 tmp
+
+code-quality.html
