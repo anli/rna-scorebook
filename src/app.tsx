@@ -4,7 +4,7 @@ import {
   createStackNavigator,
   StackNavigationOptions,
 } from '@react-navigation/stack';
-import {PlayScreen, SettingScreen} from '@screens';
+import {PlayerAddScreen, PlayScreen, SettingScreen} from '@screens';
 import {colors} from '@theme';
 import React from 'react';
 import {
@@ -27,9 +27,14 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
-            name="Tabs"
+            name="BottomTab"
             component={BottomTab.Component}
             options={BottomTab.options}
+          />
+          <Stack.Screen
+            name="PlayerAddScreen"
+            component={PlayerAddScreen.Component}
+            options={PlayerAddScreen.options}
           />
         </Stack.Navigator>
       </NavigationContainer>
@@ -44,15 +49,15 @@ const Tab = createBottomTabNavigator();
 const BottomTabComponent = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Play"
+      initialRouteName="PlayScreen"
       tabBarOptions={{showLabel: false, activeTintColor: colors.primary}}>
       <Tab.Screen
-        name="Play"
+        name="PlayScreen"
         component={PlayScreen.Component}
         options={getTabScreenOptions('gamepad-variant', PlayScreen.options)}
       />
       <Tab.Screen
-        name="Settings"
+        name="SettingScreen"
         component={SettingScreen.Component}
         options={getTabScreenOptions('cog', SettingScreen.options)}
       />
