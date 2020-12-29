@@ -1,0 +1,6 @@
+coverage
+**tests**/\*\*
+tmp
+dist
+babel.config.js
+metro.config.js

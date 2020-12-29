@@ -1,0 +1,6 @@
+
+coverage
+android/**
+ios/\*\*
+tmp
+dist
