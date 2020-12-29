@@ -1,6 +1,6 @@
 Feature: Play Screen
 
-    Scenario: See Play Screen
-        Given any
-        When I am at Play Screen
-        Then I should see 'Play'
+  Scenario: No game
+    Given that there is no game
+    When I am at Play Screen
+    Then I should see 'StartButton'

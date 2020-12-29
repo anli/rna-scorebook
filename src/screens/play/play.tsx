@@ -1,12 +1,14 @@
 import {StackNavigationOptions} from '@react-navigation/stack';
+import {colors} from '@theme';
 import React from 'react';
-import {Text, View} from 'react-native';
+import {FAB} from 'react-native-paper';
+import styled from 'styled-components/native';
 
 const Component = () => {
   return (
-    <View>
-      <Text>Play</Text>
-    </View>
+    <Screen>
+      <StartButton testID="StartButton" icon="plus" />
+    </Screen>
   );
 };
 
@@ -18,3 +20,15 @@ export default class PlayScreen {
   static Component: () => JSX.Element = Component;
   static options: StackNavigationOptions = options;
 }
+
+const Screen = styled.SafeAreaView`
+  flex: 1;
+`;
+
+const StartButton = styled(FAB)`
+  position: absolute;
+  margin: 16px 16px 16px 16px;
+  right: 0px;
+  bottom: 0px;
+  background-color: ${colors.primary};
+`;

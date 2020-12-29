@@ -7,14 +7,23 @@ import {
 import {PlayScreen, SettingScreen} from '@screens';
 import {colors} from '@theme';
 import React from 'react';
-import {Provider as PaperProvider} from 'react-native-paper';
+import {
+  DefaultTheme as PaperDefaultTheme,
+  Provider as PaperProvider,
+} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+const theme = {
+  ...PaperDefaultTheme,
+  colors: {
+    ...PaperDefaultTheme.colors,
+  },
+};
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
-    <PaperProvider>
+    <PaperProvider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
