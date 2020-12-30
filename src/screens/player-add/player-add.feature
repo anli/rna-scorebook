@@ -23,3 +23,8 @@ Feature: Player Add Screen
     Given that I am at Player Add Screen
     When I enter 'John' to 'Name Input'
     Then I should see 'John' in 'Name Input'
+
+  Scenario: Next Button
+    Given that I am at Player Add Screen
+    When I press 'Next Button'
+    Then I should see 'Menu Add Screen'

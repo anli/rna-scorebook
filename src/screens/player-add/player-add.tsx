@@ -3,24 +3,28 @@ import {StackNavigationOptions} from '@react-navigation/stack';
 import {colors} from '@theme';
 import React, {useEffect} from 'react';
 import {Controller, useFieldArray, useForm} from 'react-hook-form';
-import {Appbar, Button, FAB, TextInput} from 'react-native-paper';
+import {Appbar, Button, FAB, IconButton, TextInput} from 'react-native-paper';
 import styled from 'styled-components/native';
 
 const Component = () => {
   const navigation = useNavigation();
-  const {control} = useForm();
+  const {control, handleSubmit} = useForm();
   const {fields, append} = useFieldArray({
     control,
     name: 'player',
   });
 
+  useEffect(() => {
+    append({name: ''});
+  }, [append]);
+
   const back = () => {
     navigation.canGoBack() && navigation.goBack();
   };
 
-  useEffect(() => {
-    append({name: ''});
-  }, [append]);
+  const next = (players: any) => {
+    navigation.navigate('MenuAddScreen', {players});
+  };
 
   const addPlayer = async () => {
     append({name: ''});
@@ -29,7 +33,7 @@ const Component = () => {
   return (
     <Screen>
       <AppBarHeader>
-        <Appbar.BackAction testID="BackButton" onPress={back} />
+        <BackButton testID="BackButton" icon="arrow-left" onPress={back} />
         <Appbar.Content title="Who is playing?" />
       </AppBarHeader>
 
@@ -64,7 +68,11 @@ const Component = () => {
           Add Player
         </PlayerAddButton>
       </Body>
-      <NextButton testID="NextButton" icon="arrow-right" />
+      <NextButton
+        testID="NextButton"
+        icon="arrow-right"
+        onPress={handleSubmit(next)}
+      />
     </Screen>
   );
 };
@@ -107,4 +115,8 @@ const PlayerAddButton = styled(Button)`
   padding: 4px 4px 4px 4px;
   margin-top: 16px;
   margin-bottom: 24px;
+`;
+
+const BackButton = styled(IconButton)`
+  margin-left: 10px;
 `;

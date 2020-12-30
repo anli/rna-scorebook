@@ -5,7 +5,6 @@ import React from 'react';
 import PlayScreen from './play';
 
 const mockedNavigate = jest.fn();
-
 jest.mock('@react-navigation/native', () => {
   return {
     ...(jest.requireActual('@react-navigation/native') as any),

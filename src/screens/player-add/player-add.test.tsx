@@ -6,13 +6,14 @@ import PlayerAddScreen from './player-add';
 
 const mockCanGoBack = jest.fn();
 const mockGoBack = jest.fn();
-
+const mockedNavigate = jest.fn();
 jest.mock('@react-navigation/native', () => {
   return {
     ...(jest.requireActual('@react-navigation/native') as any),
     useNavigation: () => ({
       canGoBack: mockCanGoBack,
       goBack: mockGoBack,
+      navigate: mockedNavigate,
     }),
   };
 });
@@ -28,17 +29,6 @@ const App = ({component, options}: any) => {
     </NavigationContainer>
   );
 };
-
-const otherErrors = console.error.bind(console.error);
-beforeAll(() => {
-  console.error = (errormessage: any) => {
-    const suppressedErrors = errormessage
-      .toString()
-      .includes('Warning: Failed prop type:');
-
-    !suppressedErrors && otherErrors(errormessage);
-  };
-});
 
 describe('Player Add Screen', () => {
   afterEach(() => {
@@ -116,5 +106,22 @@ describe('Player Add Screen', () => {
     const nameInput = getByTestId('NameInput.[0]');
     fireEvent(nameInput, 'onChangeText', 'John');
     expect(nameInput.props.value).toEqual('John');
+  });
+
+  it(`Scenario: Next Button
+      Given that I am at Player Add Screen
+      When I press 'Next Button'
+      Then I should see 'Menu Add Screen'`, async () => {
+    const {getByTestId} = render(
+      <App
+        component={PlayerAddScreen.Component}
+        options={PlayerAddScreen.options}
+      />,
+    );
+
+    fireEvent.press(getByTestId('NextButton'));
+    expect(mockedNavigate).toHaveBeenCalledTimes(1);
+    expect(mockedNavigate).toBeCalledWith('MenuAddScreen', {players: {}});
+    await act(async () => {});
   });
 });

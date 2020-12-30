@@ -4,7 +4,12 @@ import {
   createStackNavigator,
   StackNavigationOptions,
 } from '@react-navigation/stack';
-import {PlayerAddScreen, PlayScreen, SettingScreen} from '@screens';
+import {
+  MenuAddScreen,
+  PlayerAddScreen,
+  PlayScreen,
+  SettingScreen,
+} from '@screens';
 import {colors} from '@theme';
 import React from 'react';
 import {
@@ -35,6 +40,11 @@ const App = () => {
             name="PlayerAddScreen"
             component={PlayerAddScreen.Component}
             options={PlayerAddScreen.options}
+          />
+          <Stack.Screen
+            name="MenuAddScreen"
+            component={MenuAddScreen.Component}
+            options={MenuAddScreen.options}
           />
         </Stack.Navigator>
       </NavigationContainer>
