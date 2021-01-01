@@ -1,9 +1,10 @@
+import {Header} from '@components';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {colors} from '@theme';
 import React, {useEffect} from 'react';
 import {Controller, useFieldArray, useForm} from 'react-hook-form';
-import {Appbar, Button, FAB, IconButton, TextInput} from 'react-native-paper';
+import {Button, FAB, TextInput} from 'react-native-paper';
 import styled from 'styled-components/native';
 
 const Component = () => {
@@ -32,10 +33,7 @@ const Component = () => {
 
   return (
     <Screen>
-      <AppBarHeader>
-        <BackButton testID="BackButton" icon="arrow-left" onPress={back} />
-        <Appbar.Content title="Who is playing?" />
-      </AppBarHeader>
+      <Header onBack={back} title="Who is playing?" />
 
       <Body showsVerticalScrollIndicator={false}>
         {fields.map((field, index) => (
@@ -86,10 +84,6 @@ export default class PlayerScreen {
   static options: StackNavigationOptions = options;
 }
 
-const AppBarHeader = styled(Appbar.Header)`
-  background-color: transparent;
-`;
-
 const Screen = styled.SafeAreaView`
   flex: 1;
 `;
@@ -115,8 +109,4 @@ const PlayerAddButton = styled(Button)`
   padding: 4px 4px 4px 4px;
   margin-top: 16px;
   margin-bottom: 24px;
-`;
-
-const BackButton = styled(IconButton)`
-  margin-left: 10px;
 `;

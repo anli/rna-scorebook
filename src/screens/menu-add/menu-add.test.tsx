@@ -40,7 +40,7 @@ describe('Menu Add Screen', () => {
       Given I have not added any menu item previously
       When I am at 'Menu Add Screen'
       Then I should see 'What is on the menu?'
-      And I should see 'Choose 1 Roll'
+      And I should see 'Choose 1 rolls'
       And I should see 'TEMAKI'
       And I should see 'URAMAKI'
       And I should see 'MAKI'
@@ -54,7 +54,7 @@ describe('Menu Add Screen', () => {
     await act(async () => {});
 
     expect(getByText('What is on the menu?')).toBeDefined();
-    expect(getByText('Choose 1 Roll')).toBeDefined();
+    expect(getByText('Choose 1 rolls')).toBeDefined();
     expect(getByText('TEMAKI')).toBeDefined();
     expect(getByText('URAMAKI')).toBeDefined();
     expect(getByText('MAKI')).toBeDefined();

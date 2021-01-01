@@ -1,9 +1,11 @@
+import {Header} from '@components';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import store, {playMenuItemsMapSlice} from '@store';
 import {colors} from '@theme';
 import React from 'react';
-import {Appbar, FAB, IconButton, Subheading} from 'react-native-paper';
+import {View} from 'react-native';
+import {FAB, Subheading} from 'react-native-paper';
 import styled from 'styled-components/native';
 import MenuItem from './menu-item';
 import useMenuItems from './use-menu-items';
@@ -30,69 +32,52 @@ const Component = () => {
     navigation.navigate('PlayScreen');
   };
 
+  const groups = [
+    {
+      name: 'rolls',
+      maxCount: 1,
+      items: rolls,
+    },
+    {
+      name: 'specials',
+      maxCount: 2,
+      items: specials,
+    },
+    {
+      name: 'appetizers',
+      maxCount: 3,
+      items: appetizers,
+    },
+    {
+      name: 'desserts',
+      maxCount: 1,
+      items: desserts,
+    },
+  ];
+
   return (
     <Screen>
-      <AppBarHeader>
-        <BackButton testID="BackButton" icon="arrow-left" onPress={back} />
-        <Appbar.Content title="What is on the menu?" />
-      </AppBarHeader>
+      <Header onBack={back} title="What is on the menu?" />
 
       <Body showsVerticalScrollIndicator={false}>
-        <Subheading>Choose 1 Roll</Subheading>
-
-        <Section>
-          {rolls.map(([id, name]) => (
-            <MenuItem
-              key={id}
-              id={id}
-              name={name}
-              onPress={toggle}
-              selected={getIsPicked(id)}
-            />
-          ))}
-        </Section>
-
-        <Subheading>Choose 2 Specials</Subheading>
-
-        <Section>
-          {specials.map(([id, name]) => (
-            <MenuItem
-              key={id}
-              id={id}
-              name={name}
-              onPress={toggle}
-              selected={getIsPicked(id)}
-            />
-          ))}
-        </Section>
-
-        <Subheading>Choose 3 Appetizers</Subheading>
-
-        <Section>
-          {appetizers.map(([id, name]) => (
-            <MenuItem
-              key={id}
-              id={id}
-              name={name}
-              onPress={toggle}
-              selected={getIsPicked(id)}
-            />
-          ))}
-        </Section>
-
-        <Subheading>Choose 1 Dessert</Subheading>
-
-        <Section>
-          {desserts.map(([id, name]) => (
-            <MenuItem
-              key={id}
-              id={id}
-              name={name}
-              onPress={toggle}
-              selected={getIsPicked(id)}
-            />
-          ))}
-        </Section>
+        {groups.map(({maxCount, name, items}) => (
+          <View key={name}>
+            <Subheading>
+              Choose {maxCount} {name}
+            </Subheading>
+            <Section>
+              {items.map(([id, itemName]) => (
+                <MenuItem
+                  key={id}
+                  id={id}
+                  name={itemName}
+                  onPress={toggle}
+                  selected={getIsPicked(id)}
+                />
+              ))}
+            </Section>
+          </View>
+        ))}
       </Body>
 
       <NextButton testID="NextButton" icon="arrow-right" onPress={next} />
@@ -108,10 +93,6 @@ export default class PlayerScreen {
   static Component: () => JSX.Element = Component;
   static options: StackNavigationOptions = options;
 }
-
-const AppBarHeader = styled(Appbar.Header)`
-  background-color: transparent;
-`;
 
 const Screen = styled.SafeAreaView`
   flex: 1;
@@ -137,8 +118,4 @@ const Section = styled.View`
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: space-between;
-`;
-
-const BackButton = styled(IconButton)`
-  margin-left: 10px;
 `;
