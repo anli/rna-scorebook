@@ -40,7 +40,6 @@ describe('Player Add Screen', () => {
       When I am at Player Add Screen
       Then I should see 'Who is playing?'
       And I should see 'Name Input'
-      And I should see 'Add Player Button'
       And I should see 'Back Button'
       And I should see 'Next Button'`, async () => {
     const {getByTestId, getByText} = render(
@@ -52,8 +51,7 @@ describe('Player Add Screen', () => {
     await act(async () => {});
 
     expect(getByText('Who is playing?')).toBeDefined();
-    expect(getByTestId('NameInput.[0]')).toBeDefined();
-    expect(getByTestId('AddPlayerButton')).toBeDefined();
+    expect(getByTestId('NameInput')).toBeDefined();
     expect(getByTestId('BackButton')).toBeDefined();
     expect(getByTestId('NextButton')).toBeDefined();
   });
@@ -75,53 +73,45 @@ describe('Player Add Screen', () => {
     expect(mockGoBack).toHaveBeenCalledTimes(1);
   });
 
-  it(`Scenario: Add player
-      Given that I am at Player Add Screen
-      When I press 'Add Player Button'
-      Then I should see another 'Name Input'`, async () => {
-    const {getByTestId} = render(
-      <App
-        component={PlayerAddScreen.Component}
-        options={PlayerAddScreen.options}
-      />,
-    );
-    await act(async () => {});
-
-    fireEvent.press(getByTestId('AddPlayerButton'));
-    expect(getByTestId('NameInput.[1]')).toBeDefined();
-  });
-
   it(`Scenario: Enter name of player
       Given that I am at Player Add Screen
       When I enter 'John' to 'Name Input'
-      Then I should see 'John' in 'Name Input'`, async () => {
+      Then I should see 'John' in 'Name Input'
+      And I press 'Next Button'
+      And I should see 'Menu Add Screen'`, async () => {
     const {getByTestId} = render(
       <App
         component={PlayerAddScreen.Component}
         options={PlayerAddScreen.options}
       />,
     );
-    await act(async () => {});
 
-    const nameInput = getByTestId('NameInput.[0]');
-    fireEvent(nameInput, 'onChangeText', 'John');
-    expect(nameInput.props.value).toEqual('John');
+    fireEvent(getByTestId('NameInput'), 'onChangeText', 'John');
+    await act(async () => {
+      fireEvent.press(getByTestId('NextButton'));
+    });
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toBeCalledWith('MenuAddScreen', {
+      playerName: 'John',
+    });
   });
 
-  it(`Scenario: Next Button
+  it(`Scenario: Did not enter name of player Button
       Given that I am at Player Add Screen
       When I press 'Next Button'
-      Then I should see 'Menu Add Screen'`, async () => {
-    const {getByTestId} = render(
+      Then I should see 'Error Message' 'Please enter your name first'`, async () => {
+    const {getByTestId, getByText} = render(
       <App
         component={PlayerAddScreen.Component}
         options={PlayerAddScreen.options}
       />,
     );
 
-    fireEvent.press(getByTestId('NextButton'));
-    expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toBeCalledWith('MenuAddScreen', {players: {}});
-    await act(async () => {});
+    await act(async () => {
+      fireEvent.press(getByTestId('NextButton'));
+    });
+
+    expect(mockNavigate).toHaveBeenCalledTimes(0);
+    expect(getByText('Please enter your name first')).toBeDefined();
   });
 });

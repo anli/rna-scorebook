@@ -30,7 +30,8 @@
     "react-native-screens": "^2.16.1",
     "react-native-vector-icons": "^7.1.0",
     "react-redux": "^7.2.2",
-    "styled-components": "^5.2.1"
+    "styled-components": "^5.2.1",
+    "wait-for-expect": "^3.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
