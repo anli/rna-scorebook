@@ -16,3 +16,7 @@ jest.mock('react-native/Libraries/Animated/src/NativeAnimatedHelper');
 
 // https://github.com/react-native-device-info/react-native-device-info#troubleshooting
 jest.mock('react-native-device-info', () => mockRNDeviceInfo);
+
+// https://react-hook-form.com/advanced-usage#TestingForm
+global.window = {};
+global.window = global;
