@@ -1,11 +1,12 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
+import store, {playMenuItemsMapSlice} from '@store';
 import {colors} from '@theme';
 import React from 'react';
 import {Appbar, FAB, IconButton, Subheading} from 'react-native-paper';
 import styled from 'styled-components/native';
 import MenuItem from './menu-item';
-import useMenuMenuItems from './use-menu-items';
+import useMenuItems from './use-menu-items';
 
 const Component = () => {
   const navigation = useNavigation();
@@ -21,7 +22,13 @@ const Component = () => {
     desserts,
     toggle,
     getIsPicked,
-  } = useMenuMenuItems();
+    pickedMap,
+  } = useMenuItems();
+
+  const next = () => {
+    store.dispatch(playMenuItemsMapSlice.actions.set(pickedMap));
+    navigation.navigate('PlayScreen');
+  };
 
   return (
     <Screen>
@@ -88,7 +95,7 @@ const Component = () => {
         </Section>
       </Body>
 
-      <NextButton testID="NextButton" icon="arrow-right" />
+      <NextButton testID="NextButton" icon="arrow-right" onPress={next} />
     </Screen>
   );
 };

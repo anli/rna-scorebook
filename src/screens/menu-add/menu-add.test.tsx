@@ -1,18 +1,20 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import store from '@store';
 import {act, fireEvent, render} from '@testing-library/react-native';
 import React from 'react';
 import MenuAddScreen from './menu-add';
 
 const mockCanGoBack = jest.fn();
 const mockGoBack = jest.fn();
-
+const mockNavigate = jest.fn();
 jest.mock('@react-navigation/native', () => {
   return {
     ...(jest.requireActual('@react-navigation/native') as any),
     useNavigation: () => ({
       canGoBack: mockCanGoBack,
       goBack: mockGoBack,
+      navigate: mockNavigate,
     }),
   };
 });
@@ -81,7 +83,6 @@ describe('Menu Add Screen', () => {
       And that 'TEMAKI' is 'unselected'
       When I press 'TEMAKI'
       Then I should see 'TEMAKI' 'selected'`, async () => {
-    mockCanGoBack.mockReturnValue(true);
     const {getByText, getByTestId} = render(
       <App
         component={MenuAddScreen.Component}
@@ -93,5 +94,35 @@ describe('Menu Add Screen', () => {
 
     fireEvent.press(getByText('TEMAKI'));
     expect(getByTestId('TEMAKI.Selected')).toBeDefined();
+  });
+
+  it(`Scenario: Next
+      Given that I am at 'Menu Add Screen'
+      And that 'TEMAKI' is 'selected'
+      When I press 'Next Button'
+      Then I should see 'Play Screen'
+      And I should see 'TEMAKI'`, async () => {
+    const spyDispatch = jest.spyOn(store, 'dispatch');
+
+    const {getByText, getByTestId} = render(
+      <App
+        component={MenuAddScreen.Component}
+        options={MenuAddScreen.options}
+      />,
+    );
+    await act(async () => {});
+
+    fireEvent.press(getByText('TEMAKI'));
+    fireEvent.press(getByTestId('NextButton'));
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toBeCalledWith('PlayScreen');
+
+    expect(spyDispatch).toHaveBeenCalledTimes(1);
+    expect(spyDispatch).toHaveBeenCalledWith({
+      payload: {
+        temaki: true,
+      },
+      type: 'playMenuItemsMap/set',
+    });
   });
 });

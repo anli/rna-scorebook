@@ -6,14 +6,14 @@ import PlayerAddScreen from './player-add';
 
 const mockCanGoBack = jest.fn();
 const mockGoBack = jest.fn();
-const mockedNavigate = jest.fn();
+const mockNavigate = jest.fn();
 jest.mock('@react-navigation/native', () => {
   return {
     ...(jest.requireActual('@react-navigation/native') as any),
     useNavigation: () => ({
       canGoBack: mockCanGoBack,
       goBack: mockGoBack,
-      navigate: mockedNavigate,
+      navigate: mockNavigate,
     }),
   };
 });
@@ -120,8 +120,8 @@ describe('Player Add Screen', () => {
     );
 
     fireEvent.press(getByTestId('NextButton'));
-    expect(mockedNavigate).toHaveBeenCalledTimes(1);
-    expect(mockedNavigate).toBeCalledWith('MenuAddScreen', {players: {}});
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toBeCalledWith('MenuAddScreen', {players: {}});
     await act(async () => {});
   });
 });

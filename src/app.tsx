@@ -10,6 +10,7 @@ import {
   PlayScreen,
   SettingScreen,
 } from '@screens';
+import store from '@store';
 import {colors} from '@theme';
 import React from 'react';
 import {
@@ -17,7 +18,7 @@ import {
   Provider as PaperProvider,
 } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import {Provider as ReduxProvider} from 'react-redux';
 const theme = {
   ...PaperDefaultTheme,
   colors: {
@@ -28,27 +29,29 @@ const Stack = createStackNavigator();
 
 const App = () => {
   return (
-    <PaperProvider theme={theme}>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="BottomTab"
-            component={BottomTab.Component}
-            options={BottomTab.options}
-          />
-          <Stack.Screen
-            name="PlayerAddScreen"
-            component={PlayerAddScreen.Component}
-            options={PlayerAddScreen.options}
-          />
-          <Stack.Screen
-            name="MenuAddScreen"
-            component={MenuAddScreen.Component}
-            options={MenuAddScreen.options}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
+    <ReduxProvider store={store}>
+      <PaperProvider theme={theme}>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="BottomTab"
+              component={BottomTab.Component}
+              options={BottomTab.options}
+            />
+            <Stack.Screen
+              name="PlayerAddScreen"
+              component={PlayerAddScreen.Component}
+              options={PlayerAddScreen.options}
+            />
+            <Stack.Screen
+              name="MenuAddScreen"
+              component={MenuAddScreen.Component}
+              options={MenuAddScreen.options}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
+    </ReduxProvider>
   );
 };
 

@@ -10,3 +10,8 @@ Feature: Play Screen
     And I am at Play Screen
     When I press 'Start Button'
     Then I should see 'Player Add Screen'
+
+  Scenario: Has game
+    Given that there is a game
+    When I am at Play Screen
+    Then I should not see 'Start Button'

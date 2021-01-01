@@ -20,3 +20,10 @@ Feature: Menu Add Screen
     And that 'TEMAKI' is 'unselected'
     When I press 'TEMAKI'
     Then I should see 'TEMAKI' 'selected'
+
+  Scenario: Next
+    Given that I am at 'Menu Add Screen'
+    And that 'TEMAKI' is 'selected'
+    When I press 'Next Button'
+    Then I should see 'Play Screen'
+    And I should see 'TEMAKI'

@@ -1,7 +1,9 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import store, {playMenuItemsMapSlice} from '@store';
 import {act, fireEvent, render} from '@testing-library/react-native';
 import React from 'react';
+import {Provider as ReduxProvider} from 'react-redux';
 import PlayScreen from './play';
 
 const mockedNavigate = jest.fn();
@@ -18,11 +20,13 @@ const App = ({component, options}: any) => {
   const Stack = createStackNavigator();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="App" component={component} options={options} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ReduxProvider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="App" component={component} options={options} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ReduxProvider>
   );
 };
 
@@ -57,5 +61,24 @@ describe('Play Screen', () => {
     fireEvent.press(getByTestId('StartButton'));
     expect(mockedNavigate).toHaveBeenCalledTimes(1);
     expect(mockedNavigate).toBeCalledWith('PlayerAddScreen');
+  });
+
+  it(`Scenario: Has game
+      Given that there is a game
+      When I am at Play Screen
+      Then I should not see 'Start Button'`, async () => {
+    store.dispatch(
+      playMenuItemsMapSlice.actions.set({
+        maki: true,
+      }),
+    );
+
+    const {queryByTestId} = render(
+      <App component={PlayScreen.Component} options={PlayScreen.options} />,
+    );
+
+    await act(async () => {});
+
+    expect(queryByTestId('StartButton')).toBeNull();
   });
 });
