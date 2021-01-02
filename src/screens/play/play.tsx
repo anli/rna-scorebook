@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
-import {playMenuItemsMapSelector} from '@store';
+import {menuItemsMapSelector, playersMapSelector} from '@store';
 import {colors} from '@theme';
 import R from 'ramda';
 import React from 'react';
@@ -10,13 +10,14 @@ import styled from 'styled-components/native';
 
 const Component = () => {
   const navigation = useNavigation();
-  const playMenuItems = useSelector(playMenuItemsMapSelector);
+  const menuItemsMap = useSelector(menuItemsMapSelector);
+  const playersMap = useSelector(playersMapSelector);
 
   const start = () => {
     navigation.navigate('PlayerAddScreen');
   };
 
-  const hasGame = !R.isEmpty(playMenuItems);
+  const hasGame = !R.isEmpty(menuItemsMap) && !R.isEmpty(playersMap);
 
   return (
     <Screen>

@@ -1,7 +1,7 @@
 import {Header} from '@components';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
-import store, {playMenuItemsMapSlice} from '@store';
+import store, {playSlice} from '@store';
 import {colors} from '@theme';
 import React, {useState} from 'react';
 import {View} from 'react-native';
@@ -13,6 +13,7 @@ import useMenuItems from './use-menu-items';
 const Component = () => {
   const navigation = useNavigation();
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const {params}: {params: {playerName: string}} = useRoute<any>();
 
   const back = () => {
     navigation.canGoBack() && navigation.goBack();
@@ -31,7 +32,10 @@ const Component = () => {
     setIsSubmitted(true);
 
     if (isValid) {
-      store.dispatch(playMenuItemsMapSlice.actions.set(pickedMap));
+      store.dispatch(
+        playSlice.actions.setPlayersMap({[params.playerName]: true}),
+      );
+      store.dispatch(playSlice.actions.setMenuItemsMap(pickedMap));
       navigation.navigate('PlayScreen');
     }
   };

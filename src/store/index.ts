@@ -1,8 +1,9 @@
 import {RootState as State} from './store';
 
 export {
-  default as playMenuItemsMapSlice,
-  playMenuItemsMapSelector,
-} from './play-menu-item-map-slice';
+  default as playSlice,
+  menuItemsMapSelector,
+  playersMapSelector,
+} from './play-slice';
 export {default} from './store';
 export type RootState = State;
