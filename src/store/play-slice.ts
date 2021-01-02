@@ -3,41 +3,47 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
+import R from 'ramda';
 import {RootState} from './store';
 
 type PlayersMap = {[key: string]: boolean};
 type MenuItemsMap = {[key: string]: boolean};
+type TotalScoresMap = {[key: string]: number};
 type State = {
   playersMap: PlayersMap;
   menuItemsMap: MenuItemsMap;
-};
-
-const set = <PayloadActionType>(key: keyof State) => (
-  state: State,
-  action: PayloadAction<any | PayloadActionType>,
-) => {
-  state[key] = action.payload;
+  totalScoresMap?: TotalScoresMap;
 };
 
 const playSlice = createSlice({
   name: 'play',
   initialState: {playersMap: {}, menuItemsMap: {}},
   reducers: {
-    setPlayersMap: set<PlayersMap>('playersMap'),
-    setMenuItemsMap: set<MenuItemsMap>('menuItemsMap'),
+    setPlayersMap: (state: State, action: PayloadAction<PlayersMap>) => {
+      state.playersMap = action.payload;
+      state.totalScoresMap = R.mapObjIndexed(() => 0, action.payload);
+    },
+    setMenuItemsMap: (state: State, action: PayloadAction<MenuItemsMap>) => {
+      state.menuItemsMap = action.payload;
+    },
   },
 });
 
 const selectSelf = (state: RootState) => state.play;
 
-export const playersMapSelector = createDraftSafeSelector(
-  selectSelf,
-  (state: State) => state.playersMap,
-);
-
-export const menuItemsMapSelector = createDraftSafeSelector(
-  selectSelf,
-  (state: State) => state.menuItemsMap,
-);
-
 export default playSlice;
+
+export class PlaySelectors {
+  static playersMap = createDraftSafeSelector(
+    selectSelf,
+    (state: State) => state.playersMap,
+  );
+  static menuItemsMap = createDraftSafeSelector(
+    selectSelf,
+    (state: State) => state.menuItemsMap,
+  );
+  static totalScoresMap = createDraftSafeSelector(
+    selectSelf,
+    (state: State) => state.totalScoresMap,
+  );
+}

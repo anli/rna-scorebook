@@ -69,7 +69,13 @@ describe('Play Screen', () => {
       Then I should not see 'Start Button'`, async () => {
     store.dispatch(
       playSlice.actions.setMenuItemsMap({
-        maki: true,
+        edamame: true,
+        onigiri: true,
+        pudding: true,
+        soySauce: true,
+        temaki: true,
+        tempura: true,
+        wasabi: true,
       }),
     );
 
