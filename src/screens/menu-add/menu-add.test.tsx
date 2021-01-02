@@ -40,7 +40,7 @@ describe('Menu Add Screen', () => {
       Given I have not added any menu item previously
       When I am at 'Menu Add Screen'
       Then I should see 'What is on the menu?'
-      And I should see 'Choose 1 rolls'
+      And I should see 'Choose 1 rolls (0)'
       And I should see 'TEMAKI'
       And I should see 'URAMAKI'
       And I should see 'MAKI'
@@ -54,7 +54,7 @@ describe('Menu Add Screen', () => {
     await act(async () => {});
 
     expect(getByText('What is on the menu?')).toBeDefined();
-    expect(getByText('Choose 1 rolls')).toBeDefined();
+    expect(getByText('Choose 1 rolls (0)')).toBeDefined();
     expect(getByText('TEMAKI')).toBeDefined();
     expect(getByText('URAMAKI')).toBeDefined();
     expect(getByText('MAKI')).toBeDefined();
@@ -96,12 +96,12 @@ describe('Menu Add Screen', () => {
     expect(getByTestId('TEMAKI.Selected')).toBeDefined();
   });
 
-  it(`Scenario: Next
+  it(`Scenario: Next with correct items is selected
       Given that I am at 'Menu Add Screen'
-      And that 'TEMAKI' is 'selected'
+      And that items is correctly selected
       When I press 'Next Button'
       Then I should see 'Play Screen'
-      And I should see 'TEMAKI'`, async () => {
+      And I should see 'items'`, async () => {
     const spyDispatch = jest.spyOn(store, 'dispatch');
 
     const {getByText, getByTestId} = render(
@@ -110,19 +110,59 @@ describe('Menu Add Screen', () => {
         options={MenuAddScreen.options}
       />,
     );
-    await act(async () => {});
 
     fireEvent.press(getByText('TEMAKI'));
-    fireEvent.press(getByTestId('NextButton'));
+    fireEvent.press(getByText('SOY SAUCE'));
+    fireEvent.press(getByText('WASABI'));
+    fireEvent.press(getByText('ONIGIRI'));
+    fireEvent.press(getByText('EDAMAME'));
+    fireEvent.press(getByText('TEMPURA'));
+    fireEvent.press(getByText('PUDDING'));
+    await act(async () => {
+      fireEvent.press(getByTestId('NextButton'));
+    });
     expect(mockNavigate).toHaveBeenCalledTimes(1);
     expect(mockNavigate).toBeCalledWith('PlayScreen');
 
     expect(spyDispatch).toHaveBeenCalledTimes(1);
     expect(spyDispatch).toHaveBeenCalledWith({
       payload: {
+        edamame: true,
+        onigiri: true,
+        pudding: true,
+        soySauce: true,
         temaki: true,
+        tempura: true,
+        wasabi: true,
       },
       type: 'playMenuItemsMap/set',
     });
+  });
+
+  it(`Scenario: Next with no items selected
+      Given that I am at 'Menu Add Screen'
+      And that items is incorrectly selected
+      When I press 'Next Button'
+      Then I should not see 'Play Screen'
+      And I should see 'Error Message' 'Please choose exactly 1 rolls'
+      And I should see 'Error Message' 'Please choose exactly 2 specials'
+      And I should see 'Error Message' 'Please choose exactly 3 appetizers'
+      And I should see 'Error Message' 'Please choose exactly 1 desserts'`, async () => {
+    const {getByText, getByTestId} = render(
+      <App
+        component={MenuAddScreen.Component}
+        options={MenuAddScreen.options}
+      />,
+    );
+    await act(async () => {
+      fireEvent.press(getByTestId('NextButton'));
+    });
+
+    expect(mockNavigate).not.toHaveBeenCalledTimes(1);
+
+    expect(getByText('Please choose exactly 1 rolls')).toBeDefined();
+    expect(getByText('Please choose exactly 2 specials')).toBeDefined();
+    expect(getByText('Please choose exactly 3 appetizers')).toBeDefined();
+    expect(getByText('Please choose exactly 1 desserts')).toBeDefined();
   });
 });

@@ -21,9 +21,19 @@ Feature: Menu Add Screen
     When I press 'TEMAKI'
     Then I should see 'TEMAKI' 'selected'
 
-  Scenario: Next
+  Scenario: Next with correct items is selected
     Given that I am at 'Menu Add Screen'
-    And that 'TEMAKI' is 'selected'
+    And that items is correctly selected
     When I press 'Next Button'
     Then I should see 'Play Screen'
-    And I should see 'TEMAKI'
+    And I should see 'items'
+
+  Scenario: Next with no items selected
+    Given that I am at 'Menu Add Screen'
+    And that items is incorrectly selected
+    When I press 'Next Button'
+    Then I should not see 'Play Screen'
+    And I should see 'Error Message' 'Please choose exactly 1 rolls'
+    And I should see 'Error Message' 'Please choose exactly 2 specials'
+    And I should see 'Error Message' 'Please choose exactly 3 appetizers'
+    And I should see 'Error Message' 'Please choose exactly 1 desserts'
