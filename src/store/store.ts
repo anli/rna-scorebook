@@ -1,8 +1,8 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
-import playMenuItemsMapSlice from './play-menu-item-map-slice';
+import playSlice from './play-slice';
 
 const rootReducer = combineReducers({
-  playMenuItemsMap: playMenuItemsMapSlice.reducer,
+  play: playSlice.reducer,
 });
 
 const store = configureStore({
