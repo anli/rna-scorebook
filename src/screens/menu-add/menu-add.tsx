@@ -3,81 +3,69 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import store, {playMenuItemsMapSlice} from '@store';
 import {colors} from '@theme';
-import React from 'react';
+import React, {useState} from 'react';
 import {View} from 'react-native';
-import {FAB, Subheading} from 'react-native-paper';
+import {FAB, HelperText, Subheading} from 'react-native-paper';
 import styled from 'styled-components/native';
 import MenuItem from './menu-item';
 import useMenuItems from './use-menu-items';
 
 const Component = () => {
   const navigation = useNavigation();
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const back = () => {
     navigation.canGoBack() && navigation.goBack();
   };
 
   const {
-    rolls,
-    specials,
-    appetizers,
-    desserts,
+    groups,
     toggle,
     getIsPicked,
     pickedMap,
+    getGroupIsPickedCount,
+    isValid,
   } = useMenuItems();
 
   const next = () => {
-    store.dispatch(playMenuItemsMapSlice.actions.set(pickedMap));
-    navigation.navigate('PlayScreen');
-  };
+    setIsSubmitted(true);
 
-  const groups = [
-    {
-      name: 'rolls',
-      maxCount: 1,
-      items: rolls,
-    },
-    {
-      name: 'specials',
-      maxCount: 2,
-      items: specials,
-    },
-    {
-      name: 'appetizers',
-      maxCount: 3,
-      items: appetizers,
-    },
-    {
-      name: 'desserts',
-      maxCount: 1,
-      items: desserts,
-    },
-  ];
+    if (isValid) {
+      store.dispatch(playMenuItemsMapSlice.actions.set(pickedMap));
+      navigation.navigate('PlayScreen');
+    }
+  };
 
   return (
     <Screen>
       <Header onBack={back} title="What is on the menu?" />
 
       <Body showsVerticalScrollIndicator={false}>
-        {groups.map(({maxCount, name, items}) => (
-          <View key={name}>
-            <Subheading>
-              Choose {maxCount} {name}
-            </Subheading>
-            <Section>
-              {items.map(([id, itemName]) => (
-                <MenuItem
-                  key={id}
-                  id={id}
-                  name={itemName}
-                  onPress={toggle}
-                  selected={getIsPicked(id)}
-                />
-              ))}
-            </Section>
-          </View>
-        ))}
+        {groups.map(({maxCount, name: groupName, items}) => {
+          const isGroupValid = maxCount !== getGroupIsPickedCount(groupName);
+          return (
+            <View key={groupName}>
+              <Subheading>
+                Choose {maxCount} {groupName} (
+                {getGroupIsPickedCount(groupName)})
+              </Subheading>
+              <ErrorMessage type="error" visible={isSubmitted && isGroupValid}>
+                Please choose exactly {maxCount} {groupName}
+              </ErrorMessage>
+              <Section>
+                {items.map(([id, itemName]) => (
+                  <MenuItem
+                    key={id}
+                    id={id}
+                    name={itemName}
+                    onPress={toggle}
+                    selected={getIsPicked(id)}
+                  />
+                ))}
+              </Section>
+            </View>
+          );
+        })}
       </Body>
 
       <NextButton testID="NextButton" icon="arrow-right" onPress={next} />
@@ -112,10 +100,14 @@ const Body = styled.ScrollView`
 `;
 
 const Section = styled.View`
-  margin-top: 16px;
+  /* margin-top: 16px; */
   margin-bottom: 16px;
   flex: 1;
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: space-between;
+`;
+
+const ErrorMessage = styled(HelperText)`
+  margin-left: -10px;
 `;
