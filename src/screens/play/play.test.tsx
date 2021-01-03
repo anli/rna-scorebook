@@ -66,7 +66,10 @@ describe('Play Screen', () => {
   it(`Scenario: Has game
       Given that there is a game
       When I am at Play Screen
-      Then I should not see 'Start Button'`, async () => {
+      Then I should not see 'Start Button'
+      And I should see 'Round 1'
+      And I should see 'Next Round Button'
+      And I should not see 'Previous Round Button'`, async () => {
     store.dispatch(
       playSlice.actions.setMenuItemsMap({
         edamame: true,
@@ -85,12 +88,64 @@ describe('Play Screen', () => {
       }),
     );
 
-    const {queryByTestId} = render(
+    const {queryByTestId, getByText, getByTestId} = render(
       <App component={PlayScreen.Component} options={PlayScreen.options} />,
     );
 
     await act(async () => {});
 
     expect(queryByTestId('StartButton')).toBeNull();
+    expect(getByText('Round 1')).toBeDefined();
+    expect(getByTestId('Round.NextButton')).toBeDefined();
+    expect(queryByTestId('Round.PreviousButton')).toBeNull();
+  });
+
+  it(`Scenario: Change round
+      Given that there is a game
+      And I am at Play Screen
+      When I press the 'Next Round Button'
+      Then I should see 'Round 2'
+      When I press the 'Next Round Button'
+      Then I should see 'Round 3'
+      And I should not see 'Next Round Button'
+      When I press the 'Previous Round Button'
+      Then I should see 'Round 2'`, async () => {
+    store.dispatch(
+      playSlice.actions.setMenuItemsMap({
+        edamame: true,
+        onigiri: true,
+        pudding: true,
+        soySauce: true,
+        temaki: true,
+        tempura: true,
+        wasabi: true,
+      }),
+    );
+
+    store.dispatch(
+      playSlice.actions.setPlayersMap({
+        John: true,
+      }),
+    );
+
+    const {queryByTestId, getByText, getByTestId} = render(
+      <App component={PlayScreen.Component} options={PlayScreen.options} />,
+    );
+
+    await act(async () => {
+      fireEvent.press(getByTestId('Round.NextButton'));
+    });
+    expect(getByText('Round 2')).toBeDefined();
+
+    await act(async () => {
+      fireEvent.press(getByTestId('Round.NextButton'));
+    });
+    expect(getByText('Round 3')).toBeDefined();
+    expect(queryByTestId('Round.NextButton')).toBeNull();
+
+    await act(async () => {
+      fireEvent.press(getByTestId('Round.PreviousButton'));
+    });
+    expect(getByText('Round 2')).toBeDefined();
   });
 });
