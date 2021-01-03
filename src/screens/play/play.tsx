@@ -1,33 +1,73 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
-import {PlaySelectors} from '@store';
+import store, {PlaySelectors, playSlice} from '@store';
 import {colors} from '@theme';
 import R from 'ramda';
-import React from 'react';
+import React, {useState} from 'react';
 import {View} from 'react-native';
-import {Appbar, FAB} from 'react-native-paper';
+import {Appbar, FAB, IconButton, List} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import Player from './player';
-import Round from './round';
+import Rounds from './rounds';
 
 const Component = () => {
   const navigation = useNavigation();
-  const menuItemsMap = useSelector(PlaySelectors.menuItemsMap);
+  const menuItems = useSelector(PlaySelectors.menuItems);
   const playersMap = useSelector(PlaySelectors.playersMap);
-  const totalScoresMap = useSelector(PlaySelectors.totalScoresMap);
+  const totalScore = useSelector(PlaySelectors.totalScore);
+  const scoresMap = useSelector(PlaySelectors.scoresMap);
+  const roundsTotalScoreMap = useSelector(PlaySelectors.roundsTotalScoreMap);
+
+  const [roundId, setRoundId] = useState<string>('roundOne');
 
   const start = () => {
     navigation.navigate('PlayerAddScreen');
   };
 
-  const hasGame = !R.isEmpty(menuItemsMap) && !R.isEmpty(playersMap);
+  const hasGame = !R.isEmpty(menuItems) && !R.isEmpty(playersMap);
   const players = Object.keys(playersMap).map((playerName) => ({
     id: playerName,
     name: playerName,
     color: 'white',
   }));
-  const rounds = ['Round 1', 'Round 2', 'Round 3'];
+
+  const rounds = [
+    {
+      id: 'roundOne',
+      name: 'Round 1',
+      score: roundsTotalScoreMap?.['roundOne'] || 0,
+    },
+    {
+      id: 'roundTwo',
+      name: 'Round 2',
+      score: roundsTotalScoreMap?.['roundTwo'] || 0,
+    },
+    {
+      id: 'roundThree',
+      name: 'Round 3',
+      score: roundsTotalScoreMap?.['roundThree'] || 0,
+    },
+  ];
+  roundsTotalScoreMap;
+
+  const onRoundChange = ({id}: {id: string}) => {
+    setRoundId(id);
+  };
+
+  const onAdjustScore = (
+    menuItemId: string,
+    currentRoundId: string,
+    adjustment: number,
+  ) => {
+    store.dispatch(
+      playSlice.actions.adjustScore({
+        roundId: currentRoundId,
+        menuItemId,
+        adjustment,
+      }),
+    );
+  };
 
   return (
     <Screen>
@@ -43,7 +83,7 @@ const Component = () => {
                 <Player
                   key={id}
                   name={name}
-                  score={totalScoresMap?.[id] || 0}
+                  score={totalScore}
                   color={color}
                   selected={true}
                 />
@@ -52,7 +92,30 @@ const Component = () => {
           </View>
 
           <Body showsVerticalScrollIndicator={false}>
-            <Round data={rounds} testID="Round" />
+            <Rounds data={rounds} testID="Round" onChange={onRoundChange} />
+            {menuItems.map(({id: menuItemId, name}) => {
+              const score = scoresMap?.[roundId]?.[menuItemId] || 0;
+              return (
+                <MenuItem
+                  key={menuItemId}
+                  title={`${name} (${score})`}
+                  right={() => (
+                    <Buttons>
+                      <IconButton
+                        testID={`${menuItemId}.AddButton`}
+                        icon="plus"
+                        onPress={() => onAdjustScore(menuItemId, roundId, +1)}
+                      />
+                      <IconButton
+                        testID={`${menuItemId}.MinusButton`}
+                        icon="minus"
+                        onPress={() => onAdjustScore(menuItemId, roundId, -1)}
+                      />
+                    </Buttons>
+                  )}
+                />
+              );
+            })}
           </Body>
         </>
       )}
@@ -96,4 +159,15 @@ const Players = styled.ScrollView`
 
 const Body = styled.ScrollView`
   flex: 1;
+`;
+
+const MenuItem = styled(List.Item)`
+  padding-left: 16px;
+  padding-right: 24px;
+`;
+
+const Buttons = styled.View`
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
 `;

@@ -95,7 +95,7 @@ describe('Play Screen', () => {
     await act(async () => {});
 
     expect(queryByTestId('StartButton')).toBeNull();
-    expect(getByText('Round 1')).toBeDefined();
+    expect(getByText('Round 1 (0)')).toBeDefined();
     expect(getByTestId('Round.NextButton')).toBeDefined();
     expect(queryByTestId('Round.PreviousButton')).toBeNull();
   });
@@ -135,17 +135,69 @@ describe('Play Screen', () => {
     await act(async () => {
       fireEvent.press(getByTestId('Round.NextButton'));
     });
-    expect(getByText('Round 2')).toBeDefined();
+    expect(getByText('Round 2 (0)')).toBeDefined();
 
     await act(async () => {
       fireEvent.press(getByTestId('Round.NextButton'));
     });
-    expect(getByText('Round 3')).toBeDefined();
+    expect(getByText('Round 3 (0)')).toBeDefined();
     expect(queryByTestId('Round.NextButton')).toBeNull();
 
     await act(async () => {
       fireEvent.press(getByTestId('Round.PreviousButton'));
     });
-    expect(getByText('Round 2')).toBeDefined();
+    expect(getByText('Round 2 (0)')).toBeDefined();
+  });
+
+  it(`Scenario: Adjust Score
+      Given that there is a game
+      And I am at Play Screen
+      When I press the 'WASABI Add Button'
+      And I press the 'WASABI Add Button'
+      Then I should see 'Round 1 (2)'
+      And I should see 'WASABI (2)'
+      When I press the 'WASABI Minus Button'
+      Then I should see 'Round 1 (1)'
+      And I should see 'WASABI (1)'
+      When I press the 'Next Round Button'
+      Then I should see 'Round 2 (0)'
+      And I should see 'WASABI (0)'`, async () => {
+    store.dispatch(
+      playSlice.actions.setMenuItemsMap({
+        edamame: true,
+        onigiri: true,
+        pudding: true,
+        soySauce: true,
+        temaki: true,
+        tempura: true,
+        wasabi: true,
+      }),
+    );
+
+    store.dispatch(
+      playSlice.actions.setPlayersMap({
+        John: true,
+      }),
+    );
+
+    const {getByText, getByTestId} = render(
+      <App component={PlayScreen.Component} options={PlayScreen.options} />,
+    );
+
+    await act(async () => {
+      fireEvent.press(getByTestId('wasabi.AddButton'));
+      fireEvent.press(getByTestId('wasabi.AddButton'));
+    });
+    expect(getByText('Round 1 (2)')).toBeDefined();
+
+    await act(async () => {
+      fireEvent.press(getByTestId('wasabi.MinusButton'));
+    });
+    expect(getByText('Round 1 (1)')).toBeDefined();
+
+    await act(async () => {
+      fireEvent.press(getByTestId('Round.NextButton'));
+    });
+    expect(getByText('Round 2 (0)')).toBeDefined();
   });
 });
