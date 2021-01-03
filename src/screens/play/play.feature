@@ -43,3 +43,9 @@ Feature: Play Screen
     When I press the 'Next Round Button'
     Then I should see 'Round 2 (0)'
     And I should see 'WASABI (0)'
+
+  Scenario: Reset Button
+    Given that there is a game
+    And I am at Play Screen
+    When I press the 'Reset Button'
+    Then I should see 'Start Button'
