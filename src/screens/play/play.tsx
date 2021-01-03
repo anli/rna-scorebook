@@ -9,6 +9,7 @@ import {Appbar, FAB} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import Player from './player';
+import Round from './round';
 
 const Component = () => {
   const navigation = useNavigation();
@@ -26,6 +27,7 @@ const Component = () => {
     name: playerName,
     color: 'white',
   }));
+  const rounds = ['Round 1', 'Round 2', 'Round 3'];
 
   return (
     <Screen>
@@ -48,6 +50,10 @@ const Component = () => {
               ))}
             </Players>
           </View>
+
+          <Body showsVerticalScrollIndicator={false}>
+            <Round data={rounds} testID="Round" />
+          </Body>
         </>
       )}
       {!hasGame && (
@@ -86,4 +92,8 @@ const AppBarHeader = styled(Appbar.Header)`
 
 const Players = styled.ScrollView`
   padding-left: 12px;
+`;
+
+const Body = styled.ScrollView`
+  flex: 1;
 `;
