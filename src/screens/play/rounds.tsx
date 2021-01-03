@@ -2,12 +2,14 @@ import React, {useState} from 'react';
 import {Headline, IconButton} from 'react-native-paper';
 import styled from 'styled-components/native';
 
+type Item = {id: string; name: string; score: number};
 interface Props {
-  data: string[];
+  data: Item[];
   testID: string;
+  onChange: (item: Item) => any;
 }
 
-const Round = ({data, testID}: Props) => {
+const Rounds = ({data, testID, onChange}: Props) => {
   const [index, setIndex] = useState<number>(0);
 
   const showBack = index !== 0;
@@ -15,6 +17,7 @@ const Round = ({data, testID}: Props) => {
 
   const changeIndex = (newIndex: number) => {
     setIndex(newIndex);
+    onChange(data[newIndex]);
   };
 
   const onBack = () => {
@@ -27,7 +30,7 @@ const Round = ({data, testID}: Props) => {
 
   return (
     <Container>
-      <Headline>{data[index]}</Headline>
+      <Headline>{`${data[index].name} (${data[index].score})`}</Headline>
       <Buttons>
         {showBack && (
           <IconButton
@@ -48,7 +51,7 @@ const Round = ({data, testID}: Props) => {
   );
 };
 
-export default Round;
+export default Rounds;
 
 const Container = styled.View`
   padding: 0px 24px 0px 24px;

@@ -29,3 +29,17 @@ Feature: Play Screen
     And I should not see 'Next Round Button'
     When I press the 'Previous Round Button'
     Then I should see 'Round 2'
+
+  Scenario: Adjust Score
+    Given that there is a game
+    And I am at Play Screen
+    When I press the 'WASABI Add Button'
+    And I press the 'WASABI Add Button'
+    Then I should see 'Round 1 (2)'
+    And I should see 'WASABI (2)'
+    When I press the 'WASABI Minus Button'
+    Then I should see 'Round 1 (1)'
+    And I should see 'WASABI (1)'
+    When I press the 'Next Round Button'
+    Then I should see 'Round 2 (0)'
+    And I should see 'WASABI (0)'
