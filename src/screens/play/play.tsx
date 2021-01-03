@@ -69,12 +69,21 @@ const Component = () => {
     );
   };
 
+  const onReset = () => {
+    store.dispatch(playSlice.actions.reset());
+  };
+
   return (
     <Screen>
       {hasGame && (
         <>
           <AppBarHeader>
             <Appbar.Content title="Sushi Go Party!" />
+            <Appbar.Action
+              testID="ResetButton"
+              icon="undo-variant"
+              onPress={onReset}
+            />
           </AppBarHeader>
 
           <View>

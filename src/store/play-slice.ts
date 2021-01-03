@@ -126,13 +126,15 @@ const allMenuItems = [
   },
 ];
 
+const initialState = {
+  playersMap: {},
+  menuItemsMap: {},
+  scoresMap: {},
+};
+
 const playSlice = createSlice({
   name: 'play',
-  initialState: {
-    playersMap: {},
-    menuItemsMap: {},
-    scoresMap: {},
-  },
+  initialState,
   reducers: {
     setPlayersMap: (state: State, action: PayloadAction<PlayersMap>) => {
       state.playersMap = action.payload;
@@ -158,6 +160,11 @@ const playSlice = createSlice({
           [menuItemId]: newValue,
         },
       };
+    },
+    reset: (state: State) => {
+      state.playersMap = {};
+      state.menuItemsMap = {};
+      state.scoresMap = {};
     },
   },
 });

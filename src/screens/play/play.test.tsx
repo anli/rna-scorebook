@@ -200,4 +200,31 @@ describe('Play Screen', () => {
     });
     expect(getByText('Round 2 (0)')).toBeDefined();
   });
+
+  it(`Scenario: Reset Button
+      Given that there is a game
+      And I am at Play Screen
+      When I press the 'Reset Button'
+      Then I should see 'Start Button'`, async () => {
+    store.dispatch(
+      playSlice.actions.setMenuItemsMap({
+        edamame: true,
+        onigiri: true,
+        pudding: true,
+        soySauce: true,
+        temaki: true,
+        tempura: true,
+        wasabi: true,
+      }),
+    );
+
+    const {getByTestId} = render(
+      <App component={PlayScreen.Component} options={PlayScreen.options} />,
+    );
+
+    await act(async () => {
+      fireEvent.press(getByTestId('ResetButton'));
+    });
+    expect(getByTestId('StartButton')).toBeDefined();
+  });
 });
