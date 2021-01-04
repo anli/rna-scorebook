@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "deploy": "fastlane android build",
     "cq": "cd src && codeclimate analyze -f html > code-quality.html && open code-quality.html && cd ..",
     "ci:test": "npm run lint && npm run test -- --coverage",
     "reset": "cd android && ./gradlew clean && cd .. && watchman watch-del-all && npm start -- --reset-cache",
