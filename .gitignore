@@ -66,3 +66,12 @@ coverage
 tmp
 
 code-quality.html
+
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/README.md
+fastlane/screenshots
+
+.env
+
+*/playstore.json
