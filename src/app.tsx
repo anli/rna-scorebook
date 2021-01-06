@@ -13,6 +13,8 @@ import {
 import store from '@store';
 import {colors} from '@theme';
 import React from 'react';
+import {StatusBar} from 'react-native';
+import {useDarkMode} from 'react-native-dynamic';
 import {
   DefaultTheme as PaperDefaultTheme,
   Provider as PaperProvider,
@@ -25,12 +27,19 @@ const theme = {
     ...PaperDefaultTheme.colors,
   },
 };
+
 const Stack = createStackNavigator();
 
 const App = () => {
+  const isDarkMode = useDarkMode();
+
   return (
     <ReduxProvider store={store}>
       <PaperProvider theme={theme}>
+        <StatusBar
+          backgroundColor={isDarkMode ? 'black' : 'white'}
+          barStyle={isDarkMode ? 'light-content' : 'light-content'}
+        />
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
