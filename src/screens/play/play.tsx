@@ -73,6 +73,10 @@ const Component = () => {
     store.dispatch(playSlice.actions.reset());
   };
 
+  const onAddPlayer = () => {
+    navigation.navigate('PlayerAddScreen', {mode: 'ADD_ONLY'});
+  };
+
   return (
     <Screen>
       {hasGame && (
@@ -97,6 +101,15 @@ const Component = () => {
                   selected={true}
                 />
               ))}
+              <Player
+                key="new-player"
+                name="Add"
+                score="+"
+                color="white"
+                selected={false}
+                onPress={onAddPlayer}
+                testID="AddPlayerButton"
+              />
             </Players>
           </View>
 

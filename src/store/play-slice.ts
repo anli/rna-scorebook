@@ -19,8 +19,18 @@ type State = {
 };
 
 const initialState = {
-  playersMap: {},
-  menuItemsMap: {},
+  playersMap: {
+    // 'Ba Zhang': true,
+  },
+  menuItemsMap: {
+    // edamame: true,
+    // onigiri: true,
+    // pudding: true,
+    // soySauce: true,
+    // temaki: true,
+    // tempura: true,
+    // wasabi: true,
+  },
   scoresMap: {},
 };
 
@@ -60,6 +70,9 @@ const playSlice = createSlice({
       state.playersMap = {};
       state.menuItemsMap = {};
       state.scoresMap = {};
+    },
+    addPlayer: (state: State, action: PayloadAction<string>) => {
+      state.playersMap[action.payload] = true;
     },
   },
 });

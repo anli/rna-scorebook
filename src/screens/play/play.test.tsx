@@ -227,4 +227,40 @@ describe('Play Screen', () => {
     });
     expect(getByTestId('StartButton')).toBeDefined();
   });
+
+  it(`Scenario: Add Player to existing play
+      Given that there is an existing play
+      And I am at Play Screen
+      When I press the 'Add Player Button'
+      Then I should see 'Player Add Screen'`, async () => {
+    store.dispatch(
+      playSlice.actions.setMenuItemsMap({
+        edamame: true,
+        onigiri: true,
+        pudding: true,
+        soySauce: true,
+        temaki: true,
+        tempura: true,
+        wasabi: true,
+      }),
+    );
+    store.dispatch(
+      playSlice.actions.setPlayersMap({
+        John: true,
+      }),
+    );
+
+    const {getByTestId} = render(
+      <App component={PlayScreen.Component} options={PlayScreen.options} />,
+    );
+
+    expect(getByTestId('AddPlayerButton')).toBeDefined();
+    await act(async () => {
+      fireEvent.press(getByTestId('AddPlayerButton'));
+    });
+    expect(mockedNavigate).toHaveBeenCalledTimes(1);
+    expect(mockedNavigate).toBeCalledWith('PlayerAddScreen', {
+      mode: 'ADD_ONLY',
+    });
+  });
 });

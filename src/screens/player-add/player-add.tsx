@@ -1,6 +1,7 @@
 import {Header} from '@components';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
+import store, {playSlice} from '@store';
 import {colors} from '@theme';
 import React from 'react';
 import {Controller, useForm} from 'react-hook-form';
@@ -14,13 +15,20 @@ type FormData = {
 const Component = () => {
   const navigation = useNavigation();
   const {control, handleSubmit, errors} = useForm<FormData>();
+  const {params}: {params: {mode: string}} = useRoute<any>();
+  const isAddOnlyMode = params?.mode === 'ADD_ONLY';
 
   const back = () => {
     navigation.canGoBack() && navigation.goBack();
   };
 
   const next = ({playerName}: FormData) => {
-    navigation.navigate('MenuAddScreen', {playerName});
+    if (isAddOnlyMode) {
+      store.dispatch(playSlice.actions.addPlayer(playerName));
+      return back();
+    }
+
+    return navigation.navigate('MenuAddScreen', {playerName});
   };
 
   return (

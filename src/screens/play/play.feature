@@ -49,3 +49,9 @@ Feature: Play Screen
     And I am at Play Screen
     When I press the 'Reset Button'
     Then I should see 'Start Button'
+
+  Scenario: Add Player to existing play
+    Given that there is an existing play
+    And I am at Play Screen
+    When I press the 'Add Player Button'
+    Then I should see 'Player Add Screen'
