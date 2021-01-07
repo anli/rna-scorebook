@@ -81,6 +81,7 @@ const itemGroupMap: {[key: string]: string} = {
   spoon: 'specials',
   chopsticks: 'specials',
   takeoutBox: 'specials',
+  tea: 'specials',
   specialOrder: 'specials',
   menu: 'specials',
   onigiri: 'appetizers',
@@ -108,6 +109,7 @@ const specialsMap = {
   spoon: 'SPOON',
   chopsticks: 'CHOPSTICKS',
   takeoutBox: 'TAKEOUT BOX',
+  tea: 'TEA',
   specialOrder: 'SPECIAL ORDER',
   menu: 'MENU',
 };

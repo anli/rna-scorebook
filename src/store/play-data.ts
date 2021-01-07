@@ -55,6 +55,11 @@ export const allMenuItems = [
     typeId: 'specials',
   },
   {
+    id: 'tea',
+    name: 'TEA',
+    typeId: 'specials',
+  },
+  {
     id: 'specialOrder',
     name: 'SPECIAL ORDER',
     typeId: 'specials',
