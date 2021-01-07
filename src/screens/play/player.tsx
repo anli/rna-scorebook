@@ -5,17 +5,21 @@ import styled from 'styled-components/native';
 
 const Player = ({
   name,
-  score,
+  score = 0,
   color,
   selected,
+  onPress,
+  testID,
 }: {
   name: string;
-  score: string | number;
+  score?: string | number;
   color: string;
   selected: boolean;
+  onPress?: () => any;
+  testID?: string;
 }) => {
   return (
-    <Container>
+    <Container testID={testID} onPress={onPress}>
       <AvatarPlayer
         size={64}
         label={String(score)}
@@ -29,7 +33,7 @@ const Player = ({
 
 export default Player;
 
-const Container = styled.View`
+const Container = styled.TouchableOpacity`
   padding: 12px 12px 12px 12px;
 `;
 
@@ -38,7 +42,8 @@ const AvatarPlayer = styled(Avatar.Text)<{
   selected: boolean;
 }>`
   border-width: 4px;
-  border-color: ${colors.primary};
+  border-color: ${(props) =>
+    props.selected ? colors.primary : props.backgroundColor};
   background-color: ${(props) => props.backgroundColor};
 `;
 

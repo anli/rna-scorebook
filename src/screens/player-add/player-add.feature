@@ -24,3 +24,13 @@ Feature: Player Add Screen
     Given that I am at Player Add Screen
     When I press 'Next Button'
     Then I should see 'Error Message' 'Please enter your name first'
+
+  Scenario: Add player to existing play
+    Given that I have an existing play
+    And I am at 'Play Screen'
+    And I press 'Player Add Button'
+    When I am at 'Player Add Screen'
+    And I enter 'Mary' to 'Name Input'
+    And I press 'Next Button'
+    Then I should see 'Play Screen'
+    And I should see 'Mary'

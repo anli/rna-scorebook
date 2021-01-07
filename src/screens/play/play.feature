@@ -49,3 +49,20 @@ Feature: Play Screen
     And I am at Play Screen
     When I press the 'Reset Button'
     Then I should see 'Start Button'
+
+  Scenario: Add Player to existing play
+    Given that there is an existing play
+    And I am at Play Screen
+    When I press the 'Add Player Button'
+    Then I should see 'Player Add Screen'
+
+  Scenario: Select another existing player
+    Given that there is an existing play
+    And that there is two players, 'John' 'Mary'
+    And that score of round1 'John' is 1
+    And that score of round1 'Mary' is 0
+    And that player selected is 'John'
+    And I am at Play Screen
+    When I press the 'Mary Player Button'
+    And that player selected is 'Mary'
+    And that round score is 0

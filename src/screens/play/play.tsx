@@ -15,10 +15,16 @@ const Component = () => {
   const navigation = useNavigation();
   const menuItems = useSelector(PlaySelectors.menuItems);
   const playersMap = useSelector(PlaySelectors.playersMap);
-  const totalScore = useSelector(PlaySelectors.totalScore);
+  const totalScoreMap: {[key: string]: number} = useSelector(
+    PlaySelectors.totalScoreMap,
+  );
   const scoresMap = useSelector(PlaySelectors.scoresMap);
-  const roundsTotalScoreMap = useSelector(PlaySelectors.roundsTotalScoreMap);
+  const roundsTotalScoreMap: {[key: string]: any} = useSelector(
+    PlaySelectors.roundsTotalScoreMap,
+  );
 
+  const defaultFirstPlayer = R.head(Object.keys(playersMap)) as string;
+  const [selectedPlayer, setSelectedPlayer] = useState(defaultFirstPlayer);
   const [roundId, setRoundId] = useState<string>('roundOne');
 
   const start = () => {
@@ -36,17 +42,17 @@ const Component = () => {
     {
       id: 'roundOne',
       name: 'Round 1',
-      score: roundsTotalScoreMap?.['roundOne'] || 0,
+      score: roundsTotalScoreMap?.[selectedPlayer]?.['roundOne'] || 0,
     },
     {
       id: 'roundTwo',
       name: 'Round 2',
-      score: roundsTotalScoreMap?.['roundTwo'] || 0,
+      score: roundsTotalScoreMap?.[selectedPlayer]?.['roundTwo'] || 0,
     },
     {
       id: 'roundThree',
       name: 'Round 3',
-      score: roundsTotalScoreMap?.['roundThree'] || 0,
+      score: roundsTotalScoreMap?.[selectedPlayer]?.['roundThree'] || 0,
     },
   ];
   roundsTotalScoreMap;
@@ -59,18 +65,28 @@ const Component = () => {
     menuItemId: string,
     currentRoundId: string,
     adjustment: number,
+    player: string,
   ) => {
     store.dispatch(
       playSlice.actions.adjustScore({
         roundId: currentRoundId,
         menuItemId,
         adjustment,
+        player,
       }),
     );
   };
 
   const onReset = () => {
     store.dispatch(playSlice.actions.reset());
+  };
+
+  const onAddPlayer = () => {
+    navigation.navigate('PlayerAddScreen', {mode: 'ADD_ONLY'});
+  };
+
+  const onSelectPlayer = (id: string) => {
+    setSelectedPlayer(id);
   };
 
   return (
@@ -92,18 +108,30 @@ const Component = () => {
                 <Player
                   key={id}
                   name={name}
-                  score={totalScore}
+                  score={totalScoreMap?.[id]}
                   color={color}
-                  selected={true}
+                  selected={id === selectedPlayer}
+                  onPress={() => onSelectPlayer(id)}
+                  testID={`SelectPlayerButton.${id}`}
                 />
               ))}
+              <Player
+                key="new-player"
+                name="Add"
+                score="+"
+                color="white"
+                selected={false}
+                onPress={onAddPlayer}
+                testID="AddPlayerButton"
+              />
             </Players>
           </View>
 
           <Body showsVerticalScrollIndicator={false}>
             <Rounds data={rounds} testID="Round" onChange={onRoundChange} />
             {menuItems.map(({id: menuItemId, name}) => {
-              const score = scoresMap?.[roundId]?.[menuItemId] || 0;
+              const score =
+                scoresMap?.[selectedPlayer]?.[roundId]?.[menuItemId] || 0;
               return (
                 <MenuItem
                   key={menuItemId}
@@ -113,12 +141,16 @@ const Component = () => {
                       <IconButton
                         testID={`${menuItemId}.AddButton`}
                         icon="plus"
-                        onPress={() => onAdjustScore(menuItemId, roundId, +1)}
+                        onPress={() =>
+                          onAdjustScore(menuItemId, roundId, +1, selectedPlayer)
+                        }
                       />
                       <IconButton
                         testID={`${menuItemId}.MinusButton`}
                         icon="minus"
-                        onPress={() => onAdjustScore(menuItemId, roundId, -1)}
+                        onPress={() =>
+                          onAdjustScore(menuItemId, roundId, -1, selectedPlayer)
+                        }
                       />
                     </Buttons>
                   )}

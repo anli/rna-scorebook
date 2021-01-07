@@ -1,5 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import store from '@store';
 import {act, fireEvent, render} from '@testing-library/react-native';
 import React from 'react';
 import PlayerAddScreen from './player-add';
@@ -18,13 +19,18 @@ jest.mock('@react-navigation/native', () => {
   };
 });
 
-const App = ({component, options}: any) => {
+const App = ({component, options, initialParams = {}}: any) => {
   const Stack = createStackNavigator();
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="App" component={component} options={options} />
+        <Stack.Screen
+          name="App"
+          component={component}
+          options={options}
+          initialParams={initialParams}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -113,5 +119,35 @@ describe('Player Add Screen', () => {
 
     expect(mockNavigate).toHaveBeenCalledTimes(0);
     expect(getByText('Please enter your name first')).toBeDefined();
+  });
+
+  it(`Scenario: Add player to existing play
+      Given that I have an existing play
+      And I am at 'Play Screen'
+      And I press 'Player Add Button'
+      When I am at 'Player Add Screen'
+      And I enter 'Mary' to 'Name Input'
+      And I press 'Next Button'
+      Then I should see 'Play Screen'
+      And I should see 'Mary'`, async () => {
+    const spyDispatch = jest.spyOn(store, 'dispatch');
+    const {getByTestId} = render(
+      <App
+        component={PlayerAddScreen.Component}
+        options={PlayerAddScreen.options}
+        initialParams={{mode: 'ADD_ONLY'}}
+      />,
+    );
+
+    fireEvent(getByTestId('NameInput'), 'onChangeText', 'Mary');
+    await act(async () => {
+      fireEvent.press(getByTestId('NextButton'));
+    });
+    expect(mockGoBack).toHaveBeenCalledTimes(1);
+    expect(spyDispatch).toHaveBeenCalledTimes(1);
+    expect(spyDispatch).toHaveBeenCalledWith({
+      payload: 'Mary',
+      type: 'play/addPlayer',
+    });
   });
 });
