@@ -10,7 +10,7 @@ import {
   PlayScreen,
   SettingScreen,
 } from '@screens';
-import store from '@store';
+import store, {persistor} from '@store';
 import {colors} from '@theme';
 import React from 'react';
 import {StatusBar} from 'react-native';
@@ -21,6 +21,8 @@ import {
 } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Provider as ReduxProvider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
+
 const theme = {
   ...PaperDefaultTheme,
   colors: {
@@ -35,31 +37,33 @@ const App = () => {
 
   return (
     <ReduxProvider store={store}>
-      <PaperProvider theme={theme}>
-        <StatusBar
-          backgroundColor={isDarkMode ? 'black' : 'white'}
-          barStyle={isDarkMode ? 'light-content' : 'light-content'}
-        />
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen
-              name="BottomTab"
-              component={BottomTab.Component}
-              options={BottomTab.options}
-            />
-            <Stack.Screen
-              name="PlayerAddScreen"
-              component={PlayerAddScreen.Component}
-              options={PlayerAddScreen.options}
-            />
-            <Stack.Screen
-              name="MenuAddScreen"
-              component={MenuAddScreen.Component}
-              options={MenuAddScreen.options}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </PaperProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <PaperProvider theme={theme}>
+          <StatusBar
+            backgroundColor={isDarkMode ? 'black' : 'white'}
+            barStyle={isDarkMode ? 'light-content' : 'light-content'}
+          />
+          <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen
+                name="BottomTab"
+                component={BottomTab.Component}
+                options={BottomTab.options}
+              />
+              <Stack.Screen
+                name="PlayerAddScreen"
+                component={PlayerAddScreen.Component}
+                options={PlayerAddScreen.options}
+              />
+              <Stack.Screen
+                name="MenuAddScreen"
+                component={MenuAddScreen.Component}
+                options={MenuAddScreen.options}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </PaperProvider>
+      </PersistGate>
     </ReduxProvider>
   );
 };

@@ -1,3 +1,4 @@
+import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock';
 import mockRNDeviceInfo from 'react-native-device-info/jest/react-native-device-info-mock';
 import 'react-native-gesture-handler/jestSetup';
 
@@ -20,3 +21,6 @@ jest.mock('react-native-device-info', () => mockRNDeviceInfo);
 // https://react-hook-form.com/advanced-usage#TestingForm
 global.window = {};
 global.window = global;
+
+// https://react-native-async-storage.github.io/async-storage/docs/advanced/jest/
+jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
