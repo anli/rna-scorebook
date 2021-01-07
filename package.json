@@ -14,6 +14,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.13.2",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/bottom-tabs": "^5.11.2",
     "@react-navigation/native": "^5.8.10",
@@ -32,6 +33,7 @@
     "react-native-screens": "^2.16.1",
     "react-native-vector-icons": "^7.1.0",
     "react-redux": "^7.2.2",
+    "redux-persist": "^6.0.0",
     "styled-components": "^5.2.1",
     "wait-for-expect": "^3.0.2"
   },
@@ -67,7 +69,7 @@
       "\\.(css|less)$": "<rootDir>/__mocks__/style.js"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?react-native|@?react-navigation|@?react-native-community)"
+      "node_modules/(?!(jest-)?react-native|@?react-navigation|@?react-native-community|redux-persist)"
     ],
     "setupFiles": [
       "<rootDir>/jest/setup.js"

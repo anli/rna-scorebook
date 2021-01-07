@@ -19,19 +19,8 @@ type State = {
 };
 
 const initialState = {
-  playersMap: {
-    // 'Ba Zhang': true,
-    // Mocha: true,
-  },
-  menuItemsMap: {
-    // edamame: true,
-    // onigiri: true,
-    // pudding: true,
-    // soySauce: true,
-    // temaki: true,
-    // tempura: true,
-    // wasabi: true,
-  },
+  playersMap: {},
+  menuItemsMap: {},
   scoresMap: {},
 };
 
