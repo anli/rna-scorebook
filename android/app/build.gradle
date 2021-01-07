@@ -132,7 +132,7 @@ android {
         applicationId "io.anli.scorebook"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 19
+        versionCode 21
         versionName "0.2.0"
     }
     splits {

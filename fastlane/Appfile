@@ -1,2 +1,2 @@
 json_key_file("certs/playstore.json")
-package_name("io.anli.scoreboard") # e.g. com.krausefx.app
+package_name("io.anli.scorebook") # e.g. com.krausefx.app
