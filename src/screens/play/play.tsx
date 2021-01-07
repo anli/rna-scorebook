@@ -3,7 +3,7 @@ import {StackNavigationOptions} from '@react-navigation/stack';
 import store, {PlaySelectors, playSlice} from '@store';
 import {colors} from '@theme';
 import R from 'ramda';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Appbar, FAB, IconButton, List} from 'react-native-paper';
 import {useSelector} from 'react-redux';
@@ -23,9 +23,15 @@ const Component = () => {
     PlaySelectors.roundsTotalScoreMap,
   );
 
-  const defaultFirstPlayer = R.head(Object.keys(playersMap)) as string;
-  const [selectedPlayer, setSelectedPlayer] = useState(defaultFirstPlayer);
+  const [selectedPlayer, setSelectedPlayer] = useState({});
   const [roundId, setRoundId] = useState<string>('roundOne');
+
+  useEffect(() => {
+    const hasExactlyOnePlayer = Object.keys(playersMap).length === 1;
+    if (hasExactlyOnePlayer) {
+      setSelectedPlayer(R.head(Object.keys(playersMap)) as string);
+    }
+  }, [playersMap]);
 
   const start = () => {
     navigation.navigate('PlayerAddScreen');
@@ -104,6 +110,15 @@ const Component = () => {
 
           <View>
             <Players horizontal showsHorizontalScrollIndicator={false}>
+              <Player
+                key="new-player"
+                name="Add"
+                score="+"
+                color="white"
+                selected={false}
+                onPress={onAddPlayer}
+                testID="AddPlayerButton"
+              />
               {players.map(({id, name, color}) => (
                 <Player
                   key={id}
@@ -115,15 +130,6 @@ const Component = () => {
                   testID={`SelectPlayerButton.${id}`}
                 />
               ))}
-              <Player
-                key="new-player"
-                name="Add"
-                score="+"
-                color="white"
-                selected={false}
-                onPress={onAddPlayer}
-                testID="AddPlayerButton"
-              />
             </Players>
           </View>
 
