@@ -5,14 +5,14 @@ import styled from 'styled-components/native';
 
 const Player = ({
   name,
-  score,
+  score = 0,
   color,
   selected,
   onPress,
   testID,
 }: {
   name: string;
-  score: string | number;
+  score?: string | number;
   color: string;
   selected: boolean;
   onPress?: () => any;

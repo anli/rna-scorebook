@@ -263,4 +263,49 @@ describe('Play Screen', () => {
       mode: 'ADD_ONLY',
     });
   });
+
+  it(`Scenario: Select another existing player
+      Given that there is an existing play
+      And that there is two players, 'John' 'Mary'
+      And that score of round1 'John' is 1
+      And that score of round1 'Mary' is 0
+      And that player selected is 'John'
+      And I am at Play Screen
+      When I press the 'Mary Player Button'
+      And that player selected is 'Mary'
+      And that round score is 0`, async () => {
+    store.dispatch(
+      playSlice.actions.setMenuItemsMap({
+        edamame: true,
+        onigiri: true,
+        pudding: true,
+        soySauce: true,
+        temaki: true,
+        tempura: true,
+        wasabi: true,
+      }),
+    );
+    store.dispatch(
+      playSlice.actions.setPlayersMap({
+        John: true,
+        Mary: true,
+      }),
+    );
+
+    const {getByTestId, getByText} = render(
+      <App component={PlayScreen.Component} options={PlayScreen.options} />,
+    );
+
+    expect(getByText('Round 1 (0)')).toBeDefined();
+    await act(async () => {
+      fireEvent.press(getByTestId('wasabi.AddButton'));
+    });
+    expect(getByText('Round 1 (1)')).toBeDefined();
+
+    expect(getByTestId('SelectPlayerButton.Mary')).toBeDefined();
+    await act(async () => {
+      fireEvent.press(getByTestId('SelectPlayerButton.Mary'));
+    });
+    expect(getByText('Round 1 (0)')).toBeDefined();
+  });
 });

@@ -10,7 +10,7 @@ import {RootState} from './store';
 type PlayersMap = {[key: string]: boolean};
 type MenuItemsMap = {[key: string]: boolean};
 type ScoresMap = {
-  [key: string]: {[key: string]: number};
+  [key: string]: {[key: string]: {[key: string]: number}};
 };
 type State = {
   playersMap: PlayersMap;
@@ -21,6 +21,7 @@ type State = {
 const initialState = {
   playersMap: {
     // 'Ba Zhang': true,
+    // Mocha: true,
   },
   menuItemsMap: {
     // edamame: true,
@@ -50,21 +51,27 @@ const playSlice = createSlice({
     adjustScore: (
       state: State,
       action: PayloadAction<{
+        player: string;
         roundId: string;
         menuItemId: string;
         adjustment: number;
       }>,
     ) => {
-      const {roundId, menuItemId, adjustment} = action.payload;
+      const {roundId, menuItemId, adjustment, player} = action.payload;
       const newValue =
-        (state.scoresMap?.[roundId]?.[menuItemId] || 0) + adjustment;
-      state.scoresMap = {
+        (state.scoresMap?.[player]?.[roundId]?.[menuItemId] || 0) + adjustment;
+
+      const newState = {
         ...state.scoresMap,
-        [roundId]: {
-          ...(state.scoresMap?.[roundId] || {}),
-          [menuItemId]: newValue,
+        [player]: {
+          ...state.scoresMap?.[player],
+          [roundId]: {
+            ...state.scoresMap?.[player]?.[roundId],
+            [menuItemId]: newValue,
+          },
         },
       };
+      state.scoresMap = newState;
     },
     reset: (state: State) => {
       state.playersMap = {};
@@ -86,15 +93,23 @@ export class PlaySelectors {
     selectSelf,
     (state: State) => state.playersMap,
   );
-  static totalScore = createDraftSafeSelector(
+  static totalScoreMap = createDraftSafeSelector(
     (state: RootState) => state.play.scoresMap,
     (scoresMap: ScoresMap) => {
       return Object.entries(scoresMap).reduce(
-        (oldTotal, [_, roundMenuItemScoresMap]) => {
-          const roundTotalScore = R.sum(Object.values(roundMenuItemScoresMap));
-          return oldTotal + roundTotalScore;
+        (playersTotalScoreMap, [player, playerScoresMap]) => {
+          const playerScore = Object.entries(playerScoresMap).reduce(
+            (oldTotal, [_, roundMenuItemScoresMap]) => {
+              const roundTotalScore = R.sum(
+                Object.values(roundMenuItemScoresMap),
+              );
+              return oldTotal + roundTotalScore;
+            },
+            0,
+          );
+          return {...playersTotalScoreMap, [player]: playerScore};
         },
-        0,
+        {},
       );
     },
   );
@@ -111,14 +126,20 @@ export class PlaySelectors {
     (state: RootState) => state.play.scoresMap,
     (scoresMap: ScoresMap) => {
       return Object.entries(scoresMap).reduce(
-        (oldRoundScore, [roundId, roundMenuItemScoresMap]) => {
-          return {
-            ...oldRoundScore,
-            [roundId]: R.sum(Object.values(roundMenuItemScoresMap)),
-          };
+        (playersTotalScoreMap, [player, playerScoresMap]) => {
+          const playerScore = Object.entries(playerScoresMap).reduce(
+            (oldRoundScore, [roundId, roundMenuItemScoresMap]) => {
+              return {
+                ...oldRoundScore,
+                [roundId]: R.sum(Object.values(roundMenuItemScoresMap)),
+              };
+            },
+            {},
+          ) as any;
+          return {...playersTotalScoreMap, [player]: playerScore};
         },
         {},
-      ) as any;
+      );
     },
   );
 }
