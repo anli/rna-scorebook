@@ -186,21 +186,31 @@ const Component = () => {
               return (
                 <MenuItem
                   key={menuItemId}
-                  title={`${name} (${score})`}
+                  title={`${name} (${score} pts)`}
                   right={() => (
                     <Buttons>
                       <IconButton
                         testID={`${menuItemId}.MinusButton`}
                         icon="minus"
                         onPress={() =>
-                          onAdjustScore(menuItemId, roundId, -1, selectedPlayer)
+                          onAdjustScore(
+                            menuItemId,
+                            roundId,
+                            -getIncrement(menuItemId),
+                            selectedPlayer,
+                          )
                         }
                       />
                       <IconButton
                         testID={`${menuItemId}.AddButton`}
                         icon="plus"
                         onPress={() =>
-                          onAdjustScore(menuItemId, roundId, +1, selectedPlayer)
+                          onAdjustScore(
+                            menuItemId,
+                            roundId,
+                            +getIncrement(menuItemId),
+                            selectedPlayer,
+                          )
                         }
                       />
                     </Buttons>
@@ -268,3 +278,15 @@ const SelectedPlayer = styled(List.Item)`
   padding-left: 16px;
   padding-right: 24px;
 `;
+
+const menuItemsIncrementMap: {[key: string]: number} = {
+  eggNigiri: 1,
+  salmonNigiri: 2,
+  squidNigiri: 3,
+  sashimi: 10,
+  tempura: 5,
+};
+
+const getIncrement = (menuItemId: string) => {
+  return menuItemsIncrementMap?.[menuItemId] || 1;
+};
