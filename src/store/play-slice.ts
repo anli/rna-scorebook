@@ -16,6 +16,7 @@ type State = {
   playersMap: PlayersMap;
   menuItemsMap: MenuItemsMap;
   scoresMap: ScoresMap;
+  selectedPlayer?: string;
 };
 
 const initialState = {
@@ -69,6 +70,9 @@ const playSlice = createSlice({
     },
     addPlayer: (state: State, action: PayloadAction<string>) => {
       state.playersMap[action.payload] = true;
+    },
+    selectPlayer: (state: State, action: PayloadAction<string>) => {
+      state.selectedPlayer = action.payload;
     },
   },
 });
@@ -130,5 +134,9 @@ export class PlaySelectors {
         {},
       );
     },
+  );
+  static selectedPlayer = createDraftSafeSelector(
+    selectSelf,
+    (state: State) => state.selectedPlayer || '',
   );
 }

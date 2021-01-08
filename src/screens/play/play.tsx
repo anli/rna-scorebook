@@ -22,14 +22,18 @@ const Component = () => {
   const roundsTotalScoreMap: {[key: string]: any} = useSelector(
     PlaySelectors.roundsTotalScoreMap,
   );
-
-  const [selectedPlayer, setSelectedPlayer] = useState({});
+  const selectedPlayer = useSelector(PlaySelectors.selectedPlayer);
   const [roundId, setRoundId] = useState<string>('roundOne');
 
   useEffect(() => {
     const hasExactlyOnePlayer = Object.keys(playersMap).length === 1;
     if (hasExactlyOnePlayer) {
-      setSelectedPlayer(R.head(Object.keys(playersMap)) as string);
+      store.dispatch(
+        playSlice.actions.selectPlayer(
+          R.head(Object.keys(playersMap)) as string,
+        ),
+      );
+      return;
     }
   }, [playersMap]);
 
@@ -98,7 +102,7 @@ const Component = () => {
   };
 
   const onSelectPlayer = (id: string) => {
-    setSelectedPlayer(id);
+    store.dispatch(playSlice.actions.selectPlayer(id));
   };
 
   return (
