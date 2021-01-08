@@ -3,6 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import store, {playSlice} from '@store';
 import {act, fireEvent, render} from '@testing-library/react-native';
 import React from 'react';
+import {Alert} from 'react-native';
 import {Provider as ReduxProvider} from 'react-redux';
 import PlayScreen from './play';
 
@@ -205,7 +206,14 @@ describe('Play Screen', () => {
       Given that there is a game
       And I am at Play Screen
       When I press the 'Reset Button'
+      And I see 'Alert'
+      And I press 'Cancel'
+      And I press the 'Reset Button'
+      And I see 'Alert'
+      And I press 'OK'
       Then I should see 'Start Button'`, async () => {
+    const alertSpy = jest.spyOn(Alert, 'alert');
+
     store.dispatch(
       playSlice.actions.setMenuItemsMap({
         edamame: true,
@@ -225,6 +233,22 @@ describe('Play Screen', () => {
     await act(async () => {
       fireEvent.press(getByTestId('ResetButton'));
     });
+
+    expect(alertSpy).toHaveBeenCalled();
+    await act(async () => {
+      alertSpy.mock.calls[0][2]?.[0].onPress &&
+        alertSpy.mock.calls[0][2]?.[0].onPress();
+    });
+
+    await act(async () => {
+      fireEvent.press(getByTestId('ResetButton'));
+    });
+    await act(async () => {
+      alertSpy.mock.calls[0][2]?.[1].onPress &&
+        alertSpy.mock.calls[0][2]?.[1].onPress();
+    });
+
+    expect(alertSpy).toHaveBeenCalled();
     expect(getByTestId('StartButton')).toBeDefined();
   });
 
