@@ -190,17 +190,17 @@ const Component = () => {
                   right={() => (
                     <Buttons>
                       <IconButton
-                        testID={`${menuItemId}.AddButton`}
-                        icon="plus"
-                        onPress={() =>
-                          onAdjustScore(menuItemId, roundId, +1, selectedPlayer)
-                        }
-                      />
-                      <IconButton
                         testID={`${menuItemId}.MinusButton`}
                         icon="minus"
                         onPress={() =>
                           onAdjustScore(menuItemId, roundId, -1, selectedPlayer)
+                        }
+                      />
+                      <IconButton
+                        testID={`${menuItemId}.AddButton`}
+                        icon="plus"
+                        onPress={() =>
+                          onAdjustScore(menuItemId, roundId, +1, selectedPlayer)
                         }
                       />
                     </Buttons>
