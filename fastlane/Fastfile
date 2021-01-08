@@ -48,6 +48,10 @@ platform :android do
       message: "chore(version): bump version to " + load_json(json_path: "package.json")["version"],
       skip_git_hooks: true
     )
+
+    add_git_tag(
+      tag: load_json(json_path: "package.json")["version"]
+    )
   end
 
 end
