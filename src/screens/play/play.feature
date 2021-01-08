@@ -71,3 +71,17 @@ Feature: Play Screen
     When I press the 'Mary Player Button'
     And that player selected is 'Mary'
     And that round score is 0
+
+  Scenario: Delete existing player
+    Given that there is an existing play
+    And that there is two players, 'John' 'Mary'
+    And I am at Play Screen
+    When I press the 'Mary Player Button'
+    And I press the 'Player Delete Button'
+    And I see 'Alert'
+    And I press 'Cancel'
+    And I press the 'Player Delete Button'
+    And I see 'Alert'
+    And I press 'OK'
+    Then I should see the player selected is 'John'
+    And I should not see 'Mary'
