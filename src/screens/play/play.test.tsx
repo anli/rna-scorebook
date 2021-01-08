@@ -156,16 +156,17 @@ describe('Play Screen', () => {
       When I press the 'WASABI Add Button'
       And I press the 'WASABI Add Button'
       Then I should see 'Round 1 (2)'
-      And I should see 'WASABI (2)'
       When I press the 'WASABI Minus Button'
       Then I should see 'Round 1 (1)'
-      And I should see 'WASABI (1)'
       When I press the 'Next Round Button'
       Then I should see 'Round 2 (0)'
-      And I should see 'WASABI (0)'`, async () => {
+      When I press the 'URAMAKI Add Button' 'x4'
+      Then I should see 'Round 2 (8)'
+      When I press the 'URAMAKI Minus Button' 'x4'
+      Then I should see 'Round 2 (0)'`, async () => {
     store.dispatch(
       playSlice.actions.setMenuItemsMap({
-        edamame: true,
+        uramaki: true,
         onigiri: true,
         pudding: true,
         soySauce: true,
@@ -199,6 +200,41 @@ describe('Play Screen', () => {
     await act(async () => {
       fireEvent.press(getByTestId('Round.NextButton'));
     });
+    expect(getByText('Round 2 (0)')).toBeDefined();
+
+    await act(async () => {
+      fireEvent.press(getByTestId('uramaki.AddButton'));
+    });
+
+    await act(async () => {
+      fireEvent.press(getByTestId('uramaki.AddButton'));
+    });
+
+    await act(async () => {
+      fireEvent.press(getByTestId('uramaki.AddButton'));
+    });
+
+    await act(async () => {
+      fireEvent.press(getByTestId('uramaki.AddButton'));
+    });
+    expect(getByText('Round 2 (8)')).toBeDefined();
+
+    await act(async () => {
+      fireEvent.press(getByTestId('uramaki.MinusButton'));
+    });
+
+    await act(async () => {
+      fireEvent.press(getByTestId('uramaki.MinusButton'));
+    });
+
+    await act(async () => {
+      fireEvent.press(getByTestId('uramaki.MinusButton'));
+    });
+
+    await act(async () => {
+      fireEvent.press(getByTestId('uramaki.MinusButton'));
+    });
+
     expect(getByText('Round 2 (0)')).toBeDefined();
   });
 
