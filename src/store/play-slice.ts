@@ -74,6 +74,9 @@ const playSlice = createSlice({
     selectPlayer: (state: State, action: PayloadAction<string>) => {
       state.selectedPlayer = action.payload;
     },
+    deletePlayer: (state: State, action: PayloadAction<string>) => {
+      state.playersMap = R.omit([action.payload], state.playersMap);
+    },
   },
 });
 

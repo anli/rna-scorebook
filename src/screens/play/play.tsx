@@ -93,7 +93,12 @@ const Component = () => {
         text: 'Cancel',
         style: 'cancel',
       },
-      {text: 'OK', onPress: () => store.dispatch(playSlice.actions.reset())},
+      {
+        text: 'OK',
+        onPress: () => {
+          store.dispatch(playSlice.actions.reset());
+        },
+      },
     ]);
   };
 
@@ -103,6 +108,23 @@ const Component = () => {
 
   const onSelectPlayer = (id: string) => {
     store.dispatch(playSlice.actions.selectPlayer(id));
+  };
+
+  const onDeleteSelectedPlayer = () => {
+    if (players.length > 1) {
+      return Alert.alert(`Remove ${selectedPlayer}?`, 'You cannot undo this.', [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () =>
+            store.dispatch(playSlice.actions.deletePlayer(selectedPlayer)),
+        },
+      ]);
+    }
+    return onReset();
   };
 
   return (
@@ -144,6 +166,19 @@ const Component = () => {
           </View>
 
           <Body showsVerticalScrollIndicator={false}>
+            <SelectedPlayer
+              testID="SelectedPlayer"
+              title={selectedPlayer}
+              right={() => (
+                <Buttons>
+                  <IconButton
+                    testID="SelectedPlayer.DeleteButton"
+                    icon="delete"
+                    onPress={onDeleteSelectedPlayer}
+                  />
+                </Buttons>
+              )}
+            />
             <Rounds data={rounds} testID="Round" onChange={onRoundChange} />
             {menuItems.map(({id: menuItemId, name}) => {
               const score =
@@ -227,4 +262,9 @@ const Buttons = styled.View`
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
+`;
+
+const SelectedPlayer = styled(List.Item)`
+  padding-left: 16px;
+  padding-right: 24px;
 `;
