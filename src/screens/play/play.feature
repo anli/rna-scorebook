@@ -48,6 +48,11 @@ Feature: Play Screen
     Given that there is a game
     And I am at Play Screen
     When I press the 'Reset Button'
+    And I see 'Alert'
+    And I press 'Cancel'
+    And I press the 'Reset Button'
+    And I see 'Alert'
+    And I press 'OK'
     Then I should see 'Start Button'
 
   Scenario: Add Player to existing play

@@ -4,7 +4,7 @@ import store, {PlaySelectors, playSlice} from '@store';
 import {colors} from '@theme';
 import R from 'ramda';
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {Alert, View} from 'react-native';
 import {Appbar, FAB, IconButton, List} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
@@ -84,7 +84,13 @@ const Component = () => {
   };
 
   const onReset = () => {
-    store.dispatch(playSlice.actions.reset());
+    Alert.alert('Start Over?', 'You cannot undo this.', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => store.dispatch(playSlice.actions.reset())},
+    ]);
   };
 
   const onAddPlayer = () => {
