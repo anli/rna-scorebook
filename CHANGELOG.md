@@ -1,3 +1,19 @@
+# [0.5.0](https://github.com/anli/rna-scorebook/compare/0.4.0...0.5.0) (2021-01-10)
+
+
+### Bug Fixes
+
+* **play-screen:** fix canShowDeleteSelectedPlayerButton to return only boolean type ([#52](https://github.com/anli/rna-scorebook/issues/52)) ([61d9bdd](https://github.com/anli/rna-scorebook/commit/61d9bddb7bd7a49d6ed72d2ace257fd10ace369a))
+
+
+### Features
+
+* **play:** add menu item score options ([#54](https://github.com/anli/rna-scorebook/issues/54)) ([cc3c532](https://github.com/anli/rna-scorebook/commit/cc3c53218072d3e9698672da51dbc1ac596ae674)), closes [#28](https://github.com/anli/rna-scorebook/issues/28)
+* **play:** change header button ui ([#56](https://github.com/anli/rna-scorebook/issues/56)) ([201c733](https://github.com/anli/rna-scorebook/commit/201c7334690bf9a5833d670cd250e6515e45e4b7))
+* **play:** change header UI, remove player row, change menuItem to items, move round to header ([#51](https://github.com/anli/rna-scorebook/issues/51)) ([2c69890](https://github.com/anli/rna-scorebook/commit/2c6989022f3acb81dc6f8879b886a41cb1e4fe82)), closes [#28](https://github.com/anli/rna-scorebook/issues/28)
+
+
+
 # [0.4.0](https://github.com/anli/rna-scorebook/compare/0.3.0...0.4.0) (2021-01-08)
 
 
