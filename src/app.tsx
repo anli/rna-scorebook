@@ -19,6 +19,7 @@ import {
   DefaultTheme as PaperDefaultTheme,
   Provider as PaperProvider,
 } from 'react-native-paper';
+import {Host} from 'react-native-portalize';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Provider as ReduxProvider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
@@ -74,20 +75,22 @@ const Tab = createBottomTabNavigator();
 
 const BottomTabComponent = () => {
   return (
-    <Tab.Navigator
-      initialRouteName="PlayScreen"
-      tabBarOptions={{showLabel: false, activeTintColor: colors.primary}}>
-      <Tab.Screen
-        name="PlayScreen"
-        component={PlayScreen.Component}
-        options={getTabScreenOptions('gamepad-variant', PlayScreen.options)}
-      />
-      <Tab.Screen
-        name="SettingScreen"
-        component={SettingScreen.Component}
-        options={getTabScreenOptions('cog', SettingScreen.options)}
-      />
-    </Tab.Navigator>
+    <Host>
+      <Tab.Navigator
+        initialRouteName="PlayScreen"
+        tabBarOptions={{showLabel: false, activeTintColor: colors.primary}}>
+        <Tab.Screen
+          name="PlayScreen"
+          component={PlayScreen.Component}
+          options={getTabScreenOptions('gamepad-variant', PlayScreen.options)}
+        />
+        <Tab.Screen
+          name="SettingScreen"
+          component={SettingScreen.Component}
+          options={getTabScreenOptions('cog', SettingScreen.options)}
+        />
+      </Tab.Navigator>
+    </Host>
   );
 };
 

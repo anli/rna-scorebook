@@ -1,36 +1,33 @@
 import React from 'react';
-import {Card, IconButton, Paragraph, Title} from 'react-native-paper';
+import {useWindowDimensions} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Avatar, Card, Paragraph} from 'react-native-paper';
 import styled from 'styled-components/native';
 
-const itemPerRow = 3;
+const itemPerRow = 2;
 
-const MenuItem = ({
-  windowWidth,
-  name,
-  score,
-  onReducePress,
-  onAddPress,
-  menuItemId,
-}: any) => {
+interface Props {
+  name: string;
+  score: number;
+  onPress: () => any;
+  testID: string;
+}
+
+const MenuItem = ({name, score, onPress, testID}: Props) => {
+  const {width: windowWidth} = useWindowDimensions();
   const width = Math.floor(windowWidth / itemPerRow - 48 + itemPerRow * 8);
 
   return (
     <MenuItemWrapper width={width}>
       <MenuItemWrapperContent>
-        <Row>
-          <IconButton
-            testID={`${menuItemId}.MinusButton`}
-            icon="minus"
-            onPress={onReducePress}
-          />
-          <Score>{score}</Score>
-          <IconButton
-            testID={`${menuItemId}.AddButton`}
-            icon="plus"
-            onPress={onAddPress}
-          />
-        </Row>
-        <Name numberOfLines={1}>{name}</Name>
+        <TouchableOpacity testID={testID} onPress={onPress}>
+          <Row>
+            <Score color="black" size={48} label={String(score)} />
+            <NameWrapper>
+              <Name numberOfLines={2}>{name}</Name>
+            </NameWrapper>
+          </Row>
+        </TouchableOpacity>
       </MenuItemWrapperContent>
     </MenuItemWrapper>
   );
@@ -45,18 +42,20 @@ const Row = styled.View`
   align-items: center;
 `;
 
-const Score = styled(Title)``;
-
-const Name = styled(Paragraph)`
-  align-self: center;
+const Score = styled(Avatar.Text)`
+  background-color: white;
 `;
+
+const NameWrapper = styled.View`
+  flex: 1;
+  margin-left: 8px;
+`;
+
+const Name = styled(Paragraph)``;
 
 const MenuItemWrapper = styled(Card)<{width: number}>`
   width: ${(props) => props.width}px;
   margin: 8px 0px 8px 0px;
 `;
 
-const MenuItemWrapperContent = styled(Card.Content)`
-  padding-top: 4px;
-  padding-bottom: 8px;
-`;
+const MenuItemWrapperContent = styled(Card.Content)``;

@@ -33,16 +33,11 @@ Feature: Play Screen
   Scenario: Adjust Score
     Given that there is a game
     And I am at Play Screen
-    When I press the 'WASABI Add Button'
-    And I press the 'WASABI Add Button'
+    When I press the 'MAKI Button'
+    And I press the 'MAKI Button'
+    And I press the '3rd Button'
     Then I should see 'Round 1 (2)'
-    When I press the 'WASABI Minus Button'
-    Then I should see 'Round 1 (1)'
     When I press the 'Next Round Button'
-    Then I should see 'Round 2 (0)'
-    When I press the 'URAMAKI Add Button' 'x4'
-    Then I should see 'Round 2 (8)'
-    When I press the 'URAMAKI Minus Button' 'x4'
     Then I should see 'Round 2 (0)'
 
   Scenario: Reset Button
@@ -65,13 +60,10 @@ Feature: Play Screen
   Scenario: Select another existing player
     Given that there is an existing play
     And that there is two players, 'John' 'Mary'
-    And that score of round1 'John' is 1
-    And that score of round1 'Mary' is 0
     And that player selected is 'John'
     And I am at Play Screen
     When I press the 'Mary Player Button'
-    And that player selected is 'Mary'
-    And that round score is 0
+    Then I should see player selected is 'Mary'
 
   Scenario: Delete existing player
     Given that there is an existing play
