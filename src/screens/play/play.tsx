@@ -4,16 +4,14 @@ import store, {PlaySelectors, playSlice} from '@store';
 import {colors} from '@theme';
 import R from 'ramda';
 import React, {useEffect, useState} from 'react';
-import {Alert, useWindowDimensions, View} from 'react-native';
+import {Alert, View} from 'react-native';
 import {Appbar, FAB} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
-import getIncrement from './get-increment';
 import MenuItem from './menu-item';
 import Player from './player';
 
 const Component = () => {
-  const {width: windowWidth} = useWindowDimensions();
   const navigation = useNavigation();
   const allMenuItems = useSelector(PlaySelectors.menuItems);
   const playersMap = useSelector(PlaySelectors.playersMap);
@@ -87,21 +85,23 @@ const Component = () => {
     return round && setRoundId(round.id);
   };
 
-  const onAdjustScore = (
-    menuItemId: string,
-    currentRoundId: string,
-    adjustment: number,
-    player: string,
-  ) => {
-    store.dispatch(
-      playSlice.actions.adjustScore({
-        roundId: currentRoundId,
-        menuItemId,
-        adjustment,
-        player,
-      }),
-    );
-  };
+  // const onAdjustScore = (
+  //   menuItemId: string,
+  //   currentRoundId: string,
+  //   adjustment: number,
+  //   player: string,
+  // ) => {
+  //   store.dispatch(
+  //     playSlice.actions.adjustScore({
+  //       roundId: currentRoundId,
+  //       menuItemId,
+  //       adjustment,
+  //       player,
+  //     }),
+  //   );
+  // };
+
+  const onPressMenuItem = (menuItemId: string) => {};
 
   const onReset = () => {
     Alert.alert('Start Over?', 'You cannot undo this.', [
@@ -209,27 +209,26 @@ const Component = () => {
                   scoresMap?.[selectedPlayer]?.[roundId]?.[menuItemId] || 0;
                 return (
                   <MenuItem
-                    windowWidth={windowWidth}
                     key={menuItemId}
-                    menuItemId={menuItemId}
                     name={name}
                     score={score}
-                    onAddPress={() => {
-                      onAdjustScore(
-                        menuItemId,
-                        roundId,
-                        +getIncrement(menuItemId, score, true),
-                        selectedPlayer,
-                      );
-                    }}
-                    onReducePress={() => {
-                      onAdjustScore(
-                        menuItemId,
-                        roundId,
-                        -getIncrement(menuItemId, score, false),
-                        selectedPlayer,
-                      );
-                    }}
+                    onPress={() => onPressMenuItem(menuItemId)}
+                    // onAddPress={() => {
+                    //   onAdjustScore(
+                    //     menuItemId,
+                    //     roundId,
+                    //     +getIncrement(menuItemId, score, true),
+                    //     selectedPlayer,
+                    //   );
+                    // }}
+                    // onReducePress={() => {
+                    //   onAdjustScore(
+                    //     menuItemId,
+                    //     roundId,
+                    //     -getIncrement(menuItemId, score, false),
+                    //     selectedPlayer,
+                    //   );
+                    // }}
                   />
                 );
               })}
