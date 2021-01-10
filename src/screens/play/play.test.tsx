@@ -1,7 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import store, {playSlice} from '@store';
-import {act, fireEvent, render, within} from '@testing-library/react-native';
+import {act, fireEvent, render} from '@testing-library/react-native';
 import React from 'react';
 import {Alert} from 'react-native';
 import {Provider as ReduxProvider} from 'react-redux';
@@ -381,11 +381,7 @@ describe('Play Screen', () => {
       And I see 'Alert'
       And I press 'OK'
       Then I should see the player selected is 'John'
-      And I should not see 'Mary'
-      And I press the 'Player Delete Button'
-      And I see 'Alert'
-      And I press 'OK'
-      Then I should see 'Start Button'`, async () => {
+      And I should not see 'Mary'`, async () => {
     const alertSpy = jest.spyOn(Alert, 'alert');
 
     store.dispatch(
@@ -427,18 +423,6 @@ describe('Play Screen', () => {
       fireEvent.press(getByTestId('SelectedPlayer.DeleteButton'));
     });
     expect(alertSpy).toHaveBeenCalledTimes(2);
-    await act(async () => {
-      alertSpy.mock.calls[0][2]?.[1].onPress &&
-        alertSpy.mock.calls[0][2]?.[1].onPress();
-    });
-
-    const selectedPlayer = within(getByTestId('SelectedPlayer'));
-    expect(selectedPlayer.getByText('John')).toBeDefined();
-
-    await act(async () => {
-      fireEvent.press(getByTestId('SelectedPlayer.DeleteButton'));
-    });
-    expect(alertSpy).toHaveBeenCalledTimes(3);
     await act(async () => {
       alertSpy.mock.calls[0][2]?.[1].onPress &&
         alertSpy.mock.calls[0][2]?.[1].onPress();

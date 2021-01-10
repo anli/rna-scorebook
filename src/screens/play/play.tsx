@@ -4,14 +4,16 @@ import store, {PlaySelectors, playSlice} from '@store';
 import {colors} from '@theme';
 import R from 'ramda';
 import React, {useEffect, useState} from 'react';
-import {Alert, View} from 'react-native';
-import {Appbar, FAB, IconButton, List} from 'react-native-paper';
+import {Alert, useWindowDimensions, View} from 'react-native';
+import {Appbar, FAB} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
+import MenuItem from './menu-item';
 import Player from './player';
 import Rounds from './rounds';
 
 const Component = () => {
+  const {width: windowWidth} = useWindowDimensions();
   const navigation = useNavigation();
   const menuItems = useSelector(PlaySelectors.menuItems);
   const playersMap = useSelector(PlaySelectors.playersMap);
@@ -42,11 +44,15 @@ const Component = () => {
   };
 
   const hasGame = !R.isEmpty(menuItems) && !R.isEmpty(playersMap);
+
   const players = Object.keys(playersMap).map((playerName) => ({
     id: playerName,
     name: playerName,
     color: 'white',
   }));
+
+  const canShowDeleteSelectedPlayerButton =
+    selectedPlayer && players.length > 1;
 
   const rounds = [
     {
@@ -111,20 +117,17 @@ const Component = () => {
   };
 
   const onDeleteSelectedPlayer = () => {
-    if (players.length > 1) {
-      return Alert.alert(`Remove ${selectedPlayer}?`, 'You cannot undo this.', [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () =>
-            store.dispatch(playSlice.actions.deletePlayer(selectedPlayer)),
-        },
-      ]);
-    }
-    return onReset();
+    return Alert.alert(`Remove ${selectedPlayer}?`, 'You cannot undo this.', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () =>
+          store.dispatch(playSlice.actions.deletePlayer(selectedPlayer)),
+      },
+    ]);
   };
 
   return (
@@ -133,6 +136,13 @@ const Component = () => {
         <>
           <AppBarHeader>
             <Appbar.Content title="Sushi Go Party!" />
+            {canShowDeleteSelectedPlayerButton && (
+              <Appbar.Action
+                testID="SelectedPlayer.DeleteButton"
+                icon="account-cancel"
+                onPress={onDeleteSelectedPlayer}
+              />
+            )}
             <Appbar.Action
               testID="ResetButton"
               icon="undo-variant"
@@ -166,58 +176,38 @@ const Component = () => {
           </View>
 
           <Body showsVerticalScrollIndicator={false}>
-            <SelectedPlayer
-              testID="SelectedPlayer"
-              title={selectedPlayer}
-              right={() => (
-                <Buttons>
-                  <IconButton
-                    testID="SelectedPlayer.DeleteButton"
-                    icon="delete"
-                    onPress={onDeleteSelectedPlayer}
-                  />
-                </Buttons>
-              )}
-            />
             <Rounds data={rounds} testID="Round" onChange={onRoundChange} />
-            {menuItems.map(({id: menuItemId, name}) => {
-              const score =
-                scoresMap?.[selectedPlayer]?.[roundId]?.[menuItemId] || 0;
-              return (
-                <MenuItem
-                  key={menuItemId}
-                  title={`${name} (${score} pts)`}
-                  right={() => (
-                    <Buttons>
-                      <IconButton
-                        testID={`${menuItemId}.MinusButton`}
-                        icon="minus"
-                        onPress={() =>
-                          onAdjustScore(
-                            menuItemId,
-                            roundId,
-                            -getIncrement(menuItemId, score, false),
-                            selectedPlayer,
-                          )
-                        }
-                      />
-                      <IconButton
-                        testID={`${menuItemId}.AddButton`}
-                        icon="plus"
-                        onPress={() =>
-                          onAdjustScore(
-                            menuItemId,
-                            roundId,
-                            +getIncrement(menuItemId, score, true),
-                            selectedPlayer,
-                          )
-                        }
-                      />
-                    </Buttons>
-                  )}
-                />
-              );
-            })}
+            <MenuItems>
+              {menuItems.map(({id: menuItemId, name}) => {
+                const score =
+                  scoresMap?.[selectedPlayer]?.[roundId]?.[menuItemId] || 0;
+                return (
+                  <MenuItem
+                    windowWidth={windowWidth}
+                    key={menuItemId}
+                    menuItemId={menuItemId}
+                    name={name}
+                    score={score}
+                    onAddPress={() => {
+                      onAdjustScore(
+                        menuItemId,
+                        roundId,
+                        +getIncrement(menuItemId, score, true),
+                        selectedPlayer,
+                      );
+                    }}
+                    onReducePress={() => {
+                      onAdjustScore(
+                        menuItemId,
+                        roundId,
+                        -getIncrement(menuItemId, score, false),
+                        selectedPlayer,
+                      );
+                    }}
+                  />
+                );
+              })}
+            </MenuItems>
           </Body>
         </>
       )}
@@ -252,7 +242,7 @@ const StartButton = styled(FAB)`
 const AppBarHeader = styled(Appbar.Header)`
   padding-left: 10px;
   padding-right: 10px;
-  background-color: transparent;
+  background-color: white;
 `;
 
 const Players = styled.ScrollView`
@@ -261,22 +251,6 @@ const Players = styled.ScrollView`
 
 const Body = styled.ScrollView`
   flex: 1;
-`;
-
-const MenuItem = styled(List.Item)`
-  padding-left: 16px;
-  padding-right: 24px;
-`;
-
-const Buttons = styled.View`
-  align-items: center;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const SelectedPlayer = styled(List.Item)`
-  padding-left: 16px;
-  padding-right: 24px;
 `;
 
 const menuItemsIncrementMap: {[key: string]: null | number[]} = {
@@ -332,3 +306,13 @@ const getNextScore = (
   }
   return R.last(scores.filter((fixedScore) => fixedScore < currentScore));
 };
+
+const MenuItems = styled.View`
+  padding-left: 24px;
+  padding-right: 24px;
+  margin-bottom: 16px;
+  flex: 1;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+`;
