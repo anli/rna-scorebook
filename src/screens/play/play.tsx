@@ -50,7 +50,7 @@ const Component = () => {
   }));
 
   const canShowDeleteSelectedPlayerButton =
-    selectedPlayer && players.length > 1;
+    !R.isNil(selectedPlayer) && players.length > 1;
 
   const rounds = [
     {
