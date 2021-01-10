@@ -11,12 +11,11 @@ import styled from 'styled-components/native';
 import getIncrement from './get-increment';
 import MenuItem from './menu-item';
 import Player from './player';
-import Rounds from './rounds';
 
 const Component = () => {
   const {width: windowWidth} = useWindowDimensions();
   const navigation = useNavigation();
-  const menuItems = useSelector(PlaySelectors.menuItems);
+  const allMenuItems = useSelector(PlaySelectors.menuItems);
   const playersMap = useSelector(PlaySelectors.playersMap);
   const totalScoreMap: {[key: string]: number} = useSelector(
     PlaySelectors.totalScoreMap,
@@ -40,9 +39,7 @@ const Component = () => {
     }
   }, [playersMap]);
 
-  const start = () => {
-    navigation.navigate('PlayerAddScreen');
-  };
+  const menuItems = getMenuItemForRound(allMenuItems, roundId);
 
   const hasGame = !R.isEmpty(menuItems) && !R.isEmpty(playersMap);
 
@@ -72,10 +69,22 @@ const Component = () => {
       score: roundsTotalScoreMap?.[selectedPlayer]?.['roundThree'] || 0,
     },
   ];
-  roundsTotalScoreMap;
+  const roundIndex = R.findIndex(R.propEq('id', roundId), rounds);
+  const canShowPreviousRound = roundIndex !== 0;
+  const canShowNextRound = roundIndex !== rounds.length - 1;
 
-  const onRoundChange = ({id}: {id: string}) => {
-    setRoundId(id);
+  const start = () => {
+    navigation.navigate('PlayerAddScreen');
+  };
+
+  const onNextRound = () => {
+    const round = rounds[roundIndex + 1];
+    return round && setRoundId(round.id);
+  };
+
+  const onPreviousRound = () => {
+    const round = rounds[roundIndex - 1];
+    return round && setRoundId(round.id);
   };
 
   const onAdjustScore = (
@@ -136,7 +145,10 @@ const Component = () => {
       {hasGame && (
         <>
           <AppBarHeader>
-            <Appbar.Content title="Sushi Go Party!" />
+            <Appbar.Content
+              subtitle="Sushi Go Party!"
+              title={getRoundSummary(rounds, roundId)}
+            />
             {canShowDeleteSelectedPlayerButton && (
               <Appbar.Action
                 testID="SelectedPlayer.DeleteButton"
@@ -149,6 +161,20 @@ const Component = () => {
               icon="undo-variant"
               onPress={onReset}
             />
+            {canShowPreviousRound && (
+              <Appbar.Action
+                icon="arrow-left"
+                onPress={onPreviousRound}
+                testID="Round.PreviousButton"
+              />
+            )}
+            {canShowNextRound && (
+              <Appbar.Action
+                icon="arrow-right"
+                onPress={onNextRound}
+                testID="Round.NextButton"
+              />
+            )}
           </AppBarHeader>
 
           <View>
@@ -177,8 +203,7 @@ const Component = () => {
           </View>
 
           <Body showsVerticalScrollIndicator={false}>
-            <Rounds data={rounds} testID="Round" onChange={onRoundChange} />
-            <MenuItems>
+            <MenuItems key={`MenuItems.${menuItems.length}`}>
               {menuItems.map(({id: menuItemId, name}) => {
                 const score =
                   scoresMap?.[selectedPlayer]?.[roundId]?.[menuItemId] || 0;
@@ -263,3 +288,19 @@ const MenuItems = styled.View`
   flex-direction: row;
   justify-content: space-between;
 `;
+
+const getMenuItemForRound = (menuItems: any[], roundId: string) => {
+  if (roundId === 'roundThree') {
+    return menuItems;
+  }
+
+  return R.init(menuItems);
+};
+
+const getRoundSummary = (
+  rounds: {id: string; name: string; score: number}[],
+  roundId: string,
+) => {
+  const round = R.find(R.propEq('id', roundId), rounds);
+  return `${round?.name} (${round?.score})`;
+};
