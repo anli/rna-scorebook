@@ -3,12 +3,15 @@ import {StackNavigationOptions} from '@react-navigation/stack';
 import store, {PlaySelectors, playSlice} from '@store';
 import {colors} from '@theme';
 import R from 'ramda';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Alert, View} from 'react-native';
+import {Modalize} from 'react-native-modalize';
 import {Appbar, FAB} from 'react-native-paper';
+import {Portal} from 'react-native-portalize';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import MenuItem from './menu-item';
+import MenuItemOptions from './menu-item-options';
 import Player from './player';
 
 const Component = () => {
@@ -24,6 +27,10 @@ const Component = () => {
   );
   const selectedPlayer = useSelector(PlaySelectors.selectedPlayer);
   const [roundId, setRoundId] = useState<string>('roundOne');
+  const selectedMenuItemOptionsRef = useRef<Modalize>(null);
+  const [selectedMenuItemId, setSelectedMenuItemId] = useState<
+    undefined | string
+  >(undefined);
 
   useEffect(() => {
     const hasExactlyOnePlayer = Object.keys(playersMap).length === 1;
@@ -71,6 +78,11 @@ const Component = () => {
   const canShowPreviousRound = roundIndex !== 0;
   const canShowNextRound = roundIndex !== rounds.length - 1;
 
+  const selectedMenuItem = R.find(
+    R.propEq('id', selectedMenuItemId),
+    menuItems,
+  ) as any;
+
   const start = () => {
     navigation.navigate('PlayerAddScreen');
   };
@@ -85,23 +97,10 @@ const Component = () => {
     return round && setRoundId(round.id);
   };
 
-  // const onAdjustScore = (
-  //   menuItemId: string,
-  //   currentRoundId: string,
-  //   adjustment: number,
-  //   player: string,
-  // ) => {
-  //   store.dispatch(
-  //     playSlice.actions.adjustScore({
-  //       roundId: currentRoundId,
-  //       menuItemId,
-  //       adjustment,
-  //       player,
-  //     }),
-  //   );
-  // };
-
-  const onPressMenuItem = (menuItemId: string) => {};
+  const onPressMenuItem = async (menuItemId: string) => {
+    await setSelectedMenuItemId(menuItemId);
+    selectedMenuItemOptionsRef.current?.open();
+  };
 
   const onReset = () => {
     Alert.alert('Start Over?', 'You cannot undo this.', [
@@ -138,6 +137,18 @@ const Component = () => {
           store.dispatch(playSlice.actions.deletePlayer(selectedPlayer)),
       },
     ]);
+  };
+
+  const onSelectMenuItemOption = (menuItemId: string, value: number) => {
+    store.dispatch(
+      playSlice.actions.setScore({
+        menuItemId,
+        player: selectedPlayer,
+        roundId,
+        score: value,
+      }),
+    );
+    selectedMenuItemOptionsRef.current?.close();
   };
 
   return (
@@ -212,28 +223,26 @@ const Component = () => {
                     key={menuItemId}
                     name={name}
                     score={score}
+                    testID={`${menuItemId}.ScoreOptionsButton`}
                     onPress={() => onPressMenuItem(menuItemId)}
-                    // onAddPress={() => {
-                    //   onAdjustScore(
-                    //     menuItemId,
-                    //     roundId,
-                    //     +getIncrement(menuItemId, score, true),
-                    //     selectedPlayer,
-                    //   );
-                    // }}
-                    // onReducePress={() => {
-                    //   onAdjustScore(
-                    //     menuItemId,
-                    //     roundId,
-                    //     -getIncrement(menuItemId, score, false),
-                    //     selectedPlayer,
-                    //   );
-                    // }}
                   />
                 );
               })}
             </MenuItems>
           </Body>
+          <Portal>
+            <Modalize ref={selectedMenuItemOptionsRef} adjustToContentHeight>
+              {!R.isNil(selectedMenuItemId) && (
+                <MenuItemOptions
+                  testID="MenuItemOption"
+                  id={selectedMenuItemId}
+                  question={`${selectedMenuItem?.scoreConfigMap?.question}`}
+                  options={selectedMenuItem?.scoreConfigMap?.options}
+                  onPress={onSelectMenuItemOption}
+                />
+              )}
+            </Modalize>
+          </Portal>
         </>
       )}
       {!hasGame && (
@@ -289,11 +298,16 @@ const MenuItems = styled.View`
 `;
 
 const getMenuItemForRound = (menuItems: any[], roundId: string) => {
+  const menuItemWithScoreConfig = R.filter(
+    ({scoreConfigMap}) => !R.isNil(scoreConfigMap),
+    menuItems,
+  );
+
   if (roundId === 'roundThree') {
-    return menuItems;
+    return menuItemWithScoreConfig;
   }
 
-  return R.init(menuItems);
+  return R.init(menuItemWithScoreConfig);
 };
 
 const getRoundSummary = (

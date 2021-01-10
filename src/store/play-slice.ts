@@ -4,7 +4,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import R from 'ramda';
-import {allMenuItems, compulsoryMenuItemsMap} from './play-data';
+import {allMenuItems, compulsoryMenuItemsMap} from './play.data';
 import {RootState} from './store';
 
 type PlayersMap = {[key: string]: boolean};
@@ -38,26 +38,23 @@ const playSlice = createSlice({
         ...action.payload,
       };
     },
-    adjustScore: (
+    setScore: (
       state: State,
       action: PayloadAction<{
         player: string;
         roundId: string;
         menuItemId: string;
-        adjustment: number;
+        score: number;
       }>,
     ) => {
-      const {roundId, menuItemId, adjustment, player} = action.payload;
-      const newValue =
-        (state.scoresMap?.[player]?.[roundId]?.[menuItemId] || 0) + adjustment;
-
+      const {roundId, menuItemId, score, player} = action.payload;
       const newState = {
         ...state.scoresMap,
         [player]: {
           ...state.scoresMap?.[player],
           [roundId]: {
             ...state.scoresMap?.[player]?.[roundId],
-            [menuItemId]: newValue,
+            [menuItemId]: score,
           },
         },
       };

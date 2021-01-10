@@ -10,16 +10,17 @@ interface Props {
   name: string;
   score: number;
   onPress: () => any;
+  testID: string;
 }
 
-const MenuItem = ({name, score, onPress}: Props) => {
+const MenuItem = ({name, score, onPress, testID}: Props) => {
   const {width: windowWidth} = useWindowDimensions();
   const width = Math.floor(windowWidth / itemPerRow - 48 + itemPerRow * 8);
 
   return (
     <MenuItemWrapper width={width}>
       <MenuItemWrapperContent>
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity testID={testID} onPress={onPress}>
           <Row>
             <Score color="black" size={48} label={String(score)} />
             <NameWrapper>

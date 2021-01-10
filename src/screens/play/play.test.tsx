@@ -4,6 +4,7 @@ import store, {playSlice} from '@store';
 import {act, fireEvent, render} from '@testing-library/react-native';
 import React from 'react';
 import {Alert} from 'react-native';
+import {Host} from 'react-native-portalize';
 import {Provider as ReduxProvider} from 'react-redux';
 import PlayScreen from './play';
 
@@ -23,9 +24,11 @@ const App = ({component, options}: any) => {
   return (
     <ReduxProvider store={store}>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="App" component={component} options={options} />
-        </Stack.Navigator>
+        <Host>
+          <Stack.Navigator>
+            <Stack.Screen name="App" component={component} options={options} />
+          </Stack.Navigator>
+        </Host>
       </NavigationContainer>
     </ReduxProvider>
   );
@@ -153,20 +156,15 @@ describe('Play Screen', () => {
   it(`Scenario: Adjust Score
       Given that there is a game
       And I am at Play Screen
-      When I press the 'WASABI Add Button'
-      And I press the 'WASABI Add Button'
+      When I press the 'MAKI Button'
+      And I press the 'MAKI Button'
+      And I press the '3rd Button'
       Then I should see 'Round 1 (2)'
-      When I press the 'WASABI Minus Button'
-      Then I should see 'Round 1 (1)'
       When I press the 'Next Round Button'
-      Then I should see 'Round 2 (0)'
-      When I press the 'URAMAKI Add Button' 'x4'
-      Then I should see 'Round 2 (8)'
-      When I press the 'URAMAKI Minus Button' 'x4'
       Then I should see 'Round 2 (0)'`, async () => {
     store.dispatch(
       playSlice.actions.setMenuItemsMap({
-        uramaki: true,
+        maki: true,
         onigiri: true,
         pudding: true,
         soySauce: true,
@@ -186,53 +184,23 @@ describe('Play Screen', () => {
       <App component={PlayScreen.Component} options={PlayScreen.options} />,
     );
 
+    await act(async () => {});
+
+    expect(getByTestId('maki.ScoreOptionsButton')).toBeDefined();
     await act(async () => {
-      fireEvent.press(getByTestId('wasabi.AddButton'));
-      fireEvent.press(getByTestId('wasabi.AddButton'));
+      fireEvent.press(getByTestId('maki.ScoreOptionsButton'));
     });
+
+    expect(getByTestId('MenuItemOption.3rd')).toBeDefined();
+
+    await act(async () => {
+      fireEvent.press(getByTestId('MenuItemOption.3rd'));
+    });
+
     expect(getByText('Round 1 (2)')).toBeDefined();
 
     await act(async () => {
-      fireEvent.press(getByTestId('wasabi.MinusButton'));
-    });
-    expect(getByText('Round 1 (1)')).toBeDefined();
-
-    await act(async () => {
       fireEvent.press(getByTestId('Round.NextButton'));
-    });
-    expect(getByText('Round 2 (0)')).toBeDefined();
-
-    await act(async () => {
-      fireEvent.press(getByTestId('uramaki.AddButton'));
-    });
-
-    await act(async () => {
-      fireEvent.press(getByTestId('uramaki.AddButton'));
-    });
-
-    await act(async () => {
-      fireEvent.press(getByTestId('uramaki.AddButton'));
-    });
-
-    await act(async () => {
-      fireEvent.press(getByTestId('uramaki.AddButton'));
-    });
-    expect(getByText('Round 2 (8)')).toBeDefined();
-
-    await act(async () => {
-      fireEvent.press(getByTestId('uramaki.MinusButton'));
-    });
-
-    await act(async () => {
-      fireEvent.press(getByTestId('uramaki.MinusButton'));
-    });
-
-    await act(async () => {
-      fireEvent.press(getByTestId('uramaki.MinusButton'));
-    });
-
-    await act(async () => {
-      fireEvent.press(getByTestId('uramaki.MinusButton'));
     });
 
     expect(getByText('Round 2 (0)')).toBeDefined();
@@ -326,14 +294,11 @@ describe('Play Screen', () => {
 
   it(`Scenario: Select another existing player
       Given that there is an existing play
-      And that there is two players, 'John' 'Mary'
-      And that score of round1 'John' is 1
-      And that score of round1 'Mary' is 0
+      And that there is two players, 'John' 'Mary'      
       And that player selected is 'John'
       And I am at Play Screen
       When I press the 'Mary Player Button'
-      And that player selected is 'Mary'
-      And that round score is 0`, async () => {
+      Then I should see player selected is 'Mary'`, async () => {
     store.dispatch(
       playSlice.actions.setMenuItemsMap({
         edamame: true,
@@ -357,10 +322,6 @@ describe('Play Screen', () => {
     );
 
     expect(getByText('Round 1 (0)')).toBeDefined();
-    await act(async () => {
-      fireEvent.press(getByTestId('wasabi.AddButton'));
-    });
-    expect(getByText('Round 1 (1)')).toBeDefined();
 
     expect(getByTestId('SelectPlayerButton.Mary')).toBeDefined();
     await act(async () => {

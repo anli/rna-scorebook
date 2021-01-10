@@ -54,3 +54,4 @@ exclude_patterns:
   - 'ios/'
   - 'coverage/'
   - '**/*.test.*'
+  - '**/*.data.*'
