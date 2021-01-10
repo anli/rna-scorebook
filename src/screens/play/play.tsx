@@ -4,16 +4,18 @@ import store, {PlaySelectors, playSlice} from '@store';
 import {colors} from '@theme';
 import R from 'ramda';
 import React, {useEffect, useState} from 'react';
-import {Alert, View} from 'react-native';
-import {Appbar, FAB, IconButton, List} from 'react-native-paper';
+import {Alert, useWindowDimensions, View} from 'react-native';
+import {Appbar, FAB} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
+import getIncrement from './get-increment';
+import MenuItem from './menu-item';
 import Player from './player';
-import Rounds from './rounds';
 
 const Component = () => {
+  const {width: windowWidth} = useWindowDimensions();
   const navigation = useNavigation();
-  const menuItems = useSelector(PlaySelectors.menuItems);
+  const allMenuItems = useSelector(PlaySelectors.menuItems);
   const playersMap = useSelector(PlaySelectors.playersMap);
   const totalScoreMap: {[key: string]: number} = useSelector(
     PlaySelectors.totalScoreMap,
@@ -37,16 +39,18 @@ const Component = () => {
     }
   }, [playersMap]);
 
-  const start = () => {
-    navigation.navigate('PlayerAddScreen');
-  };
+  const menuItems = getMenuItemForRound(allMenuItems, roundId);
 
   const hasGame = !R.isEmpty(menuItems) && !R.isEmpty(playersMap);
+
   const players = Object.keys(playersMap).map((playerName) => ({
     id: playerName,
     name: playerName,
     color: 'white',
   }));
+
+  const canShowDeleteSelectedPlayerButton =
+    selectedPlayer && players.length > 1;
 
   const rounds = [
     {
@@ -65,10 +69,22 @@ const Component = () => {
       score: roundsTotalScoreMap?.[selectedPlayer]?.['roundThree'] || 0,
     },
   ];
-  roundsTotalScoreMap;
+  const roundIndex = R.findIndex(R.propEq('id', roundId), rounds);
+  const canShowPreviousRound = roundIndex !== 0;
+  const canShowNextRound = roundIndex !== rounds.length - 1;
 
-  const onRoundChange = ({id}: {id: string}) => {
-    setRoundId(id);
+  const start = () => {
+    navigation.navigate('PlayerAddScreen');
+  };
+
+  const onNextRound = () => {
+    const round = rounds[roundIndex + 1];
+    return round && setRoundId(round.id);
+  };
+
+  const onPreviousRound = () => {
+    const round = rounds[roundIndex - 1];
+    return round && setRoundId(round.id);
   };
 
   const onAdjustScore = (
@@ -111,20 +127,17 @@ const Component = () => {
   };
 
   const onDeleteSelectedPlayer = () => {
-    if (players.length > 1) {
-      return Alert.alert(`Remove ${selectedPlayer}?`, 'You cannot undo this.', [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () =>
-            store.dispatch(playSlice.actions.deletePlayer(selectedPlayer)),
-        },
-      ]);
-    }
-    return onReset();
+    return Alert.alert(`Remove ${selectedPlayer}?`, 'You cannot undo this.', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () =>
+          store.dispatch(playSlice.actions.deletePlayer(selectedPlayer)),
+      },
+    ]);
   };
 
   return (
@@ -132,12 +145,36 @@ const Component = () => {
       {hasGame && (
         <>
           <AppBarHeader>
-            <Appbar.Content title="Sushi Go Party!" />
+            <Appbar.Content
+              subtitle="Sushi Go Party!"
+              title={getRoundSummary(rounds, roundId)}
+            />
+            {canShowDeleteSelectedPlayerButton && (
+              <Appbar.Action
+                testID="SelectedPlayer.DeleteButton"
+                icon="account-cancel"
+                onPress={onDeleteSelectedPlayer}
+              />
+            )}
             <Appbar.Action
               testID="ResetButton"
               icon="undo-variant"
               onPress={onReset}
             />
+            {canShowPreviousRound && (
+              <Appbar.Action
+                icon="arrow-left"
+                onPress={onPreviousRound}
+                testID="Round.PreviousButton"
+              />
+            )}
+            {canShowNextRound && (
+              <Appbar.Action
+                icon="arrow-right"
+                onPress={onNextRound}
+                testID="Round.NextButton"
+              />
+            )}
           </AppBarHeader>
 
           <View>
@@ -166,58 +203,37 @@ const Component = () => {
           </View>
 
           <Body showsVerticalScrollIndicator={false}>
-            <SelectedPlayer
-              testID="SelectedPlayer"
-              title={selectedPlayer}
-              right={() => (
-                <Buttons>
-                  <IconButton
-                    testID="SelectedPlayer.DeleteButton"
-                    icon="delete"
-                    onPress={onDeleteSelectedPlayer}
+            <MenuItems key={`MenuItems.${menuItems.length}`}>
+              {menuItems.map(({id: menuItemId, name}) => {
+                const score =
+                  scoresMap?.[selectedPlayer]?.[roundId]?.[menuItemId] || 0;
+                return (
+                  <MenuItem
+                    windowWidth={windowWidth}
+                    key={menuItemId}
+                    menuItemId={menuItemId}
+                    name={name}
+                    score={score}
+                    onAddPress={() => {
+                      onAdjustScore(
+                        menuItemId,
+                        roundId,
+                        +getIncrement(menuItemId, score, true),
+                        selectedPlayer,
+                      );
+                    }}
+                    onReducePress={() => {
+                      onAdjustScore(
+                        menuItemId,
+                        roundId,
+                        -getIncrement(menuItemId, score, false),
+                        selectedPlayer,
+                      );
+                    }}
                   />
-                </Buttons>
-              )}
-            />
-            <Rounds data={rounds} testID="Round" onChange={onRoundChange} />
-            {menuItems.map(({id: menuItemId, name}) => {
-              const score =
-                scoresMap?.[selectedPlayer]?.[roundId]?.[menuItemId] || 0;
-              return (
-                <MenuItem
-                  key={menuItemId}
-                  title={`${name} (${score} pts)`}
-                  right={() => (
-                    <Buttons>
-                      <IconButton
-                        testID={`${menuItemId}.MinusButton`}
-                        icon="minus"
-                        onPress={() =>
-                          onAdjustScore(
-                            menuItemId,
-                            roundId,
-                            -getIncrement(menuItemId, score, false),
-                            selectedPlayer,
-                          )
-                        }
-                      />
-                      <IconButton
-                        testID={`${menuItemId}.AddButton`}
-                        icon="plus"
-                        onPress={() =>
-                          onAdjustScore(
-                            menuItemId,
-                            roundId,
-                            +getIncrement(menuItemId, score, true),
-                            selectedPlayer,
-                          )
-                        }
-                      />
-                    </Buttons>
-                  )}
-                />
-              );
-            })}
+                );
+              })}
+            </MenuItems>
           </Body>
         </>
       )}
@@ -252,7 +268,7 @@ const StartButton = styled(FAB)`
 const AppBarHeader = styled(Appbar.Header)`
   padding-left: 10px;
   padding-right: 10px;
-  background-color: transparent;
+  background-color: white;
 `;
 
 const Players = styled.ScrollView`
@@ -263,72 +279,28 @@ const Body = styled.ScrollView`
   flex: 1;
 `;
 
-const MenuItem = styled(List.Item)`
-  padding-left: 16px;
+const MenuItems = styled.View`
+  padding-left: 24px;
   padding-right: 24px;
-`;
-
-const Buttons = styled.View`
-  align-items: center;
+  margin-bottom: 16px;
+  flex: 1;
+  flex-wrap: wrap;
   flex-direction: row;
   justify-content: space-between;
 `;
 
-const SelectedPlayer = styled(List.Item)`
-  padding-left: 16px;
-  padding-right: 24px;
-`;
-
-const menuItemsIncrementMap: {[key: string]: null | number[]} = {
-  eggNigiri: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-  salmonNigiri: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24],
-  squidNigiri: [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36],
-  temaki: [-4, 0, 4],
-  uramaki: [0, 2, 5, 8],
-  maki: [0, 3, 6],
-  soySauce: [0, 4, 8, 12, 16],
-  wasabi: null,
-  spoon: null,
-  chopsticks: null,
-  takeoutBox: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20],
-  tea: null,
-  specialOrder: null,
-  menu: null,
-  onigiri: null,
-  edamame: null,
-  tempura: [0, 5, 10, 15, 20],
-  misoSoup: [0, 3, 6, 9, 12, 15, 18, 21, 24],
-  sashimi: [0, 10, 20],
-  eel: [-3, 0, 7],
-  dumpling: [0, 1, 3, 6, 10, 15],
-  tofu: [0, 2, 6],
-  pudding: [-6, 0, 6],
-  fruit: null,
-  greenTeaIceCream: [0, 4, 8, 12],
-};
-
-const getIncrement = (
-  menuItemId: string,
-  score: number,
-  isIncrease: boolean,
-) => {
-  const scores = menuItemsIncrementMap?.[menuItemId];
-
-  if (Array.isArray(scores)) {
-    const nextScore = getNextScore(scores, score, isIncrease);
-    return !R.isNil(nextScore) ? Math.abs(nextScore - score) : 0;
+const getMenuItemForRound = (menuItems: any[], roundId: string) => {
+  if (roundId === 'roundThree') {
+    return menuItems;
   }
 
-  return 1;
+  return R.init(menuItems);
 };
 
-const getNextScore = (
-  scores: number[],
-  currentScore: number,
-  isIncrease: boolean,
+const getRoundSummary = (
+  rounds: {id: string; name: string; score: number}[],
+  roundId: string,
 ) => {
-  if (isIncrease) {
-    return R.head(scores.filter((fixedScore) => fixedScore > currentScore));
-  }
-  return R.last(scores.filter((fixedScore) => fixedScore < currentScore));
+  const round = R.find(R.propEq('id', roundId), rounds);
+  return `${round?.name} (${round?.score})`;
 };
