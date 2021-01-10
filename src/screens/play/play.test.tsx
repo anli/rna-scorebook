@@ -72,8 +72,7 @@ describe('Play Screen', () => {
       When I am at Play Screen
       Then I should not see 'Start Button'
       And I should see 'Round 1'
-      And I should see 'Next Round Button'
-      And I should not see 'Previous Round Button'`, async () => {
+      And I should see 'Next Round Button'`, async () => {
     store.dispatch(
       playSlice.actions.setMenuItemsMap({
         edamame: true,
@@ -101,7 +100,6 @@ describe('Play Screen', () => {
     expect(queryByTestId('StartButton')).toBeNull();
     expect(getByText('Round 1 (0)')).toBeDefined();
     expect(getByTestId('Round.NextButton')).toBeDefined();
-    expect(queryByTestId('Round.PreviousButton')).toBeNull();
   });
 
   it(`Scenario: Change round
@@ -111,7 +109,6 @@ describe('Play Screen', () => {
       Then I should see 'Round 2'
       When I press the 'Next Round Button'
       Then I should see 'Round 3'
-      And I should not see 'Next Round Button'
       When I press the 'Previous Round Button'
       Then I should see 'Round 2'`, async () => {
     store.dispatch(
@@ -132,7 +129,7 @@ describe('Play Screen', () => {
       }),
     );
 
-    const {queryByTestId, getByText, getByTestId} = render(
+    const {getByText, getByTestId} = render(
       <App component={PlayScreen.Component} options={PlayScreen.options} />,
     );
 
@@ -145,7 +142,6 @@ describe('Play Screen', () => {
       fireEvent.press(getByTestId('Round.NextButton'));
     });
     expect(getByText('Round 3 (0)')).toBeDefined();
-    expect(queryByTestId('Round.NextButton')).toBeNull();
 
     await act(async () => {
       fireEvent.press(getByTestId('Round.PreviousButton'));
