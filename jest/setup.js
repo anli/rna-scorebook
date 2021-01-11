@@ -24,3 +24,14 @@ global.window = global;
 
 // https://react-native-async-storage.github.io/async-storage/docs/advanced/jest/
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
+
+//github.com/rt2zz/redux-persist/issues/1243
+https: jest.mock('redux-persist', () => {
+  const real = jest.requireActual('redux-persist');
+  return {
+    ...real,
+    persistReducer: jest
+      .fn()
+      .mockImplementation((config, reducers) => reducers),
+  };
+});
