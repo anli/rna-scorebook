@@ -18,3 +18,6 @@ Feature: Setting Screen
     When I enter 'John'
     And I press 'Confirm Button'
     Then I should see 'John'
+    When I press 'Default name'
+    And I press 'Clear Button'
+    Then I should see 'Setup one now'

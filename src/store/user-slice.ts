@@ -15,7 +15,10 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setDefaultName: (state: State, action: PayloadAction<string>) => {
+    setDefaultName: (
+      state: State,
+      action: PayloadAction<string | undefined>,
+    ) => {
       state.defaultName = action.payload;
     },
   },

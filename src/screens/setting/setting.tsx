@@ -22,6 +22,11 @@ const Component = () => {
     dismiss();
   };
 
+  const onClear = async () => {
+    store.dispatch(userSlice.actions.setDefaultName(undefined));
+    dismiss();
+  };
+
   return (
     <>
       <View>
@@ -41,6 +46,7 @@ const Component = () => {
         visible={visible}
         onDismiss={dismiss}
         onConfirm={onSetDefaultName}
+        onClear={onClear}
       />
     </>
   );

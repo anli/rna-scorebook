@@ -1,3 +1,4 @@
+import {colors} from '@theme';
 import React, {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {
@@ -19,9 +20,16 @@ interface Props {
   visible: boolean;
   onConfirm: (data: FormData) => any;
   testID: string;
+  onClear: () => any;
 }
 
-const DefaultNameDialog = ({onDismiss, visible, onConfirm, testID}: Props) => {
+const DefaultNameDialog = ({
+  onDismiss,
+  visible,
+  onConfirm,
+  testID,
+  onClear,
+}: Props) => {
   const {control, handleSubmit, errors} = useForm<FormData>();
 
   return (
@@ -55,6 +63,13 @@ const DefaultNameDialog = ({onDismiss, visible, onConfirm, testID}: Props) => {
         </Dialog.Content>
         <Dialog.Actions>
           <Button
+            color="grey"
+            testID={`${testID}.ClearButton`}
+            onPress={onClear}>
+            Clear
+          </Button>
+          <Button
+            color={colors.primary}
             testID={`${testID}.ConfirmButton`}
             onPress={handleSubmit(onConfirm)}>
             Confirm

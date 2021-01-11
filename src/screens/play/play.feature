@@ -78,3 +78,9 @@ Feature: Play Screen
     And I press 'OK'
     Then I should see the player selected is 'John'
     And I should not see 'Mary'
+
+  Scenario: Has set default name
+    Given that I have set default name
+    And that there is no game
+    When I press 'Menu Add Button'
+    Then I should see 'Menu Item Screen'

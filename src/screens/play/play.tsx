@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
-import store, {PlaySelectors, playSlice} from '@store';
+import store, {PlaySelectors, playSlice, UserSelectors} from '@store';
 import {colors} from '@theme';
 import R from 'ramda';
 import React, {useEffect, useRef, useState} from 'react';
@@ -31,6 +31,7 @@ const Component = () => {
   const [selectedMenuItemId, setSelectedMenuItemId] = useState<
     undefined | string
   >(undefined);
+  const defaultName = useSelector(UserSelectors.defaultName);
 
   useEffect(() => {
     const hasExactlyOnePlayer = Object.keys(playersMap).length === 1;
@@ -83,8 +84,14 @@ const Component = () => {
     menuItems,
   ) as any;
 
+  const hasDefaultName = !R.isNil(defaultName);
+
   const start = () => {
-    navigation.navigate('PlayerAddScreen');
+    return navigation.navigate('PlayerAddScreen');
+  };
+
+  const onMenuAdd = () => {
+    return navigation.navigate('MenuAddScreen', {playerName: defaultName});
   };
 
   const onNextRound = () => {
@@ -246,7 +253,19 @@ const Component = () => {
         </>
       )}
       {!hasGame && (
-        <StartButton testID="StartButton" icon="plus" onPress={start} />
+        <>
+          {hasDefaultName && (
+            <StartButton
+              label="Select Menu"
+              testID="MenuAddButton"
+              icon="plus"
+              onPress={onMenuAdd}
+            />
+          )}
+          {!hasDefaultName && (
+            <StartButton testID="StartButton" icon="plus" onPress={start} />
+          )}
+        </>
       )}
     </Screen>
   );

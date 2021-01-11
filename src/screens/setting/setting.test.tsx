@@ -70,7 +70,10 @@ describe('Setting Screen', () => {
       Then I should see 'Default Name Dialog' 'Name Input'
       When I enter 'John'
       And I press 'Confirm Button'
-      Then I should see 'John'`, async () => {
+      Then I should see 'John'
+      When I press 'Default name'
+      And I press 'Clear Button'
+      Then I should see 'Setup one now'`, async () => {
     const {getByText, getByTestId} = render(
       <App
         component={SettingScreen.Component}
@@ -100,5 +103,13 @@ describe('Setting Screen', () => {
       fireEvent.press(getByTestId('DefaultNameDialog.ConfirmButton'));
     });
     expect(getByText('John')).toBeDefined();
+
+    await act(async () => {
+      fireEvent.press(getByText('Default Name'));
+    });
+    await act(async () => {
+      fireEvent.press(getByTestId('DefaultNameDialog.ClearButton'));
+    });
+    expect(getByText('Setup one now')).toBeDefined();
   });
 });
