@@ -1,6 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import store, {playSlice} from '@store';
+import store, {playSlice, userSlice} from '@store';
 import {act, fireEvent, render} from '@testing-library/react-native';
 import React from 'react';
 import {Alert} from 'react-native';
@@ -383,6 +383,27 @@ describe('Play Screen', () => {
     await act(async () => {
       alertSpy.mock.calls[0][2]?.[1].onPress &&
         alertSpy.mock.calls[0][2]?.[1].onPress();
+    });
+  });
+
+  it(`Scenario: Has set default name
+      Given that I have set default name
+      And that there is no game
+      When I press 'Start Button'
+      Then I should see 'Menu Add Screen'`, async () => {
+    store.dispatch(playSlice.actions.reset());
+    store.dispatch(userSlice.actions.setDefaultName('John'));
+
+    const {getByTestId} = render(
+      <App component={PlayScreen.Component} options={PlayScreen.options} />,
+    );
+
+    await act(async () => {
+      fireEvent.press(getByTestId('MenuAddButton'));
+    });
+    expect(mockedNavigate).toHaveBeenCalledTimes(1);
+    expect(mockedNavigate).toBeCalledWith('MenuAddScreen', {
+      playerName: 'John',
     });
   });
 });
