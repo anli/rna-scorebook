@@ -163,10 +163,12 @@ const Component = () => {
       {hasGame && (
         <>
           <AppBarHeader>
-            <Appbar.Content
-              subtitle="Sushi Go Party!"
-              title={getRoundSummary(rounds, roundId)}
+            <Appbar.Action
+              testID="ResetButton"
+              icon="close"
+              onPress={onReset}
             />
+            <Appbar.Content title={getRoundSummary(rounds, roundId)} />
             {canShowDeleteSelectedPlayerButton && (
               <Appbar.Action
                 testID="SelectedPlayer.DeleteButton"
@@ -175,24 +177,17 @@ const Component = () => {
               />
             )}
             <Appbar.Action
-              testID="ResetButton"
-              icon="undo-variant"
-              onPress={onReset}
+              disabled={!canShowPreviousRound}
+              icon="arrow-left"
+              onPress={onPreviousRound}
+              testID="Round.PreviousButton"
             />
-            {canShowPreviousRound && (
-              <Appbar.Action
-                icon="arrow-left"
-                onPress={onPreviousRound}
-                testID="Round.PreviousButton"
-              />
-            )}
-            {canShowNextRound && (
-              <Appbar.Action
-                icon="arrow-right"
-                onPress={onNextRound}
-                testID="Round.NextButton"
-              />
-            )}
+            <Appbar.Action
+              disabled={!canShowNextRound}
+              icon="arrow-right"
+              onPress={onNextRound}
+              testID="Round.NextButton"
+            />
           </AppBarHeader>
 
           <View>
