@@ -91,7 +91,8 @@ const Component = () => {
   };
 
   const onMenuAdd = () => {
-    return navigation.navigate('MenuAddScreen', {playerName: defaultName});
+    // return navigation.navigate('MenuAddScreen', {playerName: defaultName});
+    return navigation.navigate('CameraScreen', {playerName: defaultName});
   };
 
   const onNextRound = () => {

@@ -5,6 +5,7 @@ import {
   StackNavigationOptions,
 } from '@react-navigation/stack';
 import {
+  CameraScreen,
   MenuAddScreen,
   PlayerAddScreen,
   PlayScreen,
@@ -60,6 +61,11 @@ const App = () => {
                 name="MenuAddScreen"
                 component={MenuAddScreen.Component}
                 options={MenuAddScreen.options}
+              />
+              <Stack.Screen
+                name="CameraScreen"
+                component={CameraScreen.Component}
+                options={CameraScreen.options}
               />
             </Stack.Navigator>
           </NavigationContainer>

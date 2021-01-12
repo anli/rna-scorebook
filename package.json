@@ -25,6 +25,7 @@
     "react": "16.13.1",
     "react-hook-form": "^6.13.1",
     "react-native": "0.63.3",
+    "react-native-camera": "^3.41.0",
     "react-native-device-info": "^7.3.1",
     "react-native-dialog": "^6.1.2",
     "react-native-dynamic": "^1.0.0",
