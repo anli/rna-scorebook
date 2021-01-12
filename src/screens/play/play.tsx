@@ -91,10 +91,8 @@ const Component = () => {
   };
 
   const onMenuAdd = () => {
-    // return navigation.navigate('MenuAddScreen', {playerName: defaultName});
-    return navigation.navigate('CameraScreen', {playerName: defaultName});
+    return navigation.navigate('MenuAddScreen', {playerName: defaultName});
   };
-
   const onNextRound = () => {
     const round = rounds[roundIndex + 1];
     return round && setRoundId(round.id);

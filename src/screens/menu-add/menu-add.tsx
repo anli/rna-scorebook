@@ -5,7 +5,7 @@ import store, {playSlice} from '@store';
 import {colors} from '@theme';
 import React, {useState} from 'react';
 import {View} from 'react-native';
-import {FAB, HelperText, Subheading} from 'react-native-paper';
+import {Appbar, FAB, HelperText, Subheading} from 'react-native-paper';
 import styled from 'styled-components/native';
 import MenuItem from './menu-item';
 import useMenuItems from './use-menu-items';
@@ -40,9 +40,21 @@ const Component = () => {
     }
   };
 
+  const onCamera = () => {
+    return navigation.navigate('CameraScreen', {
+      playerName: params.playerName,
+    });
+  };
+
   return (
     <Screen>
-      <Header onBack={back} title="What is on the menu?" />
+      <Header onBack={back} title="What is on the menu?">
+        <Appbar.Action
+          icon="scan-helper"
+          onPress={onCamera}
+          testID="CameraButton"
+        />
+      </Header>
 
       <Body showsVerticalScrollIndicator={false}>
         {groups.map(({maxCount, name: groupName, items}) => {
