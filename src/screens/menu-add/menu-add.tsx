@@ -1,11 +1,10 @@
 import {Header} from '@components';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {StackActions, useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
-import store, {playSlice} from '@store';
 import {colors} from '@theme';
 import React, {useState} from 'react';
 import {View} from 'react-native';
-import {Appbar, FAB, HelperText, Subheading} from 'react-native-paper';
+import {FAB, HelperText, Subheading} from 'react-native-paper';
 import styled from 'styled-components/native';
 import MenuItem from './menu-item';
 import useMenuItems from './use-menu-items';
@@ -13,7 +12,6 @@ import useMenuItems from './use-menu-items';
 const Component = () => {
   const navigation = useNavigation();
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const {params}: {params: {playerName: string}} = useRoute<any>();
 
   const back = () => {
     navigation.canGoBack() && navigation.goBack();
@@ -32,29 +30,15 @@ const Component = () => {
     setIsSubmitted(true);
 
     if (isValid) {
-      store.dispatch(
-        playSlice.actions.setPlayersMap({[params.playerName]: true}),
-      );
-      store.dispatch(playSlice.actions.setMenuItemsMap(pickedMap));
-      navigation.navigate('PlayScreen');
+      // store.dispatch(playSlice.actions.setMenuItemsMap(pickedMap));
+      navigation.dispatch(StackActions.popToTop());
+      navigation.navigate('GameScreen');
     }
-  };
-
-  const onCamera = () => {
-    return navigation.navigate('CameraScreen', {
-      playerName: params.playerName,
-    });
   };
 
   return (
     <Screen>
-      <Header onBack={back} title="What is on the menu?">
-        <Appbar.Action
-          icon="scan-helper"
-          onPress={onCamera}
-          testID="CameraButton"
-        />
-      </Header>
+      <Header onBack={back} title="What is on the menu?" />
 
       <Body showsVerticalScrollIndicator={false}>
         {groups.map(({maxCount, name: groupName, items}) => {

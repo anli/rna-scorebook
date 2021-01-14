@@ -33,6 +33,7 @@ const playSlice = createSlice({
       state.playersMap = action.payload;
     },
     setMenuItemsMap: (state: State, action: PayloadAction<MenuItemsMap>) => {
+      state.playersMap = {ME: true};
       state.menuItemsMap = {
         ...compulsoryMenuItemsMap,
         ...action.payload,

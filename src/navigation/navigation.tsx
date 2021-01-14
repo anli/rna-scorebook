@@ -1,7 +1,13 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {PlayScreen, SettingScreen, StartScreen} from '@screens';
+import {
+  GameScreen,
+  MenuAddScreen,
+  PlayScreen,
+  SettingScreen,
+  StartScreen,
+} from '@screens';
 import {colors} from '@theme';
 import React from 'react';
 import {View} from 'react-native';
@@ -45,15 +51,22 @@ const AppTabsScreen = () => (
 const RootStack = createStackNavigator();
 const RootStackScreen = () => {
   return (
-    <RootStack.Navigator
-      headerMode="none"
-      screenOptions={{animationEnabled: false}}
-      mode="modal">
+    <RootStack.Navigator headerMode="none" mode="modal">
       <RootStack.Screen name="AppTabsScreen" component={AppTabsScreen} />
       <RootStack.Screen
         name="StartScreen"
         component={StartScreen.Component}
         options={StartScreen.options}
+      />
+      <RootStack.Screen
+        name="MenuAddScreen"
+        component={MenuAddScreen.Component}
+        options={MenuAddScreen.options}
+      />
+      <RootStack.Screen
+        name="GameScreen"
+        component={GameScreen.Component}
+        options={GameScreen.options}
       />
     </RootStack.Navigator>
   );

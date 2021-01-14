@@ -84,15 +84,6 @@ const Component = () => {
     menuItems,
   ) as any;
 
-  const hasDefaultName = !R.isNil(defaultName);
-
-  const start = () => {
-    return navigation.navigate('PlayerAddScreen');
-  };
-
-  const onMenuAdd = () => {
-    return navigation.navigate('MenuAddScreen', {playerName: defaultName});
-  };
   const onNextRound = () => {
     const round = rounds[roundIndex + 1];
     return round && setRoundId(round.id);
@@ -244,21 +235,6 @@ const Component = () => {
               )}
             </Modalize>
           </Portal>
-        </>
-      )}
-      {!hasGame && (
-        <>
-          {hasDefaultName && (
-            <StartButton
-              label="Select Menu"
-              testID="MenuAddButton"
-              icon="plus"
-              onPress={onMenuAdd}
-            />
-          )}
-          {!hasDefaultName && (
-            <StartButton testID="StartButton" icon="plus" onPress={start} />
-          )}
         </>
       )}
     </Screen>

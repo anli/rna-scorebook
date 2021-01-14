@@ -1,21 +1,19 @@
-import {useNavigation} from '@react-navigation/native';
+import {BackButton} from '@components';
+import {StackActions, useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {colors} from '@theme';
 import React from 'react';
 import {RNCamera} from 'react-native-camera';
-import {
-  Appbar,
-  Button,
-  IconButton,
-  Title as NativeTitle,
-} from 'react-native-paper';
+import {Appbar, Button, Title as NativeTitle} from 'react-native-paper';
 import styled from 'styled-components/native';
 
 const Component = () => {
   const navigation = useNavigation();
 
-  const onBack = () => {
-    navigation.canGoBack() && navigation.goBack();
+  const onManuallySelect = () => {
+    navigation.dispatch(StackActions.popToTop());
+    navigation.navigate('GameScreen');
+    // navigation.navigate('MenuAddScreen');
   };
 
   return (
@@ -23,12 +21,7 @@ const Component = () => {
       <Camera onTextRecognized={undefined} captureAudio={false}>
         <MaskedHeader>
           <AppBarHeader>
-            <BackButton
-              color="white"
-              testID="BackButton"
-              icon="close"
-              onPress={onBack}
-            />
+            <BackButton color="white" icon="close" />
           </AppBarHeader>
         </MaskedHeader>
         <Body>
@@ -42,7 +35,8 @@ const Component = () => {
             <ManuallySelectButton
               icon="selection"
               color="white"
-              uppercase={false}>
+              uppercase={false}
+              onPress={onManuallySelect}>
               Select your menu
             </ManuallySelectButton>
           </TitleContainer>
@@ -89,10 +83,6 @@ const MaskedFooter = styled.View`
 
 const AppBarHeader = styled(Appbar.Header)`
   background-color: transparent;
-`;
-
-const BackButton = styled(IconButton)`
-  margin-left: 10px;
 `;
 
 const Title = styled(NativeTitle)`
