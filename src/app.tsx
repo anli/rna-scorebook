@@ -2,7 +2,6 @@ import Navigation from '@navigation';
 import store, {persistor} from '@store';
 import React from 'react';
 import {StatusBar} from 'react-native';
-import {useDarkMode} from 'react-native-dynamic';
 import {
   DefaultTheme as PaperDefaultTheme,
   Provider as PaperProvider,
@@ -19,15 +18,13 @@ const theme = {
 };
 
 const App = () => {
-  const isDarkMode = useDarkMode();
-
   return (
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <PaperProvider theme={theme}>
           <StatusBar
-            backgroundColor={isDarkMode ? '#0d0d0d' : colors.background}
-            barStyle={isDarkMode ? 'dark-content' : 'light-content'}
+            backgroundColor={colors.background}
+            barStyle="dark-content"
           />
           <Navigation />
         </PaperProvider>

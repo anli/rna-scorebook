@@ -8,7 +8,9 @@ import {View} from 'react-native';
 import {Host} from 'react-native-portalize';
 import getTabScreenOptions from './get-tab-screen-options';
 
-const PlaceholderComponent = () => <View />;
+const PlaceholderComponent = () => (
+  <View style={{flex: 1, backgroundColor: 'blue'}} />
+);
 const AppTabs = createBottomTabNavigator();
 const AppTabsScreen = () => (
   <Host>
