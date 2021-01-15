@@ -1,5 +1,5 @@
 import {BackButton} from '@components';
-import {StackActions, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {colors} from '@theme';
 import React from 'react';
@@ -11,9 +11,7 @@ const Component = () => {
   const navigation = useNavigation();
 
   const onManuallySelect = () => {
-    navigation.dispatch(StackActions.popToTop());
-    navigation.navigate('GameScreen');
-    // navigation.navigate('MenuAddScreen');
+    navigation.navigate('MenuAddScreen');
   };
 
   return (

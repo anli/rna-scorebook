@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {
   GameScreen,
   MenuAddScreen,
+  PlayerAddScreen,
   PlayScreen,
   SettingScreen,
   StartScreen,
@@ -14,24 +15,22 @@ import {View} from 'react-native';
 import {Host} from 'react-native-portalize';
 import getTabScreenOptions from './get-tab-screen-options';
 
-const PlaceholderComponent = () => (
-  <View style={{flex: 1, backgroundColor: 'blue'}} />
-);
+const PlaceholderComponent = () => <View />;
 const AppTabs = createBottomTabNavigator();
 const AppTabsScreen = () => (
   <Host>
     <AppTabs.Navigator
-      initialRouteName="PlayScreen"
+      initialRouteName="GameScreen"
       tabBarOptions={{showLabel: false, activeTintColor: colors.primary}}>
       <AppTabs.Screen
-        name="PlayScreen"
-        component={PlayScreen.Component}
-        options={getTabScreenOptions('gamepad-variant', PlayScreen.options)}
+        name="GameScreen"
+        component={GameScreen.Component}
+        options={getTabScreenOptions('gamepad-variant', GameScreen.options)}
       />
       <AppTabs.Screen
         name="Create"
         component={PlaceholderComponent}
-        options={getTabScreenOptions('plus', PlayScreen.options)}
+        options={getTabScreenOptions('plus-box-outline', PlayScreen.options)}
         listeners={({navigation}) => ({
           tabPress: (e) => {
             e.preventDefault();
@@ -64,9 +63,9 @@ const RootStackScreen = () => {
         options={MenuAddScreen.options}
       />
       <RootStack.Screen
-        name="GameScreen"
-        component={GameScreen.Component}
-        options={GameScreen.options}
+        name="PlayerAddScreen"
+        component={PlayerAddScreen.Component}
+        options={PlayerAddScreen.options}
       />
     </RootStack.Navigator>
   );

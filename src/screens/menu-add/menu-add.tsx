@@ -1,5 +1,5 @@
 import {Header} from '@components';
-import {StackActions, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {colors} from '@theme';
 import React, {useState} from 'react';
@@ -31,7 +31,6 @@ const Component = () => {
 
     if (isValid) {
       // store.dispatch(playSlice.actions.setMenuItemsMap(pickedMap));
-      navigation.dispatch(StackActions.popToTop());
       navigation.navigate('GameScreen');
     }
   };
