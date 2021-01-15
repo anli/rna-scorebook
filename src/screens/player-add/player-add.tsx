@@ -29,7 +29,7 @@ const Component = () => {
     <Screen>
       <Dialog>
         <Card.Content>
-          <Title>What is the player name?</Title>
+          <Title>Who is playing?</Title>
           <Controller
             control={control}
             render={({onChange, onBlur, value}) => (
@@ -55,8 +55,13 @@ const Component = () => {
           </HelperText>
         </Card.Content>
         <Buttons>
-          <CancelButton onPress={onDismiss}>Cancel</CancelButton>
-          <Button mode="contained" onPress={handleSubmit(onSubmit)}>
+          <CancelButton testID="CancelButton" onPress={onDismiss}>
+            Cancel
+          </CancelButton>
+          <Button
+            testID="ConfirmButton"
+            mode="contained"
+            onPress={handleSubmit(onSubmit)}>
             Confirm
           </Button>
         </Buttons>
