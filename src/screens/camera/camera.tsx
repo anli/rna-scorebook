@@ -33,9 +33,9 @@ const Component = () => {
       return validItems.length > 0;
     });
     const texts = validTextBlocks.map((textBlock) => textBlock.value);
-    console.log({texts});
 
     if (texts.length === 7) {
+      const menuItems = allMenuItems.filter(({name}) => texts.includes(name));
       setCanTextRecognize(false);
     }
     return setValidTexts(texts);
