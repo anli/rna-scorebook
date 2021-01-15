@@ -1,1 +1,1 @@
-export {default as GameScreen} from './game';
+export {default} from './game';

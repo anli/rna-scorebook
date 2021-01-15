@@ -5,7 +5,6 @@ import {
   GameScreen,
   MenuAddScreen,
   PlayerAddScreen,
-  PlayScreen,
   SettingScreen,
   StartScreen,
 } from '@screens';
@@ -30,7 +29,7 @@ const AppTabsScreen = () => (
       <AppTabs.Screen
         name="Create"
         component={PlaceholderComponent}
-        options={getTabScreenOptions('plus-box-outline', PlayScreen.options)}
+        options={getTabScreenOptions('plus-box-outline', {})}
         listeners={({navigation}) => ({
           tabPress: (e) => {
             e.preventDefault();

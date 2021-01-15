@@ -1,1 +1,1 @@
-export {default as MenuAddScreen} from './menu-add';
+export {default} from './menu-add';

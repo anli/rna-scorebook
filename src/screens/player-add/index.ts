@@ -1,1 +1,1 @@
-export {default as PlayerAddScreen} from './player-add';
+export {default} from './player-add';
