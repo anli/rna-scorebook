@@ -3,23 +3,26 @@ import React, {useState} from 'react';
 import {useWindowDimensions} from 'react-native';
 import {TabBar, TabView} from 'react-native-tab-view';
 
+type RoundId = 'round1' | 'round2' | 'round3';
 interface Props {
   data: any[];
-  render: (routeData: any[], index: number) => JSX.Element;
+  render: (routeData: any[], roundId: RoundId) => JSX.Element;
 }
+
+const rounds: {key: RoundId; title: string}[] = [
+  {key: 'round1', title: '1'},
+  {key: 'round2', title: '2'},
+  {key: 'round3', title: '3'},
+];
 
 const Rounds = ({data, render}: Props) => {
   const {width} = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    {key: 'first', title: '1'},
-    {key: 'second', title: '2'},
-    {key: 'third', title: '3'},
-  ]);
+  const [routes] = useState(rounds);
 
   const initialLayout = {width};
 
-  const renderScene = () => render(data[index], index);
+  const renderScene = () => render(data[index], rounds[index].key);
 
   const Tabs = (props: any) => (
     <TabBar

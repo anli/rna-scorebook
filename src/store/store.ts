@@ -15,8 +15,8 @@ import {
   REHYDRATE,
 } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
+import gameSlice from './game-slice';
 import playSlice from './play-slice';
-import userSlice from './user-slice';
 
 const persistConfig = {
   key: 'root',
@@ -26,7 +26,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   play: playSlice.reducer,
-  user: userSlice.reducer,
+  game: gameSlice.reducer,
 });
 
 const persistedReducer = persistReducer<any>(persistConfig, rootReducer);

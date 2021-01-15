@@ -1,6 +1,5 @@
 import {colors} from '@theme';
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
 import {Badge, Card, Paragraph} from 'react-native-paper';
 import styled from 'styled-components/native';
 
@@ -12,9 +11,7 @@ const MenuItem = ({name, score}: Props) => {
   return (
     <MenuItemWrapper width={104}>
       <MenuItemWrapperContent>
-        <TouchableOpacity>
-          <Name numberOfLines={2}>{name}</Name>
-        </TouchableOpacity>
+        <Name numberOfLines={2}>{name}</Name>
       </MenuItemWrapperContent>
       <Score visible={Number(score) > 0} size={32}>
         {score}

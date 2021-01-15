@@ -1,72 +1,74 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
-import React from 'react';
+import {GameSelectors, gameSlice} from '@store';
+import R from 'ramda';
+import React, {useRef, useState} from 'react';
 import {View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Modalize} from 'react-native-modalize';
 import {Appbar} from 'react-native-paper';
+import {Portal} from 'react-native-portalize';
+import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
+import EmptyState from './empty-state';
 import MenuItem from './menu-item';
+import MenuItemOptions from './menu-item-options';
 import Player from './player';
 import RoundsNative from './rounds';
 
-const type = {name: 'Sushi Go Party!'};
-const players = [{id: 'ME', name: 'ME', totalScore: '0'}];
-const selectedPlayerId = 'ME';
-const roundOneScores = [
-  {
-    id: 'eggNigiri',
-    name: 'EGG NIGIRI',
-    score: '6',
-  },
-  {
-    id: 'salmonNigiri',
-    name: 'SALMON NIGIRI',
-    score: '2',
-  },
-  {
-    id: 'squidNigiri',
-    name: 'SQUID NIGIRI',
-    score: '0',
-  },
-  {
-    id: 'temaki',
-    name: 'TEMAKI',
-    score: '6',
-  },
-  {
-    id: 'soySauce',
-    name: 'SOY SAUCE',
-  },
-  {
-    id: 'wasabi',
-    name: 'WASABI',
-  },
-  {
-    id: 'onigiri',
-    name: 'ONIGIRI',
-  },
-  {
-    id: 'edamame',
-    name: 'EDAMAME',
-  },
-  {
-    id: 'tempura',
-    name: 'TEMPURA',
-  },
-];
-const roundTwoScores = roundOneScores;
-const roundThreeScores = roundOneScores;
+type RoundId = 'round1' | 'round2' | 'round3';
 
-const Component = () => {
+const HasGame = () => {
   const navigation = useNavigation();
+  const menuItemOptionsRef = useRef<Modalize>(null);
+  const [selected, setSelected] = useState<
+    {menuItemId: string; roundId: RoundId} | undefined
+  >(undefined);
+  const type = useSelector(GameSelectors.type);
+  const players = useSelector(GameSelectors.players);
+  const selectedPlayerId = useSelector(GameSelectors.selectedPlayerId);
+  const roundScores = useSelector(GameSelectors.roundScores);
+  const menuItems = useSelector(GameSelectors.menuItems);
+  const dispatch = useDispatch();
+
+  const selectedMenuItem = R.find(
+    R.propEq('id', selected?.menuItemId),
+    menuItems,
+  );
 
   const onAddPlayer = () => {
     navigation.navigate('PlayerAddScreen');
   };
 
+  const onSelectMenuItem = (menuItemId: string, roundId: RoundId) => {
+    setSelected({menuItemId, roundId});
+    menuItemOptionsRef.current?.open();
+  };
+
+  const onSelectMenuItemOption = (
+    roundId: RoundId,
+    menuItemId: string,
+    value: number,
+  ) => {
+    dispatch(
+      gameSlice.actions.setScore({
+        menuItemId,
+        roundId,
+        value,
+      }),
+    );
+    menuItemOptionsRef.current?.close();
+    setSelected(undefined);
+  };
+
+  const onSelectPlayer = (id: string) => {
+    dispatch(gameSlice.actions.selectPlayer(id));
+  };
+
   return (
     <Screen>
       <AppBarHeader>
-        <Appbar.Content title={type.name} />
+        <Appbar.Content title={type?.name} />
       </AppBarHeader>
       <View>
         <Players horizontal showsHorizontalScrollIndicator={false}>
@@ -79,34 +81,67 @@ const Component = () => {
             testID="AddPlayerButton"
             onPress={onAddPlayer}
           />
-          {players.map(({id, name, totalScore}) => (
+          {players?.map(({id, name, totalScore}) => (
             <Player
               key={id}
               name={name}
               score={totalScore}
               color="white"
               selected={id === selectedPlayerId}
-              onPress={() => {}}
+              onPress={() => onSelectPlayer(id)}
               testID={`SelectPlayerButton.${id}`}
             />
           ))}
         </Players>
       </View>
       <Rounds
-        data={[roundOneScores, roundTwoScores, roundThreeScores]}
-        render={(roundData) => {
+        data={roundScores}
+        render={(roundData, roundId) => {
           return (
             <Screen>
               <MenuItems>
-                {roundData?.map(({name, score, id}) => (
-                  <MenuItem key={id} name={name} score={score} />
+                {roundData?.map(({name, score, id: menuItemId}) => (
+                  <TouchableOpacity
+                    key={menuItemId}
+                    onPress={() => onSelectMenuItem(menuItemId, roundId)}>
+                    <MenuItem name={name} score={score} />
+                  </TouchableOpacity>
                 ))}
               </MenuItems>
             </Screen>
           );
         }}
       />
+      <Portal>
+        <Modalize ref={menuItemOptionsRef} adjustToContentHeight>
+          {!R.isNil(selected) && !R.isNil(selectedMenuItem) && (
+            <MenuItemOptions
+              testID="MenuItemOption"
+              question={selectedMenuItem.scoreConfigMap?.question || ''}
+              options={selectedMenuItem.scoreConfigMap?.options || []}
+              onPress={(value) =>
+                onSelectMenuItemOption(
+                  selected.roundId,
+                  selected.menuItemId,
+                  value,
+                )
+              }
+            />
+          )}
+        </Modalize>
+      </Portal>
     </Screen>
+  );
+};
+
+const Component = () => {
+  const hasGame = Boolean(useSelector(GameSelectors.type));
+
+  return (
+    <>
+      {hasGame && <HasGame />}
+      {!hasGame && <EmptyState />}
+    </>
   );
 };
 
@@ -138,11 +173,9 @@ const Rounds = styled(RoundsNative)`
 `;
 
 const MenuItems = styled.View`
-  padding-left: 24px;
-  padding-right: 24px;
   margin-top: 8px;
   margin-bottom: 16px;
   flex-wrap: wrap;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: center;
 `;

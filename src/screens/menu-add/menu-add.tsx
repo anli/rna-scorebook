@@ -1,10 +1,13 @@
 import {Header} from '@components';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
+import {gameSlice} from '@store';
 import {colors} from '@theme';
+import R from 'ramda';
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import {FAB, HelperText, Subheading} from 'react-native-paper';
+import {useDispatch} from 'react-redux';
 import styled from 'styled-components/native';
 import MenuItem from './menu-item';
 import useMenuItems from './use-menu-items';
@@ -12,6 +15,7 @@ import useMenuItems from './use-menu-items';
 const Component = () => {
   const navigation = useNavigation();
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const back = () => {
     navigation.canGoBack() && navigation.goBack();
@@ -30,7 +34,8 @@ const Component = () => {
     setIsSubmitted(true);
 
     if (isValid) {
-      // store.dispatch(playSlice.actions.setMenuItemsMap(pickedMap));
+      const menuItemIds = R.keys(R.filter((n) => n, pickedMap)) as string[];
+      dispatch(gameSlice.actions.startGame(menuItemIds));
       navigation.navigate('GameScreen');
     }
   };

@@ -1,8 +1,10 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
+import {gameSlice} from '@store';
 import React from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Button, Card, HelperText, TextInput, Title} from 'react-native-paper';
+import {useDispatch} from 'react-redux';
 import styled from 'styled-components/native';
 
 type FormData = {
@@ -11,10 +13,16 @@ type FormData = {
 
 const Component = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const {control, handleSubmit, errors} = useForm<FormData>();
 
   const onDismiss = () => {
     navigation.canGoBack() && navigation.goBack();
+  };
+
+  const onSubmit = ({playerName}: FormData) => {
+    dispatch(gameSlice.actions.addPlayer(playerName));
+    onDismiss();
   };
 
   return (
@@ -48,7 +56,7 @@ const Component = () => {
         </Card.Content>
         <Buttons>
           <CancelButton onPress={onDismiss}>Cancel</CancelButton>
-          <Button mode="contained" onPress={handleSubmit(onDismiss)}>
+          <Button mode="contained" onPress={handleSubmit(onSubmit)}>
             Confirm
           </Button>
         </Buttons>
@@ -60,21 +68,6 @@ const Component = () => {
 const options = {
   cardStyle: {backgroundColor: 'transparent'},
   cardOverlayEnabled: true,
-  cardStyleInterpolator: ({current: {progress}}: any) => ({
-    cardStyle: {
-      opacity: progress.interpolate({
-        inputRange: [0, 0.5, 0.9, 1],
-        outputRange: [0, 0.25, 0.7, 1],
-      }),
-    },
-    overlayStyle: {
-      opacity: progress.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 0.5],
-        extrapolate: 'clamp',
-      }),
-    },
-  }),
 };
 
 export default class PlayerScreen {
@@ -85,6 +78,7 @@ export default class PlayerScreen {
 const Screen = styled.SafeAreaView`
   flex: 1;
   justify-content: center;
+  background-color: transparent;
 `;
 
 const PlayerNameInput = styled(TextInput)`
