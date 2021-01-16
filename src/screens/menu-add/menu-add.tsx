@@ -1,4 +1,4 @@
-import {Header} from '@components';
+import {BackButton} from '@components';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {gameSlice} from '@store';
@@ -6,7 +6,7 @@ import {colors} from '@theme';
 import R from 'ramda';
 import React, {useState} from 'react';
 import {View} from 'react-native';
-import {FAB, HelperText, Subheading} from 'react-native-paper';
+import {Appbar, FAB, HelperText, Subheading} from 'react-native-paper';
 import {useDispatch} from 'react-redux';
 import styled from 'styled-components/native';
 import MenuItem from './menu-item';
@@ -16,10 +16,6 @@ const Component = () => {
   const navigation = useNavigation();
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const dispatch = useDispatch();
-
-  const back = () => {
-    navigation.canGoBack() && navigation.goBack();
-  };
 
   const {
     groups,
@@ -42,7 +38,10 @@ const Component = () => {
 
   return (
     <Screen>
-      <Header onBack={back} title="What is on the menu?" />
+      <AppBarHeader>
+        <BackButton icon="arrow-left" />
+        <Appbar.Content title="What is on the menu?" />
+      </AppBarHeader>
 
       <Body showsVerticalScrollIndicator={false}>
         {groups.map(({maxCount, name: groupName, items}) => {
@@ -114,4 +113,9 @@ const Section = styled.View`
 
 const ErrorMessage = styled(HelperText)`
   margin-left: -10px;
+`;
+
+const AppBarHeader = styled(Appbar.Header)`
+  margin-left: 16px;
+  background-color: transparent;
 `;

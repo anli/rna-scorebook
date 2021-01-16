@@ -22,6 +22,4 @@ const BackButton = ({color, icon}: Props) => {
 
 export default BackButton;
 
-const Button = styled(IconButton)`
-  margin-left: 18px;
-`;
+const Button = styled(IconButton)``;

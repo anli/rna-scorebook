@@ -6,7 +6,7 @@ const EmptyState = () => {
   return (
     <Screen>
       <Container>
-        <Headline>You have not{'\n'}started any game yet.</Headline>
+        <Headline>You have not started any game yet.</Headline>
       </Container>
     </Screen>
   );

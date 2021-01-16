@@ -102,6 +102,7 @@ const HasGame = () => {
               <MenuItems>
                 {roundData?.map(({name, score, id: menuItemId}) => (
                   <TouchableOpacity
+                    testID={`MenuItemButton.${menuItemId}`}
                     key={menuItemId}
                     onPress={() => onSelectMenuItem(menuItemId, roundId)}>
                     <MenuItem name={name} score={score} />
@@ -114,11 +115,11 @@ const HasGame = () => {
       />
       <Portal>
         <Modalize ref={menuItemOptionsRef} adjustToContentHeight>
-          {!R.isNil(selected) && !R.isNil(selectedMenuItem) && (
+          {!R.isNil(selected) && !R.isNil(selectedMenuItem?.scoreConfigMap) && (
             <MenuItemOptions
               testID="MenuItemOption"
-              question={selectedMenuItem.scoreConfigMap?.question || ''}
-              options={selectedMenuItem.scoreConfigMap?.options || []}
+              question={selectedMenuItem?.scoreConfigMap.question}
+              options={selectedMenuItem?.scoreConfigMap.options}
               onPress={(value) =>
                 onSelectMenuItemOption(
                   selected.roundId,

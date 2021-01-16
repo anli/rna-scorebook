@@ -5,7 +5,7 @@ import styled from 'styled-components/native';
 
 const Player = ({
   name,
-  score = 0,
+  score,
   color,
   selected,
   onPress,
@@ -21,6 +21,7 @@ const Player = ({
   return (
     <Container testID={testID} onPress={onPress}>
       <AvatarPlayer
+        testID={`${testID}.Avatar`}
         size={64}
         label={String(score)}
         backgroundColor={color}

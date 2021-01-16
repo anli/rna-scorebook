@@ -149,7 +149,7 @@ describe('Menu Add Screen', () => {
         'tempura',
         'pudding',
       ],
-      type: 'play/startGame',
+      type: 'game/startGame',
     });
   });
 

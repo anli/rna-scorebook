@@ -115,7 +115,7 @@ describe('Player Add Screen', () => {
     expect(mockDispatch).toHaveBeenCalledTimes(1);
     expect(mockDispatch).toBeCalledWith({
       payload: 'John',
-      type: 'play/addPlayer',
+      type: 'game/addPlayer',
     });
   });
 

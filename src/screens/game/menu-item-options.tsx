@@ -6,8 +6,8 @@ import {Button, Card, Paragraph, Title} from 'react-native-paper';
 import styled from 'styled-components/native';
 
 interface Props {
-  question: string;
-  options: {name: string; value?: number}[];
+  question?: string;
+  options?: {name: string; value?: number}[];
   onPress: (value: number) => any;
   testID: string;
 }

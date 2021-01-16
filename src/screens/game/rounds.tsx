@@ -9,10 +9,10 @@ interface Props {
   render: (routeData: any[], roundId: RoundId) => JSX.Element;
 }
 
-const rounds: {key: RoundId; title: string}[] = [
-  {key: 'round1', title: '1'},
-  {key: 'round2', title: '2'},
-  {key: 'round3', title: '3'},
+const rounds: {key: RoundId; title: string; testID: string}[] = [
+  {key: 'round1', title: '1', testID: 'Round1Button'},
+  {key: 'round2', title: '2', testID: 'Round2Button'},
+  {key: 'round3', title: '3', testID: 'Round3Button'},
 ];
 
 const Rounds = ({data, render}: Props) => {

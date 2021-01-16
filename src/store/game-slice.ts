@@ -29,7 +29,7 @@ const initialState = {
 };
 
 const gameSlice = createSlice({
-  name: 'play',
+  name: 'game',
   initialState,
   reducers: {
     addPlayer: (state: State, action: PayloadAction<string>) => {
@@ -130,12 +130,7 @@ const selectSelectedPlayer = createDraftSafeSelector(
 
 const selectRoundsMap = createDraftSafeSelector(
   selectSelectedPlayer,
-  (selectedPlayer) =>
-    selectedPlayer?.roundsMap || {
-      round1: {},
-      round2: {},
-      round3: {},
-    },
+  (selectedPlayer) => selectedPlayer?.roundsMap,
 );
 
 export default gameSlice;
