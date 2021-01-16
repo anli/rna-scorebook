@@ -1,31 +1,35 @@
-# [0.5.0](https://github.com/anli/rna-scorebook/compare/0.4.0...0.5.0) (2021-01-10)
-
+# [0.6.0](https://github.com/anli/rna-scorebook/compare/0.5.0...0.6.0) (2021-01-16)
 
 ### Bug Fixes
 
-* **play-screen:** fix canShowDeleteSelectedPlayerButton to return only boolean type ([#52](https://github.com/anli/rna-scorebook/issues/52)) ([61d9bdd](https://github.com/anli/rna-scorebook/commit/61d9bddb7bd7a49d6ed72d2ace257fd10ace369a))
-
+- **game-screen:** fix remove selected player button ([#65](https://github.com/anli/rna-scorebook/issues/65)) ([be81c10](https://github.com/anli/rna-scorebook/commit/be81c1078ecc574be3a00efc56838f875694f3ed)), closes [#24](https://github.com/anli/rna-scorebook/issues/24)
 
 ### Features
 
-* **play:** add menu item score options ([#54](https://github.com/anli/rna-scorebook/issues/54)) ([cc3c532](https://github.com/anli/rna-scorebook/commit/cc3c53218072d3e9698672da51dbc1ac596ae674)), closes [#28](https://github.com/anli/rna-scorebook/issues/28)
-* **play:** change header button ui ([#56](https://github.com/anli/rna-scorebook/issues/56)) ([201c733](https://github.com/anli/rna-scorebook/commit/201c7334690bf9a5833d670cd250e6515e45e4b7))
-* **play:** change header UI, remove player row, change menuItem to items, move round to header ([#51](https://github.com/anli/rna-scorebook/issues/51)) ([2c69890](https://github.com/anli/rna-scorebook/commit/2c6989022f3acb81dc6f8879b886a41cb1e4fe82)), closes [#28](https://github.com/anli/rna-scorebook/issues/28)
+- **play-screen, setting:** add default name, skip player add step if there is default name set ([c6a2442](https://github.com/anli/rna-scorebook/commit/c6a244245b065381da1d66cdab809877ab12a192)), closes [#15](https://github.com/anli/rna-scorebook/issues/15)
+- **screens, store:** overhaul UI and store ([#64](https://github.com/anli/rna-scorebook/issues/64)) ([aef6e07](https://github.com/anli/rna-scorebook/commit/aef6e071bc478dd46e308ac82637378547223626)), closes [#62](https://github.com/anli/rna-scorebook/issues/62) [#61](https://github.com/anli/rna-scorebook/issues/61) [#60](https://github.com/anli/rna-scorebook/issues/60) [#59](https://github.com/anli/rna-scorebook/issues/59) [#46](https://github.com/anli/rna-scorebook/issues/46) [#18](https://github.com/anli/rna-scorebook/issues/18)
 
+# [0.5.0](https://github.com/anli/rna-scorebook/compare/0.4.0...0.5.0) (2021-01-10)
 
+### Bug Fixes
+
+- **play-screen:** fix canShowDeleteSelectedPlayerButton to return only boolean type ([#52](https://github.com/anli/rna-scorebook/issues/52)) ([61d9bdd](https://github.com/anli/rna-scorebook/commit/61d9bddb7bd7a49d6ed72d2ace257fd10ace369a))
+
+### Features
+
+- **play:** add menu item score options ([#54](https://github.com/anli/rna-scorebook/issues/54)) ([cc3c532](https://github.com/anli/rna-scorebook/commit/cc3c53218072d3e9698672da51dbc1ac596ae674)), closes [#28](https://github.com/anli/rna-scorebook/issues/28)
+- **play:** change header button ui ([#56](https://github.com/anli/rna-scorebook/issues/56)) ([201c733](https://github.com/anli/rna-scorebook/commit/201c7334690bf9a5833d670cd250e6515e45e4b7))
+- **play:** change header UI, remove player row, change menuItem to items, move round to header ([#51](https://github.com/anli/rna-scorebook/issues/51)) ([2c69890](https://github.com/anli/rna-scorebook/commit/2c6989022f3acb81dc6f8879b886a41cb1e4fe82)), closes [#28](https://github.com/anli/rna-scorebook/issues/28)
 
 # [0.4.0](https://github.com/anli/rna-scorebook/compare/0.3.0...0.4.0) (2021-01-08)
 
-
 ### Features
 
-* **play:** add alert when reset button is pressed ([#40](https://github.com/anli/rna-scorebook/issues/40)) ([87ef10d](https://github.com/anli/rna-scorebook/commit/87ef10dcef08ec67696f4ec2ab4ae1194301e2e6)), closes [#27](https://github.com/anli/rna-scorebook/issues/27)
-* **play:** add custom fixed increment for standard menu items ([#45](https://github.com/anli/rna-scorebook/issues/45)) ([dc21281](https://github.com/anli/rna-scorebook/commit/dc21281c74170fa79fad81fc5c9dcc36739bda24)), closes [#36](https://github.com/anli/rna-scorebook/issues/36)
-* **play-screen:** add delete selected player ([#42](https://github.com/anli/rna-scorebook/issues/42)) ([7baf6d5](https://github.com/anli/rna-scorebook/commit/7baf6d5ac461e5cefc235224979c55954cca060c)), closes [#24](https://github.com/anli/rna-scorebook/issues/24)
-* **play-screen:** swapped menu item add and minus button ([#44](https://github.com/anli/rna-scorebook/issues/44)) ([325dc9e](https://github.com/anli/rna-scorebook/commit/325dc9e83e6731ef283ad98f322cd02f50b5ea4c)), closes [#29](https://github.com/anli/rna-scorebook/issues/29)
-* **play-screen, play-slice:** add data persistence of selected player ([#41](https://github.com/anli/rna-scorebook/issues/41)) ([4212fa7](https://github.com/anli/rna-scorebook/commit/4212fa701344f2d66a4225a2d789f5d847b52f49)), closes [#39](https://github.com/anli/rna-scorebook/issues/39)
-
-
+- **play:** add alert when reset button is pressed ([#40](https://github.com/anli/rna-scorebook/issues/40)) ([87ef10d](https://github.com/anli/rna-scorebook/commit/87ef10dcef08ec67696f4ec2ab4ae1194301e2e6)), closes [#27](https://github.com/anli/rna-scorebook/issues/27)
+- **play:** add custom fixed increment for standard menu items ([#45](https://github.com/anli/rna-scorebook/issues/45)) ([dc21281](https://github.com/anli/rna-scorebook/commit/dc21281c74170fa79fad81fc5c9dcc36739bda24)), closes [#36](https://github.com/anli/rna-scorebook/issues/36)
+- **play-screen:** add delete selected player ([#42](https://github.com/anli/rna-scorebook/issues/42)) ([7baf6d5](https://github.com/anli/rna-scorebook/commit/7baf6d5ac461e5cefc235224979c55954cca060c)), closes [#24](https://github.com/anli/rna-scorebook/issues/24)
+- **play-screen:** swapped menu item add and minus button ([#44](https://github.com/anli/rna-scorebook/issues/44)) ([325dc9e](https://github.com/anli/rna-scorebook/commit/325dc9e83e6731ef283ad98f322cd02f50b5ea4c)), closes [#29](https://github.com/anli/rna-scorebook/issues/29)
+- **play-screen, play-slice:** add data persistence of selected player ([#41](https://github.com/anli/rna-scorebook/issues/41)) ([4212fa7](https://github.com/anli/rna-scorebook/commit/4212fa701344f2d66a4225a2d789f5d847b52f49)), closes [#39](https://github.com/anli/rna-scorebook/issues/39)
 
 # [0.3.0](https://github.com/anli/rna-scorebook/compare/f9649433be9bd66feb893942c6109f6b78ee71ae...0.3.0) (2021-01-08)
 
