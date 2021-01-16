@@ -26,32 +26,15 @@ const Component = () => {
   }: {
     textBlocks: TrackedTextFeature[];
   }) => {
-    const validTextBlocks = textBlocks.filter((textBlock) => {
-      const validItems = textBlock.components.filter(
-        (textLine) =>
-          textLine.type === 'line' && allMenuItemNames.includes(textLine.value),
-      );
-      return validItems.length > 0;
-    });
-    const texts = validTextBlocks.map((textBlock) => {
-      const isMaki = textBlock.value.startsWith('MAKI');
-      if (isMaki) {
-        return 'MAKI';
-      }
+    const texts = getTexts(textBlocks);
+    const isValid = getIsTextsValid(texts);
 
-      return textBlock.value;
-    });
-
-    if (texts.length === 7) {
+    if (isValid) {
       const menuItems = allMenuItems.filter(({name}) => texts.includes(name));
-      const isValid = getIsValid(menuItems);
-
-      if (isValid) {
-        const menuItemIds = R.pluck('id', menuItems);
-        Vibration.vibrate(1000);
-        dispatch(gameSlice.actions.startGame(menuItemIds));
-        navigation.navigate('GameScreen');
-      }
+      const menuItemIds = R.pluck('id', menuItems);
+      Vibration.vibrate(1000);
+      dispatch(gameSlice.actions.startGame(menuItemIds));
+      navigation.navigate('GameScreen');
     }
   };
 
@@ -168,4 +151,31 @@ const getIsValid = (menuItems: {name: string; typeId: string}[]) => {
     isValidTypeAppetizer &&
     isValidTypeDessert
   );
+};
+
+const getTexts = (textBlocks: TrackedTextFeature[]) => {
+  const validTextBlocks = textBlocks.filter((textBlock) => {
+    const validItems = textBlock.components.filter(
+      (textLine) =>
+        textLine.type === 'line' && allMenuItemNames.includes(textLine.value),
+    );
+    return validItems.length > 0;
+  });
+
+  return validTextBlocks.map((textBlock) => {
+    const isMaki = textBlock.value.startsWith('MAKI');
+    if (isMaki) {
+      return 'MAKI';
+    }
+
+    return textBlock.value;
+  });
+};
+
+const getIsTextsValid = (texts: string[]) => {
+  if (texts.length === 7) {
+    const menuItems = allMenuItems.filter(({name}) => texts.includes(name));
+    return getIsValid(menuItems);
+  }
+  return false;
 };
