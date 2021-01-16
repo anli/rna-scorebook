@@ -28,3 +28,17 @@ Feature: Game Screen
     And that I am at 'Game Screen'
     When I press 'ME Button'
     Then I should see 'ME' selected
+
+  Scenario: Select Menu Item Option
+    Given that I have a game
+    And I press
+    When I press 'Pudding Button'
+    Then I should see 'Pudding Options'
+    When I press 'N/A'
+    Then I want to see 'Pudding' with score '0'
+
+  Scenario: Select Menu Item Option with no config
+    Given that I have a game
+    And I press
+    When I press 'Spoon Button'
+    Then I should not see 'Spoon Options'

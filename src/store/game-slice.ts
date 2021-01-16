@@ -96,6 +96,11 @@ const gameSlice = createSlice({
         },
       ];
     },
+    removeSelectedPlayer: (state: State) => {
+      const playerId = state.selectedPlayerId;
+      state.players = R.reject(R.propEq('id', playerId), state.players);
+      state.selectedPlayerId = 'ME';
+    },
   },
 });
 
