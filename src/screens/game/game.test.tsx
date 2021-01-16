@@ -173,4 +173,24 @@ describe('Game Screen', () => {
       fireEvent.press(getByTestId('MenuItemButton.spoon'));
     });
   });
+
+  it(`Scenario: Remove a player
+      Given that I have a game
+      And I press 'John'
+      When I press 'Remove Player Button'
+      Then I should not see 'John'`, async () => {
+    store.dispatch(gameSlice.actions.startGame(defaultMenuItemIds));
+    store.dispatch(gameSlice.actions.addPlayer('John'));
+    const {getByTestId} = render(
+      <App component={GameScreen.Component} options={GameScreen.options} />,
+    );
+
+    await act(async () => {
+      fireEvent.press(getByTestId('RemoveSelectedPlayerButton'));
+    });
+
+    expect(getByTestId('SelectPlayerButton.ME.Avatar').props.selected).toEqual(
+      true,
+    );
+  });
 });

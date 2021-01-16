@@ -64,11 +64,23 @@ const HasGame = () => {
   const onSelectPlayer = (id: string) => {
     dispatch(gameSlice.actions.selectPlayer(id));
   };
+  const onRemoveSelectedPlayer = () => {
+    dispatch(gameSlice.actions.removeSelectedPlayer());
+  };
+
+  const isSelectedPlayerMe = selectedPlayerId === 'ME';
 
   return (
     <Screen>
       <AppBarHeader>
         <Appbar.Content title={type?.name} />
+        {!isSelectedPlayerMe && (
+          <Appbar.Action
+            testID="RemoveSelectedPlayerButton"
+            icon="account-remove"
+            onPress={onRemoveSelectedPlayer}
+          />
+        )}
       </AppBarHeader>
       <View>
         <Players horizontal showsHorizontalScrollIndicator={false}>
