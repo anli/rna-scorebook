@@ -6,20 +6,13 @@ import {Button, Card, Paragraph, Title} from 'react-native-paper';
 import styled from 'styled-components/native';
 
 interface Props {
-  id: string;
-  question: string;
-  options: {name: string; value: number}[];
-  onPress: (menuItemId: string, value: number) => any;
+  question?: string;
+  options?: {name: string; value?: number}[];
+  onPress: (value: number) => any;
   testID: string;
 }
 
-const MenuItemOptions = ({
-  id: menuItemId,
-  question,
-  options,
-  onPress,
-  testID,
-}: Props) => {
+const MenuItemOptions = ({question, options, onPress, testID}: Props) => {
   return (
     <Card>
       <Card.Content>
@@ -32,7 +25,7 @@ const MenuItemOptions = ({
                   <TouchableOpacity
                     testID={`${testID}.${name}`}
                     key={index}
-                    onPress={() => onPress(menuItemId, value)}>
+                    onPress={() => onPress(value)}>
                     <Option uppercase={false}>
                       <OptionName>{name}</OptionName>
                     </Option>

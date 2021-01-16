@@ -75,3 +75,4 @@ fastlane/screenshots
 .env
 
 */playstore.json
+android/app/google-services.json

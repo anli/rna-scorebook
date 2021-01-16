@@ -5,32 +5,24 @@ Feature: Player Add Screen
     When I am at Player Add Screen
     Then I should see 'Who is playing?'
     And I should see 'Name Input'
-    And I should see 'Back Button'
-    And I should see 'Next Button'
+    And I should see 'Cancel Button'
+    And I should see 'Confirm Button'
 
-  Scenario: Back
+  Scenario: Cancel
     Given that I am at Player Add Screen
-    When I press 'Back Button'
+    When I press 'Cancel Button'
     Then I should go back to previous screen
 
   Scenario: Enter name of player
     Given that I am at Player Add Screen
     When I enter 'John' to 'Name Input'
     Then I should see 'John' in 'Name Input'
-    And I press 'Next Button'
-    And I should see 'Menu Add Screen'
+    And I press 'Confirm Button'
+    And I should see 'Game Screen'
+    And I should see 'John'
 
   Scenario: Did not enter name of player Button
     Given that I am at Player Add Screen
-    When I press 'Next Button'
+    When I press 'Confirm Button'
     Then I should see 'Error Message' 'Please enter your name first'
 
-  Scenario: Add player to existing play
-    Given that I have an existing play
-    And I am at 'Play Screen'
-    And I press 'Player Add Button'
-    When I am at 'Player Add Screen'
-    And I enter 'Mary' to 'Name Input'
-    And I press 'Next Button'
-    Then I should see 'Play Screen'
-    And I should see 'Mary'

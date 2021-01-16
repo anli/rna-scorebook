@@ -3,6 +3,10 @@ import {createStackNavigator} from '@react-navigation/stack';
 import store from '@store';
 import {act, fireEvent, render} from '@testing-library/react-native';
 import React from 'react';
+import {Provider as PaperProvider} from 'react-native-paper';
+import {Host} from 'react-native-portalize';
+import * as redux from 'react-redux';
+import {Provider as ReduxProvider} from 'react-redux';
 import PlayerAddScreen from './player-add';
 
 const mockCanGoBack = jest.fn();
@@ -23,16 +27,22 @@ const App = ({component, options, initialParams = {}}: any) => {
   const Stack = createStackNavigator();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="App"
-          component={component}
-          options={options}
-          initialParams={initialParams}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ReduxProvider store={store}>
+      <PaperProvider>
+        <NavigationContainer>
+          <Host>
+            <Stack.Navigator>
+              <Stack.Screen
+                name="App"
+                component={component}
+                options={options}
+                initialParams={initialParams}
+              />
+            </Stack.Navigator>
+          </Host>
+        </NavigationContainer>
+      </PaperProvider>
+    </ReduxProvider>
   );
 };
 
@@ -46,8 +56,8 @@ describe('Player Add Screen', () => {
       When I am at Player Add Screen
       Then I should see 'Who is playing?'
       And I should see 'Name Input'
-      And I should see 'Back Button'
-      And I should see 'Next Button'`, async () => {
+      And I should see 'Cancel Button'
+      And I should see 'Confirm Button'`, async () => {
     const {getByTestId, getByText} = render(
       <App
         component={PlayerAddScreen.Component}
@@ -58,13 +68,13 @@ describe('Player Add Screen', () => {
 
     expect(getByText('Who is playing?')).toBeDefined();
     expect(getByTestId('NameInput')).toBeDefined();
-    expect(getByTestId('BackButton')).toBeDefined();
-    expect(getByTestId('NextButton')).toBeDefined();
+    expect(getByTestId('CancelButton')).toBeDefined();
+    expect(getByTestId('ConfirmButton')).toBeDefined();
   });
 
-  it(`Scenario: Back
+  it(`Scenario: Cancel
       Given that I am at Player Add Screen
-      When I press 'Back Button'
+      When I press 'Cancel Button'
       Then I should go back to previous screen`, async () => {
     mockCanGoBack.mockReturnValue(true);
     const {getByTestId} = render(
@@ -75,7 +85,7 @@ describe('Player Add Screen', () => {
     );
     await act(async () => {});
 
-    fireEvent.press(getByTestId('BackButton'));
+    fireEvent.press(getByTestId('CancelButton'));
     expect(mockGoBack).toHaveBeenCalledTimes(1);
   });
 
@@ -83,8 +93,13 @@ describe('Player Add Screen', () => {
       Given that I am at Player Add Screen
       When I enter 'John' to 'Name Input'
       Then I should see 'John' in 'Name Input'
-      And I press 'Next Button'
-      And I should see 'Menu Add Screen'`, async () => {
+      And I press 'Confirm Button'
+      And I should see 'Game Screen'
+      And I should see 'John'`, async () => {
+    mockCanGoBack.mockReturnValue(true);
+    const mockDispatch = jest.fn();
+    jest.spyOn(redux, 'useDispatch').mockReturnValue(mockDispatch);
+
     const {getByTestId} = render(
       <App
         component={PlayerAddScreen.Component}
@@ -94,17 +109,19 @@ describe('Player Add Screen', () => {
 
     fireEvent(getByTestId('NameInput'), 'onChangeText', 'John');
     await act(async () => {
-      fireEvent.press(getByTestId('NextButton'));
+      fireEvent.press(getByTestId('ConfirmButton'));
     });
-    expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toBeCalledWith('MenuAddScreen', {
-      playerName: 'John',
+    expect(mockGoBack).toHaveBeenCalledTimes(1);
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(mockDispatch).toBeCalledWith({
+      payload: 'John',
+      type: 'game/addPlayer',
     });
   });
 
   it(`Scenario: Did not enter name of player Button
       Given that I am at Player Add Screen
-      When I press 'Next Button'
+      When I press 'Confirm Button'
       Then I should see 'Error Message' 'Please enter your name first'`, async () => {
     const {getByTestId, getByText} = render(
       <App
@@ -114,40 +131,10 @@ describe('Player Add Screen', () => {
     );
 
     await act(async () => {
-      fireEvent.press(getByTestId('NextButton'));
+      fireEvent.press(getByTestId('ConfirmButton'));
     });
 
     expect(mockNavigate).toHaveBeenCalledTimes(0);
     expect(getByText('Please enter your name first')).toBeDefined();
-  });
-
-  it(`Scenario: Add player to existing play
-      Given that I have an existing play
-      And I am at 'Play Screen'
-      And I press 'Player Add Button'
-      When I am at 'Player Add Screen'
-      And I enter 'Mary' to 'Name Input'
-      And I press 'Next Button'
-      Then I should see 'Play Screen'
-      And I should see 'Mary'`, async () => {
-    const spyDispatch = jest.spyOn(store, 'dispatch');
-    const {getByTestId} = render(
-      <App
-        component={PlayerAddScreen.Component}
-        options={PlayerAddScreen.options}
-        initialParams={{mode: 'ADD_ONLY'}}
-      />,
-    );
-
-    fireEvent(getByTestId('NameInput'), 'onChangeText', 'Mary');
-    await act(async () => {
-      fireEvent.press(getByTestId('NextButton'));
-    });
-    expect(mockGoBack).toHaveBeenCalledTimes(1);
-    expect(spyDispatch).toHaveBeenCalledTimes(1);
-    expect(spyDispatch).toHaveBeenCalledWith({
-      payload: 'Mary',
-      type: 'play/addPlayer',
-    });
   });
 });

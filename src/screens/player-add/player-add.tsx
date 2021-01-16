@@ -1,11 +1,10 @@
-import {Header} from '@components';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
-import store, {playSlice} from '@store';
-import {colors} from '@theme';
+import {gameSlice} from '@store';
 import React from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {FAB, HelperText, TextInput} from 'react-native-paper';
+import {Button, Card, HelperText, TextInput, Title} from 'react-native-paper';
+import {useDispatch} from 'react-redux';
 import styled from 'styled-components/native';
 
 type FormData = {
@@ -14,63 +13,66 @@ type FormData = {
 
 const Component = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const {control, handleSubmit, errors} = useForm<FormData>();
-  const {params}: {params: {mode: string}} = useRoute<any>();
-  const isAddOnlyMode = params?.mode === 'ADD_ONLY';
 
-  const back = () => {
+  const onDismiss = () => {
     navigation.canGoBack() && navigation.goBack();
   };
 
-  const next = ({playerName}: FormData) => {
-    if (isAddOnlyMode) {
-      store.dispatch(playSlice.actions.addPlayer(playerName));
-      return back();
-    }
-
-    return navigation.navigate('MenuAddScreen', {playerName});
+  const onSubmit = ({playerName}: FormData) => {
+    dispatch(gameSlice.actions.addPlayer(playerName));
+    onDismiss();
   };
 
   return (
     <Screen>
-      <Header onBack={back} title="Who is playing?" />
-
-      <Body showsVerticalScrollIndicator={false}>
-        <Controller
-          control={control}
-          render={({onChange, onBlur, value}) => (
-            <PlayerNameInput
-              error={Boolean(errors.playerName)}
-              testID="NameInput"
-              autoCapitalize="none"
-              autoCompleteType="name"
-              autoCorrect={false}
-              mode="outlined"
-              placeholder="Name"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />
-          )}
-          name="playerName"
-          rules={{required: 'Please enter your name first'}}
-          defaultValue=""
-        />
-        <HelperText type="error" visible={Boolean(errors.playerName)}>
-          {errors?.playerName?.message}
-        </HelperText>
-      </Body>
-      <NextButton
-        testID="NextButton"
-        icon="arrow-right"
-        onPress={handleSubmit(next)}
-      />
+      <Dialog>
+        <Card.Content>
+          <Title>Who is playing?</Title>
+          <Controller
+            control={control}
+            render={({onChange, onBlur, value}) => (
+              <PlayerNameInput
+                error={Boolean(errors.playerName)}
+                testID="NameInput"
+                autoCapitalize="none"
+                autoCompleteType="name"
+                autoCorrect={false}
+                mode="outlined"
+                placeholder="Name"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+            name="playerName"
+            rules={{required: 'Please enter your name first'}}
+            defaultValue=""
+          />
+          <HelperText type="error" visible={Boolean(errors.playerName)}>
+            {errors?.playerName?.message}
+          </HelperText>
+        </Card.Content>
+        <Buttons>
+          <CancelButton testID="CancelButton" onPress={onDismiss}>
+            Cancel
+          </CancelButton>
+          <Button
+            testID="ConfirmButton"
+            mode="contained"
+            onPress={handleSubmit(onSubmit)}>
+            Confirm
+          </Button>
+        </Buttons>
+      </Dialog>
     </Screen>
   );
 };
 
 const options = {
-  headerShown: false,
+  cardStyle: {backgroundColor: 'transparent'},
+  cardOverlayEnabled: true,
 };
 
 export default class PlayerScreen {
@@ -80,21 +82,26 @@ export default class PlayerScreen {
 
 const Screen = styled.SafeAreaView`
   flex: 1;
-`;
-
-const NextButton = styled(FAB)`
-  position: absolute;
-  margin: 24px 24px 24px 24px;
-  right: 0px;
-  bottom: 0px;
-  background-color: ${colors.primary};
+  justify-content: center;
+  background-color: transparent;
 `;
 
 const PlayerNameInput = styled(TextInput)`
+  background-color: white;
+  margin-top: 8px;
   margin-bottom: 8px;
 `;
 
-const Body = styled.ScrollView`
-  flex: 1;
-  padding: 0px 24px 0px 24px;
+const Dialog = styled(Card)`
+  margin-left: 24px;
+  margin-right: 24px;
+  padding: 16px 16px 16px 16px;
+`;
+
+const Buttons = styled(Card.Actions)`
+  justify-content: flex-end;
+`;
+
+const CancelButton = styled(Button)`
+  margin: 0px 8px 0px 8px;
 `;

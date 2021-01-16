@@ -340,7 +340,7 @@ export const allMenuItems = [
   },
   {
     id: 'eel',
-    name: 'eel',
+    name: 'EEL',
     typeId: 'appetizers',
     scoreConfigMap: {
       question: 'Count how many eel cards you have',
@@ -443,9 +443,3 @@ export const allMenuItems = [
     },
   },
 ];
-
-export const compulsoryMenuItemsMap = {
-  eggNigiri: true,
-  salmonNigiri: true,
-  squidNigiri: true,
-};

@@ -3,6 +3,9 @@ import {createStackNavigator} from '@react-navigation/stack';
 import store from '@store';
 import {act, fireEvent, render} from '@testing-library/react-native';
 import React from 'react';
+import {Provider as PaperProvider} from 'react-native-paper';
+import {Host} from 'react-native-portalize';
+import {Provider as ReduxProvider} from 'react-redux';
 import MenuAddScreen from './menu-add';
 
 const mockCanGoBack = jest.fn();
@@ -19,20 +22,25 @@ jest.mock('@react-navigation/native', () => {
   };
 });
 
-const App = ({component, options, initialParams = {}}: any) => {
+const App = ({component, options}: any) => {
   const Stack = createStackNavigator();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="App"
-          component={component}
-          options={options}
-          initialParams={initialParams}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ReduxProvider store={store}>
+      <PaperProvider>
+        <NavigationContainer>
+          <Host>
+            <Stack.Navigator>
+              <Stack.Screen
+                name="App"
+                component={component}
+                options={options}
+              />
+            </Stack.Navigator>
+          </Host>
+        </NavigationContainer>
+      </PaperProvider>
+    </ReduxProvider>
   );
 };
 
@@ -128,27 +136,20 @@ describe('Menu Add Screen', () => {
       expect(mockNavigate).toHaveBeenCalledTimes(0);
       fireEvent.press(getByTestId('NextButton'));
     });
-    // expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toBeCalledWith('PlayScreen');
+    expect(mockNavigate).toBeCalledWith('GameScreen');
 
-    expect(spyDispatch).toHaveBeenCalledTimes(2);
-    expect(spyDispatch).toHaveBeenNthCalledWith(1, {
-      payload: {
-        John: true,
-      },
-      type: 'play/setPlayersMap',
-    });
-    expect(spyDispatch).toHaveBeenNthCalledWith(2, {
-      payload: {
-        edamame: true,
-        onigiri: true,
-        pudding: true,
-        soySauce: true,
-        temaki: true,
-        tempura: true,
-        wasabi: true,
-      },
-      type: 'play/setMenuItemsMap',
+    expect(spyDispatch).toHaveBeenCalledTimes(1);
+    expect(spyDispatch).toHaveBeenCalledWith({
+      payload: [
+        'temaki',
+        'soySauce',
+        'wasabi',
+        'onigiri',
+        'edamame',
+        'tempura',
+        'pudding',
+      ],
+      type: 'game/startGame',
     });
   });
 
