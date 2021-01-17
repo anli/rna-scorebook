@@ -1,4 +1,5 @@
 import {BackButton} from '@components';
+import analytics from '@react-native-firebase/analytics';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {allMenuItems, gameSlice} from '@store';
@@ -34,6 +35,7 @@ const Component = () => {
       const menuItemIds = R.pluck('id', menuItems);
       Vibration.vibrate(1000);
       dispatch(gameSlice.actions.startGame(menuItemIds));
+      await analytics().logEvent('started_scanned');
       navigation.navigate('GameScreen');
     }
   };

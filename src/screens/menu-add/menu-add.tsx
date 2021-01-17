@@ -1,4 +1,5 @@
 import {BackButton} from '@components';
+import analytics from '@react-native-firebase/analytics';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {gameSlice} from '@store';
@@ -26,12 +27,13 @@ const Component = () => {
     isValid,
   } = useMenuItems();
 
-  const next = () => {
+  const next = async () => {
     setIsSubmitted(true);
 
     if (isValid) {
       const menuItemIds = R.keys(R.filter((n) => n, pickedMap)) as string[];
       dispatch(gameSlice.actions.startGame(menuItemIds));
+      await analytics().logEvent('started_manually');
       navigation.navigate('GameScreen');
     }
   };

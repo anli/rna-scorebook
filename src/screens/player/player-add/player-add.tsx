@@ -1,3 +1,4 @@
+import analytics from '@react-native-firebase/analytics';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {gameSlice} from '@store';
@@ -20,7 +21,8 @@ const Component = () => {
     navigation.canGoBack() && navigation.goBack();
   };
 
-  const onSubmit = ({playerName}: FormData) => {
+  const onSubmit = async ({playerName}: FormData) => {
+    await analytics().logEvent('player_added');
     dispatch(gameSlice.actions.addPlayer(playerName));
     onDismiss();
   };

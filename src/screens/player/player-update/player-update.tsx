@@ -1,3 +1,4 @@
+import analytics from '@react-native-firebase/analytics';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {gameSlice} from '@store';
@@ -27,7 +28,8 @@ const Component = () => {
     navigation.canGoBack() && navigation.goBack();
   };
 
-  const onSubmit = ({playerName}: FormData) => {
+  const onSubmit = async ({playerName}: FormData) => {
+    await analytics().logEvent('player_updated');
     dispatch(gameSlice.actions.updatePlayer({id, name: playerName}));
     onDismiss();
   };
