@@ -59,6 +59,7 @@ describe('Game Screen', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
 
   it(`Scenario: See No Game UI
@@ -192,5 +193,24 @@ describe('Game Screen', () => {
     expect(getByTestId('SelectPlayerButton.ME.Avatar').props.selected).toEqual(
       true,
     );
+  });
+
+  it(`Scenario: Update Player
+      Given that I have a game
+      And that I have selected player 'John'
+      And I am at 'Game Screen'
+      When I press 'Update Player Button'
+      Then I should see 'Player Update Screen'`, async () => {
+    store.dispatch(gameSlice.actions.startGame(defaultMenuItemIds));
+    store.dispatch(gameSlice.actions.addPlayer('John'));
+    const {getByTestId} = render(
+      <App component={GameScreen.Component} options={GameScreen.options} />,
+    );
+
+    await act(async () => {
+      fireEvent.press(getByTestId('UpdateSelectedPlayerButton'));
+    });
+
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
 });

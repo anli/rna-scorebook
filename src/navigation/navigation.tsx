@@ -5,6 +5,7 @@ import {
   GameScreen,
   MenuAddScreen,
   PlayerAddScreen,
+  PlayerUpdateScreen,
   SettingScreen,
   StartScreen,
 } from '@screens';
@@ -65,6 +66,11 @@ const RootStackScreen = () => {
         name="PlayerAddScreen"
         component={PlayerAddScreen.Component}
         options={PlayerAddScreen.options}
+      />
+      <RootStack.Screen
+        name="PlayerUpdateScreen"
+        component={PlayerUpdateScreen.Component}
+        options={PlayerUpdateScreen.options}
       />
     </RootStack.Navigator>
   );

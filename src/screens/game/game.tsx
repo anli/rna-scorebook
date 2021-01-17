@@ -36,6 +36,8 @@ const HasGame = () => {
     menuItems,
   );
 
+  const isSelectedPlayerMe = selectedPlayerId === 'ME';
+
   const onAddPlayer = () => {
     navigation.navigate('PlayerAddScreen');
   };
@@ -68,18 +70,31 @@ const HasGame = () => {
     dispatch(gameSlice.actions.removeSelectedPlayer());
   };
 
-  const isSelectedPlayerMe = selectedPlayerId === 'ME';
+  const onUpdateSelectedPlayer = () => {
+    const {id, name} = R.find(R.propEq('id', selectedPlayerId), players) as {
+      id: string;
+      name: string;
+    };
+    navigation.navigate('PlayerUpdateScreen', {id, name});
+  };
 
   return (
     <Screen>
       <AppBarHeader>
         <Appbar.Content title={type?.name} />
         {!isSelectedPlayerMe && (
-          <Appbar.Action
-            testID="RemoveSelectedPlayerButton"
-            icon="account-remove"
-            onPress={onRemoveSelectedPlayer}
-          />
+          <>
+            <Appbar.Action
+              testID="UpdateSelectedPlayerButton"
+              icon="account-details"
+              onPress={onUpdateSelectedPlayer}
+            />
+            <Appbar.Action
+              testID="RemoveSelectedPlayerButton"
+              icon="account-cancel"
+              onPress={onRemoveSelectedPlayer}
+            />
+          </>
         )}
       </AppBarHeader>
       <View>
