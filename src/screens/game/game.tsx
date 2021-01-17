@@ -1,3 +1,4 @@
+import analytics from '@react-native-firebase/analytics';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {GameSelectors, gameSlice} from '@store';
@@ -78,6 +79,11 @@ const HasGame = () => {
     navigation.navigate('PlayerUpdateScreen', {id, name});
   };
 
+  const onSummary = async () => {
+    await analytics().logEvent('game_summary');
+    navigation.navigate('SummaryScreen');
+  };
+
   return (
     <Screen>
       <AppBarHeader>
@@ -96,6 +102,13 @@ const HasGame = () => {
             />
           </>
         )}
+        <>
+          <Appbar.Action
+            testID="SummaryButton"
+            icon="poll"
+            onPress={onSummary}
+          />
+        </>
       </AppBarHeader>
       <View>
         <Players horizontal showsHorizontalScrollIndicator={false}>

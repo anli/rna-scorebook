@@ -176,13 +176,36 @@ export class GameSelectors {
       ];
     },
   );
+
+  static playerRankings = createDraftSafeSelector(selectPlayers, (players) => {
+    const rankings = R.sortBy(R.prop('totalScore'), players)
+      .reverse()
+      .map((player, index) => {
+        const round1Score = String(getRoundScore(player.roundsMap.round1));
+        const round2Score = String(getRoundScore(player.roundsMap.round2));
+        const round3Score = String(getRoundScore(player.roundsMap.round3));
+        return {
+          ...player,
+          rank: index + 1,
+          round1Score,
+          round2Score,
+          round3Score,
+        };
+      });
+
+    return rankings;
+  });
 }
 
 const getTotalScore = (roundsMap: RoundsMap) => {
   const menuItemScores = R.values(roundsMap);
   const totalScore = menuItemScores.reduce((acc, menuItemScore) => {
-    const roundScore = R.sum(R.values(menuItemScore));
+    const roundScore = getRoundScore(menuItemScore);
     return acc + roundScore;
   }, 0);
   return totalScore;
+};
+
+const getRoundScore = (menuItemScore: MenuItemScore) => {
+  return R.sum(R.values(menuItemScore));
 };

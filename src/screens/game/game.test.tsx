@@ -213,4 +213,27 @@ describe('Game Screen', () => {
 
     expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
+
+  it(`Scenario: Summary
+      Given that I have a game
+      And that I am at 'Game Screen'
+      And that I am at 'Round 3'
+      When I press 'Summary Button'
+      Then I should see 'Summary Screen'`, async () => {
+    store.dispatch(gameSlice.actions.startGame(defaultMenuItemIds));
+    const {getByTestId} = render(
+      <App component={GameScreen.Component} options={GameScreen.options} />,
+    );
+
+    await act(async () => {
+      fireEvent.press(getByTestId('Round3Button'));
+    });
+
+    await act(async () => {
+      fireEvent.press(getByTestId('SummaryButton'));
+    });
+
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith('SummaryScreen');
+  });
 });

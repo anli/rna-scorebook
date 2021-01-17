@@ -47,7 +47,7 @@ Feature: Game Screen
     Given that I have a game
     And I press 'John'
     When I press 'Remove Player Button'
-    Then I should not see 'John
+    Then I should not see 'John'
 
   Scenario: Update Player
     Given that I have a game
@@ -55,3 +55,10 @@ Feature: Game Screen
     And I am at 'Game Screen'
     When I press 'Update Player Button'
     Then I should see 'Player Update Screen'
+
+  Scenario: Summary
+    Given that I have a game
+    And that I am at 'Game Screen'
+    And that I am at 'Round 3'
+    When I press 'Summary Button'
+    Then I should see 'Summary Screen'
