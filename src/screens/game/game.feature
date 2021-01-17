@@ -42,3 +42,16 @@ Feature: Game Screen
     And I press
     When I press 'Spoon Button'
     Then I should not see 'Spoon Options'
+
+  Scenario: Remove a player
+    Given that I have a game
+    And I press 'John'
+    When I press 'Remove Player Button'
+    Then I should not see 'John
+
+  Scenario: Update Player
+    Given that I have a game
+    And that I have selected player 'John'
+    And I am at 'Game Screen'
+    When I press 'Update Player Button'
+    Then I should see 'Player Update Screen'

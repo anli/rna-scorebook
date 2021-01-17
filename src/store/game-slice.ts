@@ -101,6 +101,16 @@ const gameSlice = createSlice({
       state.players = R.reject(R.propEq('id', playerId), state.players);
       state.selectedPlayerId = 'ME';
     },
+    updatePlayer: (
+      state: State,
+      action: PayloadAction<{id: string; name: string}>,
+    ) => {
+      const playerIndex = R.findIndex(
+        R.propEq('id', action.payload.id),
+        state.players,
+      );
+      state.players[playerIndex].name = action.payload.name;
+    },
   },
 });
 
