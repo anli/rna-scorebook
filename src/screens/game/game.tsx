@@ -132,6 +132,7 @@ const HasGame = () => {
               testID={`SelectPlayerButton.${id}`}
             />
           ))}
+          <EndingPlayer />
         </Players>
       </View>
       <Rounds
@@ -206,7 +207,6 @@ const AppBarHeader = styled(Appbar.Header)`
 
 const Players = styled.ScrollView`
   padding-left: 20px;
-  padding-right: 20px;
 `;
 
 const Rounds = styled(RoundsNative)`
@@ -219,4 +219,8 @@ const MenuItems = styled.View`
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: center;
+`;
+
+const EndingPlayer = styled.View`
+  width: 40px;
 `;
