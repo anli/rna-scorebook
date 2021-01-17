@@ -47,3 +47,10 @@ jest.mock('@react-native-firebase/analytics', () => {
 jest.mock('react-native-share', () => ({
   default: jest.fn(),
 }));
+
+// https://github.com/MinaSamir11/react-native-in-app-review#how-to-test-your-code
+jest.mock('react-native-in-app-review', () => ({
+  RequestInAppReview: jest.fn(),
+  isAvailable: jest.fn().mockReturnValue(true),
+  // add more methods as needed
+}));
