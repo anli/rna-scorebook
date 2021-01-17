@@ -2,9 +2,10 @@ import {BackButton} from '@components';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {GameSelectors} from '@store';
 import {colors} from '@theme';
+import {format} from 'date-fns';
 import React, {useRef} from 'react';
 import {Alert, View} from 'react-native';
-import {Appbar, DataTable, Headline} from 'react-native-paper';
+import {Appbar, Caption, DataTable, Headline} from 'react-native-paper';
 import Share from 'react-native-share';
 import NativeViewShot, {captureRef} from 'react-native-view-shot';
 import {useSelector} from 'react-redux';
@@ -14,6 +15,8 @@ import Player from './player';
 const Component = () => {
   const playerRankings = useSelector(GameSelectors.playerRankings);
   const summaryRef = useRef<any>(null);
+  const startDate = useSelector(GameSelectors.startDate);
+  const startDateLabel = startDate ? format(startDate, 'd LLL yyyy') : '-';
 
   const topThreePlayers = [
     playerRankings[1],
@@ -60,6 +63,7 @@ const Component = () => {
 
       <ViewShot ref={summaryRef}>
         <Title>Top Sushi Go-ers!</Title>
+        <Subtitle>{startDateLabel}</Subtitle>
 
         <TopThreePlayers>
           {topThreePlayers.map((player) => {
@@ -126,7 +130,6 @@ const TopThreePlayers = styled.View`
 `;
 
 const Title = styled(Headline)`
-  margin-bottom: 8px;
   align-self: center;
 `;
 
@@ -136,4 +139,9 @@ const Screen = styled.SafeAreaView`
 
 const ViewShot = styled(NativeViewShot)`
   background-color: ${colors.background};
+`;
+
+const Subtitle = styled(Caption)`
+  margin-bottom: 8px;
+  align-self: center;
 `;

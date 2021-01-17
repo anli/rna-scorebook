@@ -11,6 +11,7 @@ import {RootState} from './store';
 type MenuItemScore = {[key: string]: number};
 type RoundId = 'round1' | 'round2' | 'round3';
 type State = {
+  startDate?: number;
   type?: {name: string};
   selectedPlayerId?: string;
   players: Player[];
@@ -95,6 +96,7 @@ const gameSlice = createSlice({
           },
         },
       ];
+      state.startDate = +new Date();
     },
     removeSelectedPlayer: (state: State) => {
       const playerId = state.selectedPlayerId;
@@ -195,6 +197,10 @@ export class GameSelectors {
 
     return rankings;
   });
+  static startDate = createDraftSafeSelector(
+    selectSelf,
+    (state: State) => state?.startDate,
+  );
 }
 
 const getTotalScore = (roundsMap: RoundsMap) => {
