@@ -1,5 +1,9 @@
+import analytics from '@react-native-firebase/analytics';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  NavigationContainerRef,
+} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
   GameScreen,
@@ -10,7 +14,7 @@ import {
   StartScreen,
 } from '@screens';
 import {colors} from '@theme';
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Host} from 'react-native-portalize';
 import getTabScreenOptions from './get-tab-screen-options';
@@ -77,8 +81,32 @@ const RootStackScreen = () => {
 };
 
 const Navigation = () => {
+  const [routeName, setRouteName] = useState<string>();
+  const navigationRef = useRef<NavigationContainerRef>(null);
+
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={() => {
+        const currentRouteName = (navigationRef.current as any).getCurrentRoute()
+          .name;
+
+        setRouteName(currentRouteName);
+      }}
+      onStateChange={async () => {
+        const previousRouteName = routeName;
+        const currentRouteName = (navigationRef.current as any).getCurrentRoute()
+          .name;
+
+        if (previousRouteName !== currentRouteName) {
+          await analytics().logScreenView({
+            screen_name: currentRouteName,
+            screen_class: currentRouteName,
+          });
+        }
+
+        setRouteName(currentRouteName);
+      }}>
       <RootStackScreen />
     </NavigationContainer>
   );

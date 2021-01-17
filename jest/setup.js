@@ -35,3 +35,10 @@ jest.mock('redux-persist', () => {
       .mockImplementation((config, reducers) => reducers),
   };
 });
+
+// https://stackoverflow.com/questions/62616187/spyon-react-native-firebase-analytics-methods
+jest.mock('@react-native-firebase/analytics', () => {
+  return jest
+    .fn()
+    .mockReturnValue({logScreenView: jest.fn(), logEvent: jest.fn()});
+});
