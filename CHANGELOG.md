@@ -1,3 +1,20 @@
+# [0.8.0](https://github.com/anli/rna-scorebook/compare/0.7.0...0.8.0) (2021-01-17)
+
+
+### Bug Fixes
+
+* **game:** add EndingPlayer width to Players component ([#78](https://github.com/anli/rna-scorebook/issues/78)) ([c5c2f53](https://github.com/anli/rna-scorebook/commit/c5c2f532a18b1ba4b012425f05435d6c79726865)), closes [#77](https://github.com/anli/rna-scorebook/issues/77)
+
+
+### Features
+
+* **settings:** add in app review ([#81](https://github.com/anli/rna-scorebook/issues/81)) ([963d252](https://github.com/anli/rna-scorebook/commit/963d2520d40fab2020780cde065fd95df6132d06)), closes [#73](https://github.com/anli/rna-scorebook/issues/73)
+* **summary:** add analytics summary_share ([#82](https://github.com/anli/rna-scorebook/issues/82)) ([c0a69b6](https://github.com/anli/rna-scorebook/commit/c0a69b651d0dfd3efed9a5916e68411aefdf926a)), closes [#80](https://github.com/anli/rna-scorebook/issues/80)
+* **summary:** add game start date to summary ([#83](https://github.com/anli/rna-scorebook/issues/83)) ([e9afbf1](https://github.com/anli/rna-scorebook/commit/e9afbf1b6942685d4bedabf40c1d923a8bbc728a)), closes [#79](https://github.com/anli/rna-scorebook/issues/79)
+* **summary:** add share ux ([#74](https://github.com/anli/rna-scorebook/issues/74)) ([2133339](https://github.com/anli/rna-scorebook/commit/2133339f2b6febde201225ddf57c44801d659b96)), closes [#70](https://github.com/anli/rna-scorebook/issues/70)
+
+
+
 # [0.7.0](https://github.com/anli/rna-scorebook/compare/0.6.0...0.7.0) (2021-01-17)
 
 

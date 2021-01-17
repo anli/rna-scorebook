@@ -133,8 +133,8 @@ android {
         applicationId "io.anli.scorebook"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 48
-        versionName "0.7.0"
+        versionCode 56
+        versionName "0.8.0"
         missingDimensionStrategy 'react-native-camera', 'mlkit'
     }
     splits {
