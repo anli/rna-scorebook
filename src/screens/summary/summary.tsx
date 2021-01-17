@@ -1,4 +1,5 @@
 import {BackButton} from '@components';
+import analytics from '@react-native-firebase/analytics';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {GameSelectors} from '@store';
 import {colors} from '@theme';
@@ -36,6 +37,7 @@ const Component = () => {
       failOnCancel: false,
     };
     try {
+      await analytics().logEvent('summary_share');
       await Share.open(options);
     } catch {
       Alert.alert('Oops', 'Something went wrong');
