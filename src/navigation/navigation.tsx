@@ -12,6 +12,7 @@ import {
   PlayerUpdateScreen,
   SettingScreen,
   StartScreen,
+  SummaryScreen,
 } from '@screens';
 import {colors} from '@theme';
 import React, {useRef, useState} from 'react';
@@ -54,7 +55,10 @@ const AppTabsScreen = () => (
 const RootStack = createStackNavigator();
 const RootStackScreen = () => {
   return (
-    <RootStack.Navigator headerMode="none" mode="modal">
+    <RootStack.Navigator
+      headerMode="none"
+      mode="modal"
+      initialRouteName="AppTabsScreen">
       <RootStack.Screen name="AppTabsScreen" component={AppTabsScreen} />
       <RootStack.Screen
         name="StartScreen"
@@ -75,6 +79,11 @@ const RootStackScreen = () => {
         name="PlayerUpdateScreen"
         component={PlayerUpdateScreen.Component}
         options={PlayerUpdateScreen.options}
+      />
+      <RootStack.Screen
+        name="SummaryScreen"
+        component={SummaryScreen.Component}
+        options={SummaryScreen.options}
       />
     </RootStack.Navigator>
   );
