@@ -1,3 +1,15 @@
+# [0.7.0](https://github.com/anli/rna-scorebook/compare/0.6.0...0.7.0) (2021-01-17)
+
+
+### Features
+
+* **analytics:** add analytics events ([#67](https://github.com/anli/rna-scorebook/issues/67)) ([09bca56](https://github.com/anli/rna-scorebook/commit/09bca569685f630cd7dfe319ffc16c2949730b63)), closes [#63](https://github.com/anli/rna-scorebook/issues/63)
+* **app:** add checkUpdateNeeded ([#68](https://github.com/anli/rna-scorebook/issues/68)) ([fa06044](https://github.com/anli/rna-scorebook/commit/fa06044367ad1e8e9adaa197ba0c3a555214a3fd)), closes [#58](https://github.com/anli/rna-scorebook/issues/58)
+* **game, summary:** add summary ux ([#69](https://github.com/anli/rna-scorebook/issues/69)) ([20d2dc0](https://github.com/anli/rna-scorebook/commit/20d2dc05afad048f2da4371f64e74698860dc4f1)), closes [#35](https://github.com/anli/rna-scorebook/issues/35)
+* **player:** add player update ux ([#66](https://github.com/anli/rna-scorebook/issues/66)) ([f385e60](https://github.com/anli/rna-scorebook/commit/f385e60f7ca3e74ff7d5bea9a17ac78ab7873fe4)), closes [#25](https://github.com/anli/rna-scorebook/issues/25)
+
+
+
 # [0.6.0](https://github.com/anli/rna-scorebook/compare/0.5.0...0.6.0) (2021-01-16)
 
 ### Bug Fixes
