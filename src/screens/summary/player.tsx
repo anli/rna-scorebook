@@ -1,19 +1,17 @@
 import {colors} from '@theme';
 import React from 'react';
-import {Avatar, Caption} from 'react-native-paper';
+import {Caption, Text} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styled from 'styled-components/native';
 
 const Player = ({
   name,
   score,
-  color,
   testID,
   rank,
 }: {
   name: string;
   score?: string | number;
-  color: string;
   testID?: string;
   rank: number;
 }) => {
@@ -22,9 +20,14 @@ const Player = ({
       <AvatarPlayer
         testID={`${testID}.Avatar`}
         size={getSize(rank)}
-        label={String(score)}
-        backgroundColor={color}
-      />
+        // label={String(score)}
+        // backgroundColor={color}
+        // color="black"
+      >
+        <ScoreWrapper>
+          <Score size={getSize(rank)}>{score}</Score>
+        </ScoreWrapper>
+      </AvatarPlayer>
       {rank === 1 && (
         <Border>
           <Crown name="crown" color={colors.crown} size={32} />
@@ -42,12 +45,14 @@ const Container = styled.View`
   padding: 8px 8px 8px 8px;
 `;
 
-const AvatarPlayer = styled(Avatar.Text)<{
-  backgroundColor: string;
+const AvatarPlayer = styled.View<{
+  size: number;
 }>`
   border-width: 4px;
   border-color: ${colors.primary};
-  background-color: ${(props) => props.backgroundColor};
+  border-radius: ${(props) => props.size / 2}px;
+  height: ${(props) => props.size}px;
+  width: ${(props) => props.size}px;
 `;
 
 const Name = styled(Caption)`
@@ -77,3 +82,13 @@ const getSize = (rank: number) => {
       return 64;
   }
 };
+
+const Score = styled(Text)<{size: number}>`
+  font-size: ${(props) => props.size / 2}px;
+`;
+
+const ScoreWrapper = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;

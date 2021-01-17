@@ -20,6 +20,10 @@ const defaultMenuItemIds = [
   'pudding',
 ];
 
+jest.mock('react-native-share', () => ({
+  open: jest.fn(),
+}));
+
 const App = ({component, options}: any) => {
   const Stack = createStackNavigator();
 
