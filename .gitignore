@@ -76,3 +76,5 @@ fastlane/screenshots
 
 */playstore.json
 android/app/google-services.json
+
+src/.codeclimate.yml
