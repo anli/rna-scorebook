@@ -42,3 +42,8 @@ jest.mock('@react-native-firebase/analytics', () => {
     .fn()
     .mockReturnValue({logScreenView: jest.fn(), logEvent: jest.fn()});
 });
+
+// https://react-native-share.github.io/react-native-share/docs/testing
+jest.mock('react-native-share', () => ({
+  default: jest.fn(),
+}));
