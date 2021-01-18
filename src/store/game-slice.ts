@@ -180,7 +180,8 @@ export class GameSelectors {
   );
 
   static playerRankings = createDraftSafeSelector(selectPlayers, (players) => {
-    const rankings = R.sortBy(R.prop('totalScore'), players)
+    const rankings = [...players]
+      .sort((a, b) => Number(a.totalScore) - Number(b.totalScore))
       .reverse()
       .map((player, index) => {
         const round1Score = String(getRoundScore(player.roundsMap.round1));
