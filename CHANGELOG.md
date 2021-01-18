@@ -1,3 +1,19 @@
+# [0.9.0](https://github.com/anli/rna-scorebook/compare/0.8.0...0.9.0) (2021-01-18)
+
+
+### Bug Fixes
+
+* **game-slice:** fix playerRankings sorting ([#92](https://github.com/anli/rna-scorebook/issues/92)) ([f0c0567](https://github.com/anli/rna-scorebook/commit/f0c05673b328a5976cb0c79ff90b80ebe2a75fc1)), closes [#84](https://github.com/anli/rna-scorebook/issues/84)
+
+
+### Features
+
+* **app:** add splash screen ([#94](https://github.com/anli/rna-scorebook/issues/94)) ([5bf0cb8](https://github.com/anli/rna-scorebook/commit/5bf0cb848fceadb8cd02e75a771df419d6522cc2)), closes [#85](https://github.com/anli/rna-scorebook/issues/85)
+* **game:** add ui to edit me ([#95](https://github.com/anli/rna-scorebook/issues/95)) ([1adcc97](https://github.com/anli/rna-scorebook/commit/1adcc970369d355c264c48551f79a9375520e339)), closes [#90](https://github.com/anli/rna-scorebook/issues/90)
+* **settings:** change onReview to open StoreUrl ([#93](https://github.com/anli/rna-scorebook/issues/93)) ([312efce](https://github.com/anli/rna-scorebook/commit/312efce723782cc3a445bbb281f9806772d1cf3c)), closes [#88](https://github.com/anli/rna-scorebook/issues/88)
+
+
+
 # [0.8.0](https://github.com/anli/rna-scorebook/compare/0.7.0...0.8.0) (2021-01-17)
 
 
