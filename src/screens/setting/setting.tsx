@@ -1,20 +1,17 @@
-import analytics from '@react-native-firebase/analytics';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import React from 'react';
-import {View} from 'react-native';
+import {Linking, View} from 'react-native';
 import deviceInfoModule from 'react-native-device-info';
-import InAppReview from 'react-native-in-app-review';
 import {Appbar, List} from 'react-native-paper';
+import VersionCheck from 'react-native-version-check';
 import styled from 'styled-components/native';
 
 const Component = () => {
   const version = deviceInfoModule.getVersion();
 
   const onReview = async () => {
-    InAppReview.isAvailable() && InAppReview.RequestInAppReview();
-    await analytics().logEvent('left_review', {
-      available: InAppReview.isAvailable(),
-    });
+    const url = await VersionCheck.getStoreUrl();
+    Linking.openURL(url);
   };
 
   return (
