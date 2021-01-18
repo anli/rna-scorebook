@@ -91,11 +91,6 @@ const HasGame = () => {
         {!isSelectedPlayerMe && (
           <>
             <Appbar.Action
-              testID="UpdateSelectedPlayerButton"
-              icon="account-details"
-              onPress={onUpdateSelectedPlayer}
-            />
-            <Appbar.Action
               testID="RemoveSelectedPlayerButton"
               icon="account-cancel"
               onPress={onRemoveSelectedPlayer}
@@ -103,6 +98,11 @@ const HasGame = () => {
           </>
         )}
         <>
+          <Appbar.Action
+            testID="UpdateSelectedPlayerButton"
+            icon="account-details"
+            onPress={onUpdateSelectedPlayer}
+          />
           <Appbar.Action
             testID="SummaryButton"
             icon="poll"
