@@ -3,8 +3,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import store from '@store';
 import {act, fireEvent, render} from '@testing-library/react-native';
 import React from 'react';
+import {Linking} from 'react-native';
 import deviceInfoModule from 'react-native-device-info';
-import InAppReview from 'react-native-in-app-review';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {Host} from 'react-native-portalize';
 import {Provider as ReduxProvider} from 'react-redux';
@@ -69,7 +69,7 @@ describe('Setting Screen', () => {
       Given that I am at Setting Screen
       When I press 'Send a feedback or review'
       Then I should see 'In App Review'`, async () => {
-    const spyRequestInAppReview = jest.spyOn(InAppReview, 'RequestInAppReview');
+    const spy = jest.spyOn(Linking, 'openURL');
     const {getByText} = render(
       <App
         component={SettingScreen.Component}
@@ -80,6 +80,6 @@ describe('Setting Screen', () => {
       fireEvent.press(getByText('Send a feedback or review'));
     });
 
-    expect(spyRequestInAppReview).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });

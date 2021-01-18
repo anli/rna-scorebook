@@ -54,3 +54,7 @@ jest.mock('react-native-in-app-review', () => ({
   isAvailable: jest.fn().mockReturnValue(true),
   // add more methods as needed
 }));
+
+jest.mock('react-native-version-check', () => ({
+  getStoreUrl: jest.fn().mockResolvedValue('STORE_URL'),
+}));
