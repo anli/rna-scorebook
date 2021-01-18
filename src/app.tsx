@@ -2,6 +2,7 @@ import Navigation from '@navigation';
 import store, {persistor} from '@store';
 import React, {useEffect} from 'react';
 import {Alert, BackHandler, Linking, StatusBar} from 'react-native';
+import RNBootSplash from 'react-native-bootsplash';
 import {
   DefaultTheme as PaperDefaultTheme,
   Provider as PaperProvider,
@@ -20,7 +21,13 @@ const theme = {
 
 const App = () => {
   useEffect(() => {
-    checkUpdateNeeded();
+    const init = async () => {
+      checkUpdateNeeded();
+    };
+
+    init().finally(async () => {
+      await RNBootSplash.hide({fade: true});
+    });
   }, []);
 
   const checkUpdateNeeded = async () => {
