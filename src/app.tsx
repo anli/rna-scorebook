@@ -1,5 +1,7 @@
+import {AppTour} from '@components';
 import Navigation from '@navigation';
 import store, {persistor} from '@store';
+import {colors} from '@theme';
 import React, {useEffect} from 'react';
 import {Alert, BackHandler, Linking, StatusBar} from 'react-native';
 import RNBootSplash from 'react-native-bootsplash';
@@ -10,7 +12,7 @@ import {
 import VersionCheck from 'react-native-version-check';
 import {Provider as ReduxProvider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
-import colors from './theme/colors';
+import {TourGuideProvider} from 'rn-tourguide';
 
 const theme = {
   ...PaperDefaultTheme,
@@ -56,11 +58,14 @@ const App = () => {
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <PaperProvider theme={theme}>
-          <StatusBar
-            backgroundColor={colors.background}
-            barStyle="dark-content"
-          />
-          <Navigation />
+          <TourGuideProvider {...{borderRadius: 16}}>
+            <StatusBar
+              backgroundColor={colors.background}
+              barStyle="dark-content"
+            />
+            <Navigation />
+            <AppTour />
+          </TourGuideProvider>
         </PaperProvider>
       </PersistGate>
     </ReduxProvider>

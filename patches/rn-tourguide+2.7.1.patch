@@ -1,0 +1,40 @@
+diff --git a/node_modules/rn-tourguide/lib/components/TourGuideZoneByPosition.d.ts b/node_modules/rn-tourguide/lib/components/TourGuideZoneByPosition.d.ts
+index 0ef5305..aeae608 100644
+--- a/node_modules/rn-tourguide/lib/components/TourGuideZoneByPosition.d.ts
++++ b/node_modules/rn-tourguide/lib/components/TourGuideZoneByPosition.d.ts
+@@ -2,6 +2,7 @@
+ import { StyleProp, ViewStyle } from 'react-native';
+ import { BorderRadiusObject, Shape } from '../types';
+ interface TourGuideZoneByPositionProps {
++    text?: string
+     zone: number;
+     isTourGuide?: boolean;
+     top?: number | string;
+@@ -16,5 +17,6 @@ interface TourGuideZoneByPositionProps {
+     keepTooltipPosition?: boolean;
+     tooltipBottomOffset?: number;
+ }
+-export declare const TourGuideZoneByPosition: ({ isTourGuide, zone, width, height, top, left, right, bottom, shape, containerStyle, keepTooltipPosition, tooltipBottomOffset, borderRadiusObject, }: TourGuideZoneByPositionProps) => JSX.Element | null;
+-export {};
++export declare const TourGuideZoneByPosition: ({ text, isTourGuide, zone, width, height, top, left, right, bottom, shape, containerStyle, keepTooltipPosition, tooltipBottomOffset, borderRadiusObject, }: TourGuideZoneByPositionProps) => JSX.Element | null;
++export { };
++
+diff --git a/node_modules/rn-tourguide/lib/components/TourGuideZoneByPosition.js b/node_modules/rn-tourguide/lib/components/TourGuideZoneByPosition.js
+index 45cb43f..d338b41 100644
+--- a/node_modules/rn-tourguide/lib/components/TourGuideZoneByPosition.js
++++ b/node_modules/rn-tourguide/lib/components/TourGuideZoneByPosition.js
+@@ -1,12 +1,13 @@
+ import * as React from 'react';
+ import { StyleSheet, View } from 'react-native';
+ import { TourGuideZone } from './TourGuideZone';
+-export const TourGuideZoneByPosition = ({ isTourGuide, zone, width, height, top, left, right, bottom, shape, containerStyle, keepTooltipPosition, tooltipBottomOffset, borderRadiusObject, }) => {
++export const TourGuideZoneByPosition = ({ text, isTourGuide, zone, width, height, top, left, right, bottom, shape, containerStyle, keepTooltipPosition, tooltipBottomOffset, borderRadiusObject, }) => {
+     if (!isTourGuide) {
+         return null;
+     }
+     return (React.createElement(View, { pointerEvents: 'none', style: [StyleSheet.absoluteFillObject, containerStyle] },
+         React.createElement(TourGuideZone, Object.assign({ isTourGuide: true }, {
++            text,
+             zone,
+             shape,
+             keepTooltipPosition,
