@@ -18,39 +18,44 @@ import {colors} from '@theme';
 import React, {useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Host} from 'react-native-portalize';
+import {useTourGuideController} from 'rn-tourguide';
 import getTabScreenOptions from './get-tab-screen-options';
 
 const PlaceholderComponent = () => <View />;
 const AppTabs = createBottomTabNavigator();
-const AppTabsScreen = () => (
-  <Host>
-    <AppTabs.Navigator
-      initialRouteName="GameScreen"
-      tabBarOptions={{showLabel: false, activeTintColor: colors.primary}}>
-      <AppTabs.Screen
-        name="GameScreen"
-        component={GameScreen.Component}
-        options={getTabScreenOptions('gamepad-variant', GameScreen.options)}
-      />
-      <AppTabs.Screen
-        name="Create"
-        component={PlaceholderComponent}
-        options={getTabScreenOptions('plus-box-outline', {})}
-        listeners={({navigation}) => ({
-          tabPress: (e) => {
-            e.preventDefault();
-            navigation.navigate('StartScreen');
-          },
-        })}
-      />
-      <AppTabs.Screen
-        name="SettingScreen"
-        component={SettingScreen.Component}
-        options={getTabScreenOptions('cog', SettingScreen.options)}
-      />
-    </AppTabs.Navigator>
-  </Host>
-);
+const AppTabsScreen = () => {
+  const {stop} = useTourGuideController();
+  return (
+    <Host>
+      <AppTabs.Navigator
+        initialRouteName="GameScreen"
+        tabBarOptions={{showLabel: false, activeTintColor: colors.primary}}>
+        <AppTabs.Screen
+          name="GameScreen"
+          component={GameScreen.Component}
+          options={getTabScreenOptions('gamepad-variant', GameScreen.options)}
+        />
+        <AppTabs.Screen
+          name="Create"
+          component={PlaceholderComponent}
+          options={getTabScreenOptions('plus-box-outline', {})}
+          listeners={({navigation}) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              stop && stop();
+              navigation.navigate('StartScreen');
+            },
+          })}
+        />
+        <AppTabs.Screen
+          name="SettingScreen"
+          component={SettingScreen.Component}
+          options={getTabScreenOptions('cog', SettingScreen.options)}
+        />
+      </AppTabs.Navigator>
+    </Host>
+  );
+};
 
 const RootStack = createStackNavigator();
 const RootStackScreen = () => {
