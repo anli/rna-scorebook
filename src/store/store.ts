@@ -4,6 +4,7 @@ import {
   configureStore,
   getDefaultMiddleware,
 } from '@reduxjs/toolkit';
+import {scytheSlice} from '@scythe';
 import {
   FLUSH,
   PAUSE,
@@ -17,7 +18,6 @@ import {
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
 import appSlice from './app-slice';
 import gameSlice from './game-slice';
-
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
@@ -25,6 +25,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
+  scythe: scytheSlice.reducer,
   game: gameSlice.reducer,
   app: appSlice.reducer,
 });

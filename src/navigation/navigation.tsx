@@ -10,6 +10,7 @@ import {
   MenuAddScreen,
   PlayerAddScreen,
   PlayerUpdateScreen,
+  ScytheScreen,
   SettingScreen,
   StartScreen,
   SummaryScreen,
@@ -63,7 +64,7 @@ const RootStackScreen = () => {
     <RootStack.Navigator
       headerMode="none"
       mode="modal"
-      initialRouteName="AppTabsScreen">
+      initialRouteName="ScytheScreen">
       <RootStack.Screen name="AppTabsScreen" component={AppTabsScreen} />
       <RootStack.Screen
         name="StartScreen"
@@ -89,6 +90,11 @@ const RootStackScreen = () => {
         name="SummaryScreen"
         component={SummaryScreen.Component}
         options={SummaryScreen.options}
+      />
+      <RootStack.Screen
+        name="ScytheScreen"
+        component={ScytheScreen.Component}
+        options={ScytheScreen.options}
       />
     </RootStack.Navigator>
   );
