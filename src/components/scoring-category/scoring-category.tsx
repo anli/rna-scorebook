@@ -4,19 +4,26 @@ import {useWindowDimensions} from 'react-native';
 import {Badge, Card, Paragraph} from 'react-native-paper';
 import styled from 'styled-components/native';
 
-const numberOfColumns = 2;
+const disabledOpacity = 0.4;
 
 interface Props {
   name: string;
   value: string;
+  disabled: boolean;
+  numberOfColumns?: number;
 }
 
-const ScoringCategory = ({name, value}: Props) => {
+const ScoringCategory = ({
+  name,
+  value,
+  disabled = false,
+  numberOfColumns = 2,
+}: Props) => {
   const {width: windowWidth} = useWindowDimensions();
   const width = (windowWidth - 48 - numberOfColumns * 16) / numberOfColumns;
 
   return (
-    <ScoringCategoryWrapper width={width}>
+    <ScoringCategoryWrapper width={width} disabled={disabled}>
       <ScoringCategoryWrapperContent>
         <Name numberOfLines={2}>{name}</Name>
       </ScoringCategoryWrapperContent>
@@ -29,10 +36,11 @@ const ScoringCategory = ({name, value}: Props) => {
 
 export default ScoringCategory;
 
-const ScoringCategoryWrapper = styled(Card)<{width: number}>`
+const ScoringCategoryWrapper = styled(Card)<{width: number; disabled: boolean}>`
   height: 80px;
   width: ${(props) => props.width}px;
   margin: 8px 8px 8px 8px;
+  opacity: ${({disabled}) => (disabled ? disabledOpacity : 1)};
 `;
 
 const ScoringCategoryWrapperContent = styled(Card.Content)``;

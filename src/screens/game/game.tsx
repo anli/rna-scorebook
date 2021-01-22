@@ -1,3 +1,4 @@
+import {Player} from '@components';
 import analytics from '@react-native-firebase/analytics';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
@@ -14,7 +15,6 @@ import styled from 'styled-components/native';
 import EmptyState from './empty-state';
 import MenuItem from './menu-item';
 import MenuItemOptions from './menu-item-options';
-import Player from './player';
 import RoundsNative from './rounds';
 
 type RoundId = 'round1' | 'round2' | 'round3';

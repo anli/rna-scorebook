@@ -1,6 +1,8 @@
 type ScoreCategory = {
   id: ScoreCategoryId;
   name: string;
+  blockById?: ScoreCategoryId;
+  blockIds?: ScoreCategoryId[];
   configs: {
     question: string;
     options: {name: string; value: string; key: OptionKey}[];
@@ -107,6 +109,7 @@ const scoringCategories: ScoreCategory[] = [
   {
     id: 'everyStarPlaced',
     name: 'STARS',
+    blockById: 'popularity',
     configs: [
       {
         typeId: 'T1',
@@ -152,6 +155,7 @@ const scoringCategories: ScoreCategory[] = [
   {
     id: 'everyTerritoryControlled',
     name: 'TERRITORY',
+    blockById: 'popularity',
     configs: [
       {
         typeId: 'T1',
@@ -236,6 +240,7 @@ const scoringCategories: ScoreCategory[] = [
   {
     id: 'everyTwoResource',
     name: 'RESOURCES',
+    blockById: 'popularity',
     configs: [
       {
         typeId: 'T1',

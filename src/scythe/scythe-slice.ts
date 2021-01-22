@@ -4,6 +4,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import {RootState} from '@store';
+import {removeSelectedPlayer, updatePlayer} from '@utils';
 import R from 'ramda';
 import {v4 as uuidv4} from 'uuid';
 import ScytheData from './scythe.data';
@@ -76,21 +77,8 @@ const scytheSlice = createSlice({
       ];
       state.startDate = +new Date();
     },
-    removeSelectedPlayer: (state: State) => {
-      const playerId = state.selectedPlayerId;
-      state.players = R.reject(R.propEq('id', playerId), state.players);
-      state.selectedPlayerId = 'ME';
-    },
-    updatePlayer: (
-      state: State,
-      action: PayloadAction<{id: string; name: string}>,
-    ) => {
-      const playerIndex = R.findIndex(
-        R.propEq('id', action.payload.id),
-        state.players,
-      );
-      state.players[playerIndex].name = action.payload.name;
-    },
+    removeSelectedPlayer,
+    updatePlayer,
   },
 });
 
@@ -119,16 +107,22 @@ const selectScoringCategories = createDraftSafeSelector(
   (player) => {
     const playerScoreCategory = player?.scoreCategory;
     const playerTypeId = playerScoreCategory?.['popularity'];
-    return ScytheData.scoringCategories.map(({id, name, configs}) => {
-      const value = playerScoreCategory?.[id] || '0';
-      const config =
-        configs.length > 1
-          ? configs.find(
-              ({typeId}: {typeId: string}) => typeId === playerTypeId,
-            )
-          : R.head(configs);
-      return {id, name, value, config};
-    });
+    const result = ScytheData.scoringCategories.map(
+      ({id, name, configs, blockById}) => {
+        const value = playerScoreCategory?.[id] || '0';
+        const isBlock = blockById
+          ? !getIsAvailable(blockById, playerScoreCategory)
+          : false;
+        const config =
+          configs.length > 1
+            ? configs.find(
+                ({typeId}: {typeId: string}) => typeId === playerTypeId,
+              )
+            : R.head(configs);
+        return {id, name, value, config, isBlock};
+      },
+    );
+    return result;
   },
 );
 
@@ -148,4 +142,11 @@ const getTotalScore = (scoreCategory: ScoreCategory) => {
 
     return acc + Number(value);
   }, 0);
+};
+
+const getIsAvailable = (
+  blockById: string,
+  playerScoreCategory?: ScoreCategory,
+) => {
+  return playerScoreCategory && Boolean(playerScoreCategory[blockById]);
 };

@@ -17,6 +17,7 @@ module.exports = {
           '.json',
         ],
         alias: {
+          '@utils': './src/utils',
           '@scythe': './src/scythe',
           '@navigation': './src/navigation',
           '@components': './src/components',

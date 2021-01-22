@@ -1,3 +1,5 @@
+import {Player, ScoringCategory, ScoringConfig} from '@components';
+import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {ScytheData, ScytheSelectors, scytheSlice} from '@scythe';
 import React, {useRef, useState} from 'react';
@@ -7,9 +9,6 @@ import {Appbar} from 'react-native-paper';
 import {Host, Portal} from 'react-native-portalize';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
-import Player from './player';
-import ScoringCategory from './scoring-category';
-import ScoringConfig from './scoring-config';
 
 const Component = () => {
   const game = ScytheData.game;
@@ -21,6 +20,7 @@ const Component = () => {
     {id: string; config: any} | undefined
   >(undefined);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const onSelectScoringCategory = async (id: string, config: any) => {
     await setSelected({id, config});
@@ -34,6 +34,10 @@ const Component = () => {
   };
 
   const onAddPlayer = () => {
+    navigation.navigate('PlayerAddScreen');
+  };
+
+  const onReset = () => {
     dispatch(scytheSlice.actions.start());
   };
 
@@ -45,6 +49,11 @@ const Component = () => {
         <AppBarHeader>
           <Appbar.Content title={game.name} />
           <>
+            <Appbar.Action
+              testID="ResetButton"
+              icon="restart"
+              onPress={onReset}
+            />
             <Appbar.Action
               testID="RemoveSelectedPlayerButton"
               icon="account-cancel"
@@ -82,12 +91,13 @@ const Component = () => {
           </Players>
         </View>
         <ScoringCategories>
-          {scoringCategories?.map(({name, value, id, config}) => (
+          {scoringCategories?.map(({name, value, id, config, isBlock}) => (
             <TouchableOpacity
+              disabled={isBlock}
               testID={`ScoringCategoryButton.${id}`}
               key={id}
               onPress={() => onSelectScoringCategory(id, config)}>
-              <ScoringCategory name={name} value={value} />
+              <ScoringCategory name={name} value={value} disabled={isBlock} />
             </TouchableOpacity>
           ))}
         </ScoringCategories>

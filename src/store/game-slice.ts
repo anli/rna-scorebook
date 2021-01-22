@@ -3,6 +3,7 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
+import {removeSelectedPlayer, updatePlayer} from '@utils';
 import R from 'ramda';
 import {v4 as uuidv4} from 'uuid';
 import {allMenuItems} from './game.data';
@@ -98,21 +99,8 @@ const gameSlice = createSlice({
       ];
       state.startDate = +new Date();
     },
-    removeSelectedPlayer: (state: State) => {
-      const playerId = state.selectedPlayerId;
-      state.players = R.reject(R.propEq('id', playerId), state.players);
-      state.selectedPlayerId = 'ME';
-    },
-    updatePlayer: (
-      state: State,
-      action: PayloadAction<{id: string; name: string}>,
-    ) => {
-      const playerIndex = R.findIndex(
-        R.propEq('id', action.payload.id),
-        state.players,
-      );
-      state.players[playerIndex].name = action.payload.name;
-    },
+    removeSelectedPlayer,
+    updatePlayer,
   },
 });
 
