@@ -96,6 +96,9 @@ describe('Player Add Screen', () => {
       And I press 'Confirm Button'
       And I should see 'Game Screen'
       And I should see 'John'`, async () => {
+    const params = {
+      type: 'game/addPlayer',
+    };
     mockCanGoBack.mockReturnValue(true);
     const mockDispatch = jest.fn();
     jest.spyOn(redux, 'useDispatch').mockReturnValue(mockDispatch);
@@ -104,6 +107,7 @@ describe('Player Add Screen', () => {
       <App
         component={PlayerAddScreen.Component}
         options={PlayerAddScreen.options}
+        initialParams={params}
       />,
     );
 
