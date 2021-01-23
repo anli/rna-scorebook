@@ -1,6 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import store from '@store';
+import {getStore} from '@store';
 import {act, fireEvent, render} from '@testing-library/react-native';
 import React from 'react';
 import {Linking} from 'react-native';
@@ -10,11 +10,26 @@ import {Host} from 'react-native-portalize';
 import {Provider as ReduxProvider} from 'react-redux';
 import SettingScreen from './setting';
 
-const App = ({component, options}: any) => {
+const mockNavigate = jest.fn();
+jest.mock('@react-navigation/native', () => {
+  return {
+    ...(jest.requireActual('@react-navigation/native') as any),
+    useNavigation: () => ({
+      navigate: mockNavigate,
+    }),
+  };
+});
+
+const App = ({
+  component,
+  options,
+  initialParams = {},
+  storeOptions = {},
+}: any) => {
   const Stack = createStackNavigator();
 
   return (
-    <ReduxProvider store={store}>
+    <ReduxProvider store={getStore(storeOptions)}>
       <PaperProvider>
         <NavigationContainer>
           <Host>
@@ -23,6 +38,7 @@ const App = ({component, options}: any) => {
                 name="App"
                 component={component}
                 options={options}
+                initialParams={initialParams}
               />
             </Stack.Navigator>
           </Host>
@@ -81,5 +97,24 @@ describe('Setting Screen', () => {
     });
 
     expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it(`Scenario: Press Beta Scythe with no existing game
+      Given that I have no existing game
+      When I press 'Scorebook for Scythe'
+      Then I should see 'Scythe Screen'
+      And I should see a new game`, async () => {
+    const {getByText} = render(
+      <App
+        component={SettingScreen.Component}
+        options={SettingScreen.options}
+      />,
+    );
+    await act(async () => {
+      fireEvent.press(getByText('Scorebook for Scythe'));
+    });
+
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith('ScytheScreen');
   });
 });
