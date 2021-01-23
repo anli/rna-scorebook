@@ -108,7 +108,7 @@ describe('Player Update Screen', () => {
       <App
         component={PlayerUpdateScreen.Component}
         options={PlayerUpdateScreen.options}
-        initialParams={{id: 'JOHN_ID', name: 'John'}}
+        initialParams={{id: 'JOHN_ID', name: 'John', type: 'game/addPlayer'}}
         storeOptions={{
           preloadedState: {
             game: {players: [{id: 'JOHN_ID', name: 'John'}]},
