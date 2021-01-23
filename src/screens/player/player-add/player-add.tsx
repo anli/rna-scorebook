@@ -1,7 +1,6 @@
 import analytics from '@react-native-firebase/analytics';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
-import {gameSlice} from '@store';
 import React from 'react';
 import {useForm} from 'react-hook-form';
 import {useDispatch} from 'react-redux';
@@ -16,6 +15,9 @@ const Component = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {control, handleSubmit, errors} = useForm<FormData>();
+  const {
+    params: {type},
+  } = useRoute<any>();
 
   const onDismiss = () => {
     navigation.canGoBack() && navigation.goBack();
@@ -23,7 +25,7 @@ const Component = () => {
 
   const onSubmit = async ({playerName}: FormData) => {
     await analytics().logEvent('player_added');
-    dispatch(gameSlice.actions.addPlayer(playerName));
+    dispatch({payload: playerName, type});
     onDismiss();
   };
 

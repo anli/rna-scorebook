@@ -6,13 +6,18 @@ import {Button, Card, Paragraph, Title} from 'react-native-paper';
 import styled from 'styled-components/native';
 
 interface Props {
-  question: string;
-  options: {name: string; value?: string}[];
+  question?: string;
+  options?: {name: string; value?: string}[];
   onPress: (value: string) => any;
   testID: string;
 }
 
-const ScoringConfig = ({question, options, onPress, testID}: Props) => {
+const ScoringConfig = ({
+  question = '',
+  options = [],
+  onPress,
+  testID,
+}: Props) => {
   return (
     <Card>
       <Card.Content>

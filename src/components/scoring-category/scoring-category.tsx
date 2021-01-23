@@ -9,7 +9,7 @@ const disabledOpacity = 0.4;
 interface Props {
   name: string;
   value: string;
-  disabled: boolean;
+  disabled?: boolean;
   numberOfColumns?: number;
 }
 
@@ -20,7 +20,7 @@ const ScoringCategory = ({
   numberOfColumns = 2,
 }: Props) => {
   const {width: windowWidth} = useWindowDimensions();
-  const width = (windowWidth - 48 - numberOfColumns * 16) / numberOfColumns;
+  const width = (windowWidth - 32 - numberOfColumns * 16) / numberOfColumns;
 
   return (
     <ScoringCategoryWrapper width={width} disabled={disabled}>

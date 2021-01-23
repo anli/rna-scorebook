@@ -1,8 +1,9 @@
-import {Player} from '@components';
+import {Player, ScoringCategory, ScoringConfig} from '@components';
 import analytics from '@react-native-firebase/analytics';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {GameSelectors, gameSlice} from '@store';
+import {getSummaryHeaders} from '@utils';
 import R from 'ramda';
 import React, {useRef, useState} from 'react';
 import {View} from 'react-native';
@@ -13,8 +14,6 @@ import {Portal} from 'react-native-portalize';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import EmptyState from './empty-state';
-import MenuItem from './menu-item';
-import MenuItemOptions from './menu-item-options';
 import RoundsNative from './rounds';
 
 type RoundId = 'round1' | 'round2' | 'round3';
@@ -31,6 +30,8 @@ const HasGame = () => {
   const roundScores = useSelector(GameSelectors.roundScores);
   const menuItems = useSelector(GameSelectors.menuItems);
   const dispatch = useDispatch();
+  const startDate = useSelector(GameSelectors.startDate);
+  const playerRankings = useSelector(GameSelectors.playerRankings);
 
   const selectedMenuItem = R.find(
     R.propEq('id', selected?.menuItemId),
@@ -40,7 +41,8 @@ const HasGame = () => {
   const isSelectedPlayerMe = selectedPlayerId === 'ME';
 
   const onAddPlayer = () => {
-    navigation.navigate('PlayerAddScreen');
+    const actionType = gameSlice.actions.addPlayer.type;
+    navigation.navigate('PlayerAddScreen', {type: actionType});
   };
 
   const onSelectMenuItem = (menuItemId: string, roundId: RoundId) => {
@@ -51,7 +53,7 @@ const HasGame = () => {
   const onSelectMenuItemOption = (
     roundId: RoundId,
     menuItemId: string,
-    value: number,
+    value: string,
   ) => {
     dispatch(
       gameSlice.actions.setScore({
@@ -76,12 +78,20 @@ const HasGame = () => {
       id: string;
       name: string;
     };
-    navigation.navigate('PlayerUpdateScreen', {id, name});
+    const actionType = gameSlice.actions.updatePlayer.type;
+    navigation.navigate('PlayerUpdateScreen', {id, name, type: actionType});
   };
 
   const onSummary = async () => {
+    const headers = getSummaryHeaders(R.head(playerRankings)?.categories || []);
+
     await analytics().logEvent('game_summary');
-    navigation.navigate('SummaryScreen');
+    navigation.navigate('SummaryScreen', {
+      startDate,
+      gameName: type?.name,
+      playerRankings,
+      headers,
+    });
   };
 
   return (
@@ -146,7 +156,11 @@ const HasGame = () => {
                     testID={`MenuItemButton.${menuItemId}`}
                     key={menuItemId}
                     onPress={() => onSelectMenuItem(menuItemId, roundId)}>
-                    <MenuItem name={name} score={score} />
+                    <ScoringCategory
+                      name={name}
+                      value={score}
+                      numberOfColumns={3}
+                    />
                   </TouchableOpacity>
                 ))}
               </MenuItems>
@@ -157,7 +171,7 @@ const HasGame = () => {
       <Portal>
         <Modalize ref={menuItemOptionsRef} adjustToContentHeight>
           {!R.isNil(selected) && !R.isNil(selectedMenuItem?.scoreConfigMap) && (
-            <MenuItemOptions
+            <ScoringConfig
               testID="MenuItemOption"
               question={selectedMenuItem?.scoreConfigMap.question}
               options={selectedMenuItem?.scoreConfigMap.options}

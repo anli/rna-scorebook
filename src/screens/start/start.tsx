@@ -61,7 +61,7 @@ const Component = () => {
               color="white"
               uppercase={false}
               onPress={onManuallySelect}>
-              Select your menu
+              Manually Select
             </ManuallySelectButton>
           </TitleContainer>
         </MaskedFooter>

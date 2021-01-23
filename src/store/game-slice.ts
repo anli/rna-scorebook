@@ -59,7 +59,7 @@ const gameSlice = createSlice({
       action: PayloadAction<{
         roundId: RoundId;
         menuItemId: string;
-        value: number;
+        value: string;
       }>,
     ) => {
       const playerId = state.selectedPlayerId;
@@ -69,7 +69,7 @@ const gameSlice = createSlice({
         ...player.roundsMap,
         [roundId]: {
           ...player?.roundsMap?.[roundId],
-          [menuItemId]: String(value),
+          [menuItemId]: value,
         },
       };
       const index = R.findIndex(R.propEq('id', playerId), state.players);
@@ -178,9 +178,11 @@ export class GameSelectors {
         return {
           ...player,
           rank: index + 1,
-          round1Score,
-          round2Score,
-          round3Score,
+          categories: [
+            {name: '1', value: round1Score, isNumeric: true},
+            {name: '2', value: round2Score, isNumeric: true},
+            {name: '3', value: round3Score, isNumeric: true},
+          ],
         };
       });
 

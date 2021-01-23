@@ -8,6 +8,8 @@ type ScoreCategory = {
     options: {name: string; value: string; key: OptionKey}[];
     typeId: TypeId;
   }[];
+  isNumeric?: boolean;
+  abbreviation: string;
 };
 
 const game = {
@@ -42,6 +44,8 @@ const scoringCategories: ScoreCategory[] = [
         ],
       },
     ],
+    abbreviation: '🗳️',
+    isNumeric: true,
   },
   {
     id: 'coinsInHand',
@@ -105,6 +109,8 @@ const scoringCategories: ScoreCategory[] = [
         ],
       },
     ],
+    isNumeric: true,
+    abbreviation: '💰',
   },
   {
     id: 'everyStarPlaced',
@@ -151,6 +157,8 @@ const scoringCategories: ScoreCategory[] = [
         ],
       },
     ],
+    isNumeric: true,
+    abbreviation: '⭐',
   },
   {
     id: 'everyTerritoryControlled',
@@ -236,6 +244,8 @@ const scoringCategories: ScoreCategory[] = [
         ],
       },
     ],
+    isNumeric: true,
+    abbreviation: '🛑',
   },
   {
     id: 'everyTwoResource',
@@ -324,6 +334,8 @@ const scoringCategories: ScoreCategory[] = [
         ],
       },
     ],
+    isNumeric: true,
+    abbreviation: '🌾',
   },
   {
     id: 'structureBonus',
@@ -346,6 +358,8 @@ const scoringCategories: ScoreCategory[] = [
         ],
       },
     ],
+    isNumeric: true,
+    abbreviation: '🏛️',
   },
 ];
 

@@ -1,7 +1,7 @@
 import {BackButton} from '@components';
 import analytics from '@react-native-firebase/analytics';
+import {useRoute} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
-import {GameSelectors} from '@store';
 import {colors} from '@theme';
 import {format} from 'date-fns';
 import React, {useRef} from 'react';
@@ -9,14 +9,32 @@ import {Alert, View} from 'react-native';
 import {Appbar, Caption, DataTable, Headline} from 'react-native-paper';
 import Share from 'react-native-share';
 import NativeViewShot, {captureRef} from 'react-native-view-shot';
-import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import Player from './player';
 
+type Params = {
+  startDate: number;
+  gameName: string;
+  playerRankings: {
+    id: string;
+    name: string;
+    rank: number;
+    totalScore: string;
+    categories: {name: string; value: string; isNumeric?: boolean}[];
+  }[];
+  headers: {
+    title: string;
+    isNumeric?: boolean;
+  }[];
+};
 const Component = () => {
-  const playerRankings = useSelector(GameSelectors.playerRankings);
   const summaryRef = useRef<any>(null);
-  const startDate = useSelector(GameSelectors.startDate);
+  const {
+    params: {startDate, gameName, playerRankings, headers},
+  }: {
+    params: Params;
+  } = useRoute<any>();
+
   const startDateLabel = startDate ? format(startDate, 'd LLL yyyy') : '-';
 
   const topThreePlayers = [
@@ -64,7 +82,7 @@ const Component = () => {
       </View>
 
       <ViewShot ref={summaryRef}>
-        <Title>Top Sushi Go-ers!</Title>
+        <Title>Best of {gameName}</Title>
         <Subtitle>{startDateLabel}</Subtitle>
 
         <TopThreePlayers>
@@ -86,26 +104,28 @@ const Component = () => {
 
         <DataTable>
           <DataTable.Header>
-            <DataTable.Title>Player</DataTable.Title>
-            <DataTable.Title numeric>1</DataTable.Title>
-            <DataTable.Title numeric>2</DataTable.Title>
-            <DataTable.Title numeric>3</DataTable.Title>
-            <DataTable.Title numeric>Total</DataTable.Title>
+            {headers.map(({title, isNumeric = false}) => (
+              <DataTable.Title key={title} numeric={isNumeric}>
+                {title}
+              </DataTable.Title>
+            ))}
           </DataTable.Header>
 
-          {playerRankings.map(
-            ({id, name, totalScore, round1Score, round2Score, round3Score}) => {
-              return (
-                <DataTable.Row key={id}>
-                  <DataTable.Cell>{name}</DataTable.Cell>
-                  <DataTable.Cell numeric>{round1Score}</DataTable.Cell>
-                  <DataTable.Cell numeric>{round2Score}</DataTable.Cell>
-                  <DataTable.Cell numeric>{round3Score}</DataTable.Cell>
-                  <DataTable.Cell numeric>{totalScore}</DataTable.Cell>
-                </DataTable.Row>
-              );
-            },
-          )}
+          {playerRankings.map(({id, name, totalScore, categories}) => {
+            return (
+              <DataTable.Row key={id}>
+                <DataTable.Cell>{name}</DataTable.Cell>
+                {categories.map(
+                  ({name: categoryName, value, isNumeric = false}) => (
+                    <DataTable.Cell key={categoryName} numeric={isNumeric}>
+                      {value !== '0' ? value : ''}
+                    </DataTable.Cell>
+                  ),
+                )}
+                <DataTable.Cell numeric>{totalScore}</DataTable.Cell>
+              </DataTable.Row>
+            );
+          })}
         </DataTable>
       </ViewShot>
     </Screen>

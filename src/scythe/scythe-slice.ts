@@ -4,7 +4,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import {RootState} from '@store';
-import {removeSelectedPlayer, updatePlayer} from '@utils';
+import {getSummaryHeaders, removeSelectedPlayer, updatePlayer} from '@utils';
 import R from 'ramda';
 import {v4 as uuidv4} from 'uuid';
 import ScytheData from './scythe.data';
@@ -126,12 +126,48 @@ const selectScoringCategories = createDraftSafeSelector(
   },
 );
 
+const selectStartDate = createDraftSafeSelector(
+  selectSelf,
+  (state: State) => state.startDate,
+);
+
+const selectRankings = createDraftSafeSelector(selectPlayers, (players) => {
+  const rankings = [...players]
+    .sort((a, b) => Number(a.totalScore) - Number(b.totalScore))
+    .reverse()
+    .map((player, index) => {
+      const playerScoreCategory = player?.scoreCategory;
+      const categories = ScytheData.scoringCategories.map(
+        ({id, abbreviation: name, isNumeric}) => {
+          const value = playerScoreCategory?.[id] || '0';
+          return {name, value, isNumeric};
+        },
+      );
+
+      return {
+        ...player,
+        rank: index + 1,
+        categories,
+      };
+    });
+
+  return rankings;
+});
+
+const selectSummaryHeaders = createDraftSafeSelector(
+  selectRankings,
+  (rankings) => getSummaryHeaders(R.head(rankings)?.categories || []),
+);
+
 export default scytheSlice;
 
 export class ScytheSelectors {
   static selectedPlayerId = selectSelectedPlayerId;
   static players = selectPlayers;
   static scoringCategories = selectScoringCategories;
+  static startDate = selectStartDate;
+  static rankings = selectRankings;
+  static summaryHeaders = selectSummaryHeaders;
 }
 
 const getTotalScore = (scoreCategory: ScoreCategory) => {

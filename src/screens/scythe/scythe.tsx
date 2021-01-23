@@ -1,11 +1,14 @@
-import {Player, ScoringCategory, ScoringConfig} from '@components';
+import {BackButton, Player, ScoringCategory, ScoringConfig} from '@components';
+import analytics from '@react-native-firebase/analytics';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
 import {ScytheData, ScytheSelectors, scytheSlice} from '@scythe';
+import {format} from 'date-fns';
+import R from 'ramda';
 import React, {useRef, useState} from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import {Alert, TouchableOpacity, View} from 'react-native';
 import {Modalize} from 'react-native-modalize';
-import {Appbar} from 'react-native-paper';
+import {Appbar, Caption, Headline} from 'react-native-paper';
 import {Host, Portal} from 'react-native-portalize';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
@@ -21,6 +24,15 @@ const Component = () => {
   >(undefined);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const startDate = useSelector(ScytheSelectors.startDate);
+  const rankings = useSelector(ScytheSelectors.rankings);
+  const summaryHeader = useSelector(ScytheSelectors.summaryHeaders);
+
+  const selectedPlayer = R.find(R.propEq('id', selectedPlayerId), players) as {
+    id: string;
+    name: string;
+  };
+  const scoreConfig = selected?.config;
 
   const onSelectScoringCategory = async (id: string, config: any) => {
     await setSelected({id, config});
@@ -34,20 +46,50 @@ const Component = () => {
   };
 
   const onAddPlayer = () => {
-    navigation.navigate('PlayerAddScreen');
+    const type = scytheSlice.actions.addPlayer.type;
+    navigation.navigate('PlayerAddScreen', {type});
+  };
+
+  const onSelectPlayer = (id: string) => {
+    dispatch(scytheSlice.actions.selectPlayer(id));
+  };
+  const onRemoveSelectedPlayer = () => {
+    dispatch(scytheSlice.actions.removeSelectedPlayer());
+  };
+
+  const onUpdateSelectedPlayer = () => {
+    const {id, name} = selectedPlayer;
+    const actionType = scytheSlice.actions.updatePlayer.type;
+    navigation.navigate('PlayerUpdateScreen', {id, name, type: actionType});
   };
 
   const onReset = () => {
+    Alert.alert('Confirm Reset game?', 'You cannot undo this.', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => dispatch(scytheSlice.actions.start())},
+    ]);
     dispatch(scytheSlice.actions.start());
   };
 
-  const scoreConfig = selected?.config;
+  const onSummary = async () => {
+    await analytics().logEvent('game_summary');
+    navigation.navigate('SummaryScreen', {
+      startDate,
+      gameName: game.name,
+      playerRankings: rankings,
+      headers: summaryHeader,
+    });
+  };
 
   return (
     <Host>
       <Screen>
         <AppBarHeader>
-          <Appbar.Content title={game.name} />
+          <BackButton icon="close" />
+          <Appbar.Content title="" />
           <>
             <Appbar.Action
               testID="ResetButton"
@@ -58,14 +100,24 @@ const Component = () => {
               testID="RemoveSelectedPlayerButton"
               icon="account-cancel"
               disabled={selectedPlayerId === 'ME'}
+              onPress={onRemoveSelectedPlayer}
             />
             <Appbar.Action
               testID="UpdateSelectedPlayerButton"
               icon="account-details"
+              onPress={onUpdateSelectedPlayer}
             />
-            <Appbar.Action testID="SummaryButton" icon="poll" />
+            <Appbar.Action
+              testID="SummaryButton"
+              icon="poll"
+              onPress={onSummary}
+            />
           </>
         </AppBarHeader>
+        <Game>
+          <Headline>{game.name}</Headline>
+          <Caption>{startDate ? format(startDate, 'd LLL yyyy') : '-'}</Caption>
+        </Game>
         <View>
           <Players horizontal showsHorizontalScrollIndicator={false}>
             <Player
@@ -85,6 +137,7 @@ const Component = () => {
                 color="white"
                 selected={id === selectedPlayerId}
                 testID={`SelectPlayerButton.${id}`}
+                onPress={() => onSelectPlayer(id)}
               />
             ))}
             <EndingPlayer />
@@ -150,4 +203,9 @@ const ScoringCategories = styled.View`
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: center;
+`;
+
+const Game = styled.View`
+  padding-left: 28px;
+  padding-right: 28px;
 `;

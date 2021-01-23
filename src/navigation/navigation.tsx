@@ -64,7 +64,7 @@ const RootStackScreen = () => {
     <RootStack.Navigator
       headerMode="none"
       mode="modal"
-      initialRouteName="ScytheScreen">
+      initialRouteName="AppTabsScreen">
       <RootStack.Screen name="AppTabsScreen" component={AppTabsScreen} />
       <RootStack.Screen
         name="StartScreen"
