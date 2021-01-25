@@ -4,9 +4,5 @@ export const getSummaryHeaders = (categories: any[]) => {
     isNumeric: Boolean(category.isNumeric),
   }));
 
-  return [
-    {title: 'Player'},
-    ...categoryHeaders,
-    {title: 'Total', isNumeric: true},
-  ];
+  return categoryHeaders;
 };

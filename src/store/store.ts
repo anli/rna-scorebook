@@ -1,10 +1,10 @@
+import {sessionSlice} from '@game';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   combineReducers,
   configureStore,
   getDefaultMiddleware,
 } from '@reduxjs/toolkit';
-import {scytheSlice} from '@scythe';
 import {
   FLUSH,
   PAUSE,
@@ -25,7 +25,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  scythe: scytheSlice.reducer,
+  session: sessionSlice.reducer,
   game: gameSlice.reducer,
   app: appSlice.reducer,
 });

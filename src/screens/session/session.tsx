@@ -1,12 +1,12 @@
 import {BackButton, Player, ScoringCategory, ScoringConfig} from '@components';
+import {SessionSelectors, sessionSlice} from '@game';
 import analytics from '@react-native-firebase/analytics';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
-import {ScytheData, ScytheSelectors, scytheSlice} from '@scythe';
 import {format} from 'date-fns';
 import R from 'ramda';
 import React, {useRef, useState} from 'react';
-import {Alert, TouchableOpacity, View} from 'react-native';
+import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Modalize} from 'react-native-modalize';
 import {Appbar, Caption, Headline} from 'react-native-paper';
 import {Host, Portal} from 'react-native-portalize';
@@ -14,25 +14,26 @@ import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 
 const Component = () => {
-  const game = ScytheData.game;
-  const selectedPlayerId = useSelector(ScytheSelectors.selectedPlayerId);
-  const players = useSelector(ScytheSelectors.players);
-  const scoringCategories = useSelector(ScytheSelectors.scoringCategories);
+  const game = useSelector(SessionSelectors.game);
+  const selectedPlayerId = useSelector(SessionSelectors.selectedPlayerId);
+  const players = useSelector(SessionSelectors.players);
+  const scoringCategories = useSelector(SessionSelectors.scoringCategories);
   const scoringConfigRef = useRef<Modalize>(null);
   const [selected, setSelected] = useState<
     {id: string; config: any} | undefined
   >(undefined);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const startDate = useSelector(ScytheSelectors.startDate);
-  const rankings = useSelector(ScytheSelectors.rankings);
-  const summaryHeader = useSelector(ScytheSelectors.summaryHeaders);
+  const startDate = useSelector(SessionSelectors.startDate);
+  const rankings = useSelector(SessionSelectors.rankings);
+  const summaryHeader = useSelector(SessionSelectors.summaryHeaders);
 
   const selectedPlayer = R.find(R.propEq('id', selectedPlayerId), players) as {
     id: string;
     name: string;
   };
   const scoreConfig = selected?.config;
+  const columnsCount = scoringCategories.length > 8 ? 3 : 2;
 
   const onSelectScoringCategory = async (id: string, config: any) => {
     await setSelected({id, config});
@@ -41,44 +42,48 @@ const Component = () => {
 
   const onSelectScoringConfig = (value: string) => {
     const scoreCategoryId = selected?.id as string;
-    dispatch(scytheSlice.actions.setScore({value, scoreCategoryId}));
+    dispatch(sessionSlice.actions.setScore({value, scoreCategoryId}));
     scoringConfigRef.current?.close();
   };
 
   const onAddPlayer = () => {
-    const type = scytheSlice.actions.addPlayer.type;
+    const type = sessionSlice.actions.addPlayer.type;
     navigation.navigate('PlayerAddScreen', {type});
   };
 
   const onSelectPlayer = (id: string) => {
-    dispatch(scytheSlice.actions.selectPlayer(id));
+    dispatch(sessionSlice.actions.selectPlayer(id));
   };
   const onRemoveSelectedPlayer = () => {
-    dispatch(scytheSlice.actions.removeSelectedPlayer());
+    dispatch(sessionSlice.actions.removeSelectedPlayer());
   };
 
   const onUpdateSelectedPlayer = () => {
     const {id, name} = selectedPlayer;
-    const actionType = scytheSlice.actions.updatePlayer.type;
+    const actionType = sessionSlice.actions.updatePlayer.type;
     navigation.navigate('PlayerUpdateScreen', {id, name, type: actionType});
   };
 
   const onReset = () => {
+    const gameId = game?.id as string;
     Alert.alert('Confirm Reset game?', 'You cannot undo this.', [
       {
         text: 'Cancel',
         style: 'cancel',
       },
-      {text: 'OK', onPress: () => dispatch(scytheSlice.actions.start())},
+      {
+        text: 'OK',
+        onPress: () => dispatch(sessionSlice.actions.start(gameId)),
+      },
     ]);
-    dispatch(scytheSlice.actions.start());
+    dispatch(sessionSlice.actions.start(gameId));
   };
 
   const onSummary = async () => {
     await analytics().logEvent('game_summary');
     navigation.navigate('SummaryScreen', {
       startDate,
-      gameName: game.name,
+      gameName: game?.name,
       playerRankings: rankings,
       headers: summaryHeader,
     });
@@ -115,7 +120,7 @@ const Component = () => {
           </>
         </AppBarHeader>
         <Game>
-          <Headline>{game.name}</Headline>
+          <Headline>{game?.name}</Headline>
           <Caption>{startDate ? format(startDate, 'd LLL yyyy') : '-'}</Caption>
         </Game>
         <View>
@@ -143,14 +148,20 @@ const Component = () => {
             <EndingPlayer />
           </Players>
         </View>
-        <ScoringCategories>
+        <ScoringCategories
+          contentContainerStyle={scoringCategoriesStyle.contentContainer}>
           {scoringCategories?.map(({name, value, id, config, isBlock}) => (
             <TouchableOpacity
               disabled={isBlock}
               testID={`ScoringCategoryButton.${id}`}
               key={id}
               onPress={() => onSelectScoringCategory(id, config)}>
-              <ScoringCategory name={name} value={value} disabled={isBlock} />
+              <ScoringCategory
+                name={name}
+                value={value}
+                disabled={isBlock}
+                numberOfColumns={columnsCount}
+              />
             </TouchableOpacity>
           ))}
         </ScoringCategories>
@@ -197,15 +208,19 @@ const EndingPlayer = styled.View`
   width: 40px;
 `;
 
-const ScoringCategories = styled.View`
-  margin-top: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: center;
-`;
+const ScoringCategories = styled.ScrollView``;
 
 const Game = styled.View`
   padding-left: 28px;
   padding-right: 28px;
 `;
+
+const scoringCategoriesStyle = StyleSheet.create({
+  contentContainer: {
+    marginTop: 8,
+    marginBottom: 16,
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+});

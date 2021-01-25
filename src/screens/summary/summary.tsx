@@ -5,7 +5,7 @@ import {StackNavigationOptions} from '@react-navigation/stack';
 import {colors} from '@theme';
 import {format} from 'date-fns';
 import React, {useRef} from 'react';
-import {Alert, View} from 'react-native';
+import {Alert, ScrollView, View} from 'react-native';
 import {Appbar, Caption, DataTable, Headline} from 'react-native-paper';
 import Share from 'react-native-share';
 import NativeViewShot, {captureRef} from 'react-native-view-shot';
@@ -42,6 +42,24 @@ const Component = () => {
     playerRankings[0],
     playerRankings[2],
   ];
+
+  const rowName = 'Player';
+
+  const headerRow = [...headers, {title: 'Total'}];
+
+  const dataRow = playerRankings.map(({id, name, categories, totalScore}) => {
+    return {
+      key: id,
+      value: name,
+      data: [
+        ...categories.map(({name: categoryName, value}) => ({
+          key: categoryName,
+          value,
+        })),
+        {key: 'totalScore', value: totalScore},
+      ],
+    };
+  });
 
   /* istanbul ignore next */
   const onShare = async () => {
@@ -102,31 +120,31 @@ const Component = () => {
           })}
         </TopThreePlayers>
 
-        <DataTable>
-          <DataTable.Header>
-            {headers.map(({title, isNumeric = false}) => (
-              <DataTable.Title key={title} numeric={isNumeric}>
-                {title}
-              </DataTable.Title>
-            ))}
-          </DataTable.Header>
+        <ScrollView>
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title>{rowName}</DataTable.Title>
+              {headerRow.map(({title}) => (
+                <DataTable.Title key={title} numeric>
+                  {title}
+                </DataTable.Title>
+              ))}
+            </DataTable.Header>
 
-          {playerRankings.map(({id, name, totalScore, categories}) => {
-            return (
-              <DataTable.Row key={id}>
-                <DataTable.Cell>{name}</DataTable.Cell>
-                {categories.map(
-                  ({name: categoryName, value, isNumeric = false}) => (
-                    <DataTable.Cell key={categoryName} numeric={isNumeric}>
-                      {value !== '0' ? value : ''}
+            {dataRow.map(({key, value, data}: any) => {
+              return (
+                <DataTable.Row key={key}>
+                  <DataTable.Cell>{value}</DataTable.Cell>
+                  {data.map(({key: dataKey, value: dataValue}: any) => (
+                    <DataTable.Cell key={dataKey} numeric>
+                      {dataValue !== '0' ? dataValue : ''}
                     </DataTable.Cell>
-                  ),
-                )}
-                <DataTable.Cell numeric>{totalScore}</DataTable.Cell>
-              </DataTable.Row>
-            );
-          })}
-        </DataTable>
+                  ))}
+                </DataTable.Row>
+              );
+            })}
+          </DataTable>
+        </ScrollView>
       </ViewShot>
     </Screen>
   );

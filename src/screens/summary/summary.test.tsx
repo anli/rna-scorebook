@@ -10,16 +10,6 @@ import {Provider as ReduxProvider} from 'react-redux';
 import {act} from 'react-test-renderer';
 import SummaryScreen from './summary';
 
-const defaultMenuItemIds = [
-  'temaki',
-  'soySauce',
-  'spoon',
-  'onigiri',
-  'edamame',
-  'tempura',
-  'pudding',
-];
-
 jest.mock('react-native-share', () => ({
   open: jest.fn(),
 }));

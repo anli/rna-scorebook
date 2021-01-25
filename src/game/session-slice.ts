@@ -7,12 +7,18 @@ import {RootState} from '@store';
 import {getSummaryHeaders, removeSelectedPlayer, updatePlayer} from '@utils';
 import R from 'ramda';
 import {v4 as uuidv4} from 'uuid';
-import ScytheData from './scythe.data';
+import {GameId, ScoreCategory as GameScoreCategory} from './types';
+import {getGame} from './utils';
 
 type State = {
   startDate?: number;
   selectedPlayerId?: string;
   players: Player[];
+  game?: {
+    id: string;
+    name: string;
+    scoreCategories?: GameScoreCategory[];
+  };
 };
 
 type ScoreCategory = {[key: string]: string};
@@ -28,8 +34,8 @@ const initialState = {
   players: [],
 };
 
-const scytheSlice = createSlice({
-  name: 'scythe',
+const sessionSlice = createSlice({
+  name: 'session',
   initialState,
   reducers: {
     addPlayer: (state: State, action: PayloadAction<string>) => {
@@ -65,7 +71,8 @@ const scytheSlice = createSlice({
       state.players[index].scoreCategory = newScoreCategory;
       state.players[index].totalScore = String(getTotalScore(newScoreCategory));
     },
-    start: (state: State) => {
+    start: (state: State, action: PayloadAction<GameId>) => {
+      const gameId = action.payload;
       state.selectedPlayerId = 'ME';
       state.players = [
         {
@@ -76,13 +83,14 @@ const scytheSlice = createSlice({
         },
       ];
       state.startDate = +new Date();
+      state.game = getGame(gameId);
     },
     removeSelectedPlayer,
     updatePlayer,
   },
 });
 
-const selectSelf = (state: RootState) => state.scythe;
+const selectSelf = (state: RootState) => state.session;
 
 const selectSelectedPlayerId = createDraftSafeSelector(
   selectSelf,
@@ -102,26 +110,35 @@ const selectPlayer = createDraftSafeSelector(
   },
 );
 
+const selectGame = createDraftSafeSelector(
+  selectSelf,
+  (state: State) => state.game,
+);
+
+const selectGameScoreCategories = createDraftSafeSelector(
+  selectGame,
+  (game) => game?.scoreCategories || [],
+);
+
 const selectScoringCategories = createDraftSafeSelector(
+  selectGameScoreCategories,
   selectPlayer,
-  (player) => {
+  (gameScoreCategories, player) => {
     const playerScoreCategory = player?.scoreCategory;
     const playerTypeId = playerScoreCategory?.['popularity'];
-    const result = ScytheData.scoringCategories.map(
-      ({id, name, configs, blockById}) => {
-        const value = playerScoreCategory?.[id] || '0';
-        const isBlock = blockById
-          ? !getIsAvailable(blockById, playerScoreCategory)
-          : false;
-        const config =
-          configs.length > 1
-            ? configs.find(
-                ({typeId}: {typeId: string}) => typeId === playerTypeId,
-              )
-            : R.head(configs);
-        return {id, name, value, config, isBlock};
-      },
-    );
+    const result = gameScoreCategories.map(({id, name, configs, blockById}) => {
+      const value = playerScoreCategory?.[id] || '0';
+      const isBlock = blockById
+        ? !getIsAvailable(blockById, playerScoreCategory)
+        : false;
+      const config =
+        configs.length > 1
+          ? configs.find(
+              ({typeId}: {typeId: string}) => typeId === playerTypeId,
+            )
+          : R.head(configs);
+      return {id, name, value, config, isBlock};
+    });
     return result;
   },
 );
@@ -131,43 +148,49 @@ const selectStartDate = createDraftSafeSelector(
   (state: State) => state.startDate,
 );
 
-const selectRankings = createDraftSafeSelector(selectPlayers, (players) => {
-  const rankings = [...players]
-    .sort((a, b) => Number(a.totalScore) - Number(b.totalScore))
-    .reverse()
-    .map((player, index) => {
-      const playerScoreCategory = player?.scoreCategory;
-      const categories = ScytheData.scoringCategories.map(
-        ({id, abbreviation: name, isNumeric}) => {
-          const value = playerScoreCategory?.[id] || '0';
-          return {name, value, isNumeric};
-        },
-      );
+const selectRankings = createDraftSafeSelector(
+  selectGameScoreCategories,
+  selectPlayers,
+  (gameScoreCategories, players) => {
+    const rankings = [...players]
+      .sort((a, b) => Number(a.totalScore) - Number(b.totalScore))
+      .reverse()
+      .map((player, index) => {
+        const playerScoreCategory = player?.scoreCategory;
+        const categories = gameScoreCategories.map(
+          ({id, abbreviation: name, isNumeric}) => {
+            const value = playerScoreCategory?.[id] || '0';
+            return {name, value, isNumeric};
+          },
+        );
 
-      return {
-        ...player,
-        rank: index + 1,
-        categories,
-      };
-    });
+        return {
+          ...player,
+          rank: index + 1,
+          categories,
+        };
+      });
 
-  return rankings;
-});
-
-const selectSummaryHeaders = createDraftSafeSelector(
-  selectRankings,
-  (rankings) => getSummaryHeaders(R.head(rankings)?.categories || []),
+    return rankings;
+  },
 );
 
-export default scytheSlice;
+const selectSummaryHeaders = createDraftSafeSelector(
+  selectGame,
+  selectRankings,
+  (game, rankings) => getSummaryHeaders(R.head(rankings)?.categories || []),
+);
 
-export class ScytheSelectors {
+export default sessionSlice;
+
+export class SessionSelectors {
   static selectedPlayerId = selectSelectedPlayerId;
   static players = selectPlayers;
   static scoringCategories = selectScoringCategories;
   static startDate = selectStartDate;
   static rankings = selectRankings;
   static summaryHeaders = selectSummaryHeaders;
+  static game = selectGame;
 }
 
 const getTotalScore = (scoreCategory: ScoreCategory) => {

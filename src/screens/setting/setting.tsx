@@ -1,8 +1,8 @@
+import {SessionSelectors, sessionSlice} from '@game';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
-import {ScytheSelectors, scytheSlice} from '@scythe';
 import React from 'react';
-import {Linking, View} from 'react-native';
+import {Alert, Linking, View} from 'react-native';
 import deviceInfoModule from 'react-native-device-info';
 import {Appbar, List} from 'react-native-paper';
 import VersionCheck from 'react-native-version-check';
@@ -13,17 +13,41 @@ const Component = () => {
   const version = deviceInfoModule.getVersion();
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const scythePlayers = useSelector(ScytheSelectors.players);
+  const game = useSelector(SessionSelectors.game);
+  const currentGameId = game?.id;
 
   const onReview = async () => {
     const url = await VersionCheck.getStoreUrl();
     Linking.openURL(url);
   };
 
-  const onScythe = () => {
-    const hasExistingScytheGame = scythePlayers.length !== 0;
-    !hasExistingScytheGame && dispatch(scytheSlice.actions.start());
-    navigation.navigate('ScytheScreen');
+  const onStartGame = (gameId: any) => {
+    if (currentGameId) {
+      if (currentGameId !== gameId) {
+        return Alert.alert(
+          'Proceed with a new Game?',
+          'You will lose your existing game.',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'OK',
+              onPress: () => {
+                dispatch(sessionSlice.actions.start(gameId));
+                return navigation.navigate('SessionScreen');
+              },
+            },
+          ],
+        );
+      }
+
+      return navigation.navigate('SessionScreen');
+    }
+
+    dispatch(sessionSlice.actions.start(gameId));
+    return navigation.navigate('SessionScreen');
   };
 
   const items = [
@@ -37,7 +61,7 @@ const Component = () => {
       icon: 'beta',
       title: 'Scorebook for Scythe',
       description: 'Try out our next beta feature',
-      onPress: onScythe,
+      onPress: () => onStartGame('scythe'),
     },
   ];
 

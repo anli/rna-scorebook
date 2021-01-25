@@ -115,6 +115,6 @@ describe('Setting Screen', () => {
     });
 
     expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith('ScytheScreen');
+    expect(mockNavigate).toHaveBeenCalledWith('SessionScreen');
   });
 });
