@@ -63,6 +63,12 @@ const Component = () => {
       description: 'Try out our next beta feature',
       onPress: () => onStartGame('scythe'),
     },
+    {
+      icon: 'beta',
+      title: 'Scorebook for Sushi Go Party!',
+      description: 'For testing only',
+      onPress: () => onStartGame('sushiGoParty'),
+    },
   ];
 
   return (

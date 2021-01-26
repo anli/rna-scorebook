@@ -10,7 +10,6 @@ import {
   MenuAddScreen,
   PlayerAddScreen,
   PlayerUpdateScreen,
-  ScytheScreen,
   SessionScreen,
   SettingScreen,
   StartScreen,
@@ -91,11 +90,6 @@ const RootStackScreen = () => {
         name="SummaryScreen"
         component={SummaryScreen.Component}
         options={SummaryScreen.options}
-      />
-      <RootStack.Screen
-        name="ScytheScreen"
-        component={ScytheScreen.Component}
-        options={ScytheScreen.options}
       />
       <RootStack.Screen
         name="SessionScreen"
