@@ -57,11 +57,11 @@ const Component = () => {
           <TitleContainer>
             <Title>Scan your game board or{'\n'}manually select to start</Title>
             <ManuallySelectButton
-              icon="selection"
+              mode="outlined"
               color="white"
               uppercase={false}
               onPress={onManuallySelect}>
-              Select your menu
+              Manually Select
             </ManuallySelectButton>
           </TitleContainer>
         </MaskedFooter>
@@ -122,8 +122,8 @@ const TitleContainer = styled.View`
 `;
 
 const ManuallySelectButton = styled(Button)`
-  background-color: black;
   margin-top: 16px;
+  border-color: ${colors.background};
 `;
 
 const MaskedSide = styled.View`
