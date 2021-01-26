@@ -1,3 +1,4 @@
+import {ScoreCategory} from '@components';
 import analytics from '@react-native-firebase/analytics';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
@@ -12,7 +13,6 @@ import {Portal} from 'react-native-portalize';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import EmptyState from './empty-state';
-import MenuItem from './menu-item';
 import MenuItemOptions from './menu-item-options';
 import Player from './player';
 import RoundsNative from './rounds';
@@ -141,14 +141,21 @@ const HasGame = () => {
           return (
             <Screen>
               <MenuItems>
-                {roundData?.map(({name, score, id: menuItemId}) => (
-                  <TouchableOpacity
-                    testID={`MenuItemButton.${menuItemId}`}
-                    key={menuItemId}
-                    onPress={() => onSelectMenuItem(menuItemId, roundId)}>
-                    <MenuItem name={name} score={score} />
-                  </TouchableOpacity>
-                ))}
+                {roundData?.map(
+                  ({name, score: value, id: menuItemId, typeId}) => (
+                    <TouchableOpacity
+                      testID={`MenuItemButton.${menuItemId}`}
+                      key={menuItemId}
+                      onPress={() => onSelectMenuItem(menuItemId, roundId)}>
+                      <ScoreCategory
+                        name={name}
+                        value={value}
+                        disabled={getIsScoreCategoryDisabled(typeId, roundId)}
+                        numberOfColumns={3}
+                      />
+                    </TouchableOpacity>
+                  ),
+                )}
               </MenuItems>
             </Screen>
           );
@@ -224,3 +231,7 @@ const MenuItems = styled.View`
 const EndingPlayer = styled.View`
   width: 40px;
 `;
+
+const getIsScoreCategoryDisabled = (typeId: string, roundId: string) => {
+  return typeId === 'desserts' && roundId !== 'round3';
+};
