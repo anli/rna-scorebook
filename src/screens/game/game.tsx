@@ -141,19 +141,26 @@ const HasGame = () => {
             <Screen>
               <MenuItems>
                 {roundData?.map(
-                  ({name, score: value, id: menuItemId, typeId}) => (
-                    <TouchableOpacity
-                      testID={`MenuItemButton.${menuItemId}`}
-                      key={menuItemId}
-                      onPress={() => onSelectMenuItem(menuItemId, roundId)}>
-                      <ScoreCategory
-                        name={name}
-                        value={value}
-                        disabled={getIsScoreCategoryDisabled(typeId, roundId)}
-                        numberOfColumns={3}
-                      />
-                    </TouchableOpacity>
-                  ),
+                  ({name, score: value, id: menuItemId, typeId}) => {
+                    const isDisabled = getIsScoreCategoryDisabled(
+                      typeId,
+                      roundId,
+                    );
+                    return (
+                      <TouchableOpacity
+                        testID={`MenuItemButton.${menuItemId}`}
+                        key={menuItemId}
+                        onPress={() => onSelectMenuItem(menuItemId, roundId)}
+                        disabled={isDisabled}>
+                        <ScoreCategory
+                          name={name}
+                          value={value}
+                          disabled={isDisabled}
+                          numberOfColumns={3}
+                        />
+                      </TouchableOpacity>
+                    );
+                  },
                 )}
               </MenuItems>
             </Screen>
