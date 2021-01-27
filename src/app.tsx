@@ -32,7 +32,7 @@ const App = () => {
 
   const checkUpdateNeeded = async () => {
     try {
-      let updateNeeded = await VersionCheck.needUpdate();
+      let updateNeeded = await VersionCheck.needUpdate({depth: 1});
       if (updateNeeded.isNeeded) {
         Alert.alert(
           'Please update',
