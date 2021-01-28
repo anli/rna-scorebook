@@ -45,12 +45,14 @@
     "react-native-safe-area-context": "^3.1.9",
     "react-native-screens": "^2.16.1",
     "react-native-share": "^5.1.0",
+    "react-native-svg": "^12.1.0",
     "react-native-tab-view": "^2.15.2",
     "react-native-vector-icons": "^7.1.0",
     "react-native-version-check": "^3.4.2",
     "react-native-view-shot": "^3.1.2",
     "react-redux": "^7.2.2",
     "redux-persist": "^6.0.0",
+    "rn-tourguide": "^2.7.1",
     "styled-components": "^5.2.1",
     "uuid": "^8.3.2",
     "wait-for-expect": "^3.0.2"
@@ -91,7 +93,8 @@
       "\\.(css|less)$": "<rootDir>/__mocks__/style.js"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?react-native|@?react-navigation|@?react-native-community|redux-persist|@?react-native-firebase)"
+      "node_modules/(?!(jest-)?react-native|@?react-navigation|@?react-native-community|redux-persist|@?react-native-firebase)",
+      "node_modules/rn-tourguide"
     ],
     "setupFiles": [
       "<rootDir>/jest/setup.js"

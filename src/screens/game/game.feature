@@ -62,3 +62,9 @@ Feature: Game Screen
     And that I am at 'Round 3'
     When I press 'Summary Button'
     Then I should see 'Summary Screen'
+
+  Scenario: Press Help
+    Given that I have a game
+    And that I am at 'Game Screen'
+    When I press 'Help Button'
+    Then I should see 'Help'

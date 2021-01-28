@@ -35,7 +35,7 @@ checks:
   similar-code:
     enabled: true
     config:
-      threshold: 55
+      threshold: 60
   identical-code:
     enabled: true
     config:
