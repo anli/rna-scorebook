@@ -200,7 +200,7 @@ export class GameSelectors {
   });
   static startDate = createDraftSafeSelector(
     selectSelf,
-    (state: State) => state?.startDate,
+    (state: State) => state?.startDate || new Date(),
   );
 }
 

@@ -1,6 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import store, {gameSlice} from '@store';
+import store, {appSlice, gameSlice} from '@store';
 import {fireEvent, render} from '@testing-library/react-native';
 import React from 'react';
 import deviceInfoModule from 'react-native-device-info';
@@ -17,6 +17,18 @@ jest.mock('@react-navigation/native', () => {
     useNavigation: () => ({
       navigate: mockNavigate,
     }),
+  };
+});
+
+const mockStart = jest.fn();
+jest.mock('rn-tourguide', () => {
+  return {
+    useTourGuideController: () => ({
+      canStart: true,
+      start: mockStart,
+      eventEmitter: {on: jest.fn(), off: jest.fn()},
+    }),
+    TourGuideZone: ({children}: any) => <>{children}</>,
   };
 });
 
@@ -235,5 +247,24 @@ describe('Game Screen', () => {
 
     expect(mockNavigate).toHaveBeenCalledTimes(1);
     expect(mockNavigate).toHaveBeenCalledWith('SummaryScreen');
+  });
+
+  it(`Scenario: Press Help
+      Given that I have a game
+      And that I have onboard
+      And that I am at 'Game Screen'
+      When I press 'Help Button'
+      Then I should see 'Help'`, async () => {
+    store.dispatch(appSlice.actions.onboard());
+    store.dispatch(gameSlice.actions.startGame(defaultMenuItemIds));
+    const {getByTestId} = render(
+      <App component={GameScreen.Component} options={GameScreen.options} />,
+    );
+
+    await act(async () => {
+      fireEvent.press(getByTestId('HelpButton'));
+    });
+
+    expect(mockStart).toHaveBeenCalledTimes(1);
   });
 });

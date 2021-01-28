@@ -2,6 +2,7 @@ import {colors} from '@theme';
 import React, {useState} from 'react';
 import {useWindowDimensions} from 'react-native';
 import {TabBar, TabView} from 'react-native-tab-view';
+import {TourGuideZone} from 'rn-tourguide';
 
 type RoundId = 'round1' | 'round2' | 'round3';
 interface Props {
@@ -25,14 +26,20 @@ const Rounds = ({data, render}: Props) => {
   const renderScene = () => render(data[index], rounds[index].key);
 
   const Tabs = (props: any) => (
-    <TabBar
-      getLabelText={({route}) => route.title}
-      {...props}
-      activeColor={colors.primary}
-      inactiveColor="black"
-      indicatorStyle={{backgroundColor: colors.primary}}
-      style={{backgroundColor: colors.background}}
-    />
+    <TourGuideZone
+      zone={5}
+      text={
+        'You are currently at round 1, and can update the score of items below, by pressing them'
+      }>
+      <TabBar
+        getLabelText={({route}) => route.title}
+        {...props}
+        activeColor={colors.primary}
+        inactiveColor="black"
+        indicatorStyle={{backgroundColor: colors.primary}}
+        style={{backgroundColor: colors.background}}
+      />
+    </TourGuideZone>
   );
 
   return (

@@ -2,15 +2,17 @@ import {Player, ScoreCategory} from '@components';
 import analytics from '@react-native-firebase/analytics';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationOptions} from '@react-navigation/stack';
-import {GameSelectors, gameSlice} from '@store';
+import {AppSelectors, appSlice, GameSelectors, gameSlice} from '@store';
+import {format} from 'date-fns';
 import R from 'ramda';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Modalize} from 'react-native-modalize';
-import {Appbar} from 'react-native-paper';
+import {Appbar, Caption, Headline} from 'react-native-paper';
 import {Portal} from 'react-native-portalize';
 import {useDispatch, useSelector} from 'react-redux';
+import {TourGuideZone, useTourGuideController} from 'rn-tourguide';
 import styled from 'styled-components/native';
 import EmptyState from './empty-state';
 import MenuItemOptions from './menu-item-options';
@@ -30,13 +32,32 @@ const HasGame = () => {
   const roundScores = useSelector(GameSelectors.roundScores);
   const menuItems = useSelector(GameSelectors.menuItems);
   const dispatch = useDispatch();
+  const {canStart, start, eventEmitter} = useTourGuideController();
+  const hasOnboard = useSelector(AppSelectors.hasOnboard);
+  const startDate = useSelector(GameSelectors.startDate);
+  const isSelectedPlayerMe = selectedPlayerId === 'ME';
+
+  /* istanbul ignore next */
+  const handleOnStop = () => dispatch(appSlice.actions.onboard());
+
+  useEffect(() => {
+    !hasOnboard && canStart && start && start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canStart, hasOnboard]);
 
   const selectedMenuItem = R.find(
     R.propEq('id', selected?.menuItemId),
     menuItems,
   );
 
-  const isSelectedPlayerMe = selectedPlayerId === 'ME';
+  React.useEffect(() => {
+    eventEmitter && eventEmitter.on('stop', handleOnStop);
+
+    return () => {
+      eventEmitter && eventEmitter.off('stop', handleOnStop);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onAddPlayer = () => {
     navigation.navigate('PlayerAddScreen');
@@ -83,56 +104,82 @@ const HasGame = () => {
     navigation.navigate('SummaryScreen');
   };
 
+  const onHelp = () => {
+    start && start();
+  };
+
   return (
     <Screen>
       <AppBarHeader>
-        <Appbar.Content title={type?.name} />
-        {!isSelectedPlayerMe && (
-          <>
+        <Appbar.Content title="" />
+        <>
+          <Appbar.Action
+            testID="HelpButton"
+            icon="help-circle"
+            onPress={onHelp}
+          />
+          <TourGuideZone
+            zone={3}
+            text={'You can delete the selected player, other than yourself'}>
             <Appbar.Action
               testID="RemoveSelectedPlayerButton"
               icon="account-cancel"
+              disabled={isSelectedPlayerMe}
               onPress={onRemoveSelectedPlayer}
             />
-          </>
-        )}
-        <>
-          <Appbar.Action
-            testID="UpdateSelectedPlayerButton"
-            icon="account-details"
-            onPress={onUpdateSelectedPlayer}
-          />
-          <Appbar.Action
-            testID="SummaryButton"
-            icon="poll"
-            onPress={onSummary}
-          />
+          </TourGuideZone>
+          <TourGuideZone zone={4} text={'You can rename them'}>
+            <Appbar.Action
+              testID="UpdateSelectedPlayerButton"
+              icon="account-details"
+              onPress={onUpdateSelectedPlayer}
+            />
+          </TourGuideZone>
+
+          <TourGuideZone
+            zone={6}
+            text={'When you are done scoring, you can see a summary here'}>
+            <Appbar.Action
+              testID="SummaryButton"
+              icon="poll"
+              onPress={onSummary}
+            />
+          </TourGuideZone>
         </>
       </AppBarHeader>
+      <Game>
+        <Headline>{type?.name}</Headline>
+        <Caption>{format(startDate, 'd LLL yyyy')}</Caption>
+      </Game>
       <View>
-        <Players horizontal showsHorizontalScrollIndicator={false}>
-          <Player
-            key="new-player"
-            name="Add"
-            score="+"
-            color="white"
-            selected={false}
-            testID="AddPlayerButton"
-            onPress={onAddPlayer}
-          />
-          {players?.map(({id, name, totalScore}) => (
+        <TourGuideZone
+          zone={2}
+          text={'You can add new players here, or select existing ones'}>
+          <Players horizontal showsHorizontalScrollIndicator={false}>
             <Player
-              key={id}
-              name={name}
-              score={totalScore}
+              key="new-player"
+              name="Add"
+              score="+"
               color="white"
-              selected={id === selectedPlayerId}
-              onPress={() => onSelectPlayer(id)}
-              testID={`SelectPlayerButton.${id}`}
+              selected={false}
+              testID="AddPlayerButton"
+              onPress={onAddPlayer}
             />
-          ))}
-          <EndingPlayer />
-        </Players>
+
+            {players?.map(({id, name, totalScore}) => (
+              <Player
+                key={id}
+                name={name}
+                score={totalScore}
+                color="white"
+                selected={id === selectedPlayerId}
+                onPress={() => onSelectPlayer(id)}
+                testID={`SelectPlayerButton.${id}`}
+              />
+            ))}
+            <EndingPlayer />
+          </Players>
+        </TourGuideZone>
       </View>
       <Rounds
         data={roundScores}
@@ -241,3 +288,8 @@ const EndingPlayer = styled.View`
 const getIsScoreCategoryDisabled = (typeId: string, roundId: string) => {
   return typeId === 'desserts' && roundId !== 'round3';
 };
+
+const Game = styled.View`
+  padding-left: 28px;
+  padding-right: 28px;
+`;

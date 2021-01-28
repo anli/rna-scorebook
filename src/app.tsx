@@ -10,6 +10,7 @@ import {
 import VersionCheck from 'react-native-version-check';
 import {Provider as ReduxProvider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
+import {TourGuideProvider} from 'rn-tourguide';
 import colors from './theme/colors';
 
 const theme = {
@@ -60,7 +61,9 @@ const App = () => {
             backgroundColor={colors.background}
             barStyle="dark-content"
           />
-          <Navigation />
+          <TourGuideProvider verticalOffset={StatusBar.currentHeight}>
+            <Navigation />
+          </TourGuideProvider>
         </PaperProvider>
       </PersistGate>
     </ReduxProvider>
